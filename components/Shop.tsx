@@ -165,7 +165,6 @@ export function ShopSection({ products, stock }: { products: Product[]; stock?: 
             { id: "mild", label: "Mild & easy" },
             { id: "mixer", label: "For cocktails" },
             { id: "shot", label: "Morning shot" },
-            { id: "new", label: "New" },
           ].map(f => (
             <button key={f.id} onClick={() => setFilter(f.id)} style={{
               padding: "9px 16px", border: filter === f.id ? "1px solid #2C1810" : "1px solid rgba(44,24,16,0.12)",
@@ -189,6 +188,34 @@ export function ShopSection({ products, stock }: { products: Product[]; stock?: 
   );
 }
 
+type GuideCopy = {
+  who: string;
+  when: string;
+  how: string;
+  expect: string;
+};
+
+const GUIDES: Record<string, GuideCopy> = {
+  beer: {
+    who: "First-time buyers, dark spirit drinkers, anyone tired of supermarket ginger beer.",
+    when: "Friday night with rum or whisky. Cocktail mixer for moscow mules. Pairs with rich, fatty street food.",
+    how: "Serve cold over ice. Pop the cap slowly — it's properly carbonated. Try it neat first, then build a Mule.",
+    expect: "Bold ginger heat, real bubbles, a mouthfeel that holds up to spirits. Not sweet — properly fermented.",
+  },
+  ale: {
+    who: "Mild-spice drinkers, kids, and anyone who wants ginger flavor without the burn.",
+    when: "Weekday dinner. Hot afternoons. Anywhere you'd reach for a soft drink but want something better.",
+    how: "Serve cold. Great with lime and ice. Splash into dark rum for an easy highball.",
+    expect: "Crisp, gently carbonated, citrus-forward. The lightest of the range — think 'bright', not 'fiery'.",
+  },
+  shot: {
+    who: "Morning routine people, post-gym, anyone fighting a cold or the 3pm slump.",
+    when: "First thing in the morning, before coffee. Or 30 minutes before a workout. Or when you feel a sniffle.",
+    how: "60ml — drink it like a wellness shot. Cold from the fridge. Chase with water if the cayenne hits hard.",
+    expect: "Concentrated raw ginger heat with cayenne and lemon. No sugar, no filler. It's a kick — that's the point.",
+  },
+};
+
 export function TasteGuide({ products }: { products: Product[] }) {
   return (
     <section id="taste-guide" style={{ padding: "96px 0", background: "#fff", scrollMarginTop: 80 }}>
@@ -198,26 +225,69 @@ export function TasteGuide({ products }: { products: Product[] }) {
           <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 52, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", letterSpacing: "-0.02em" }}>
             Not sure where to <span style={{ fontStyle: "italic", color: "#C8893C" }}>start?</span>
           </h2>
-          <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 16, color: "rgba(44,24,16,0.65)", maxWidth: 560, margin: "0 auto" }}>
-            Four brews, four moods. Here&apos;s what each one is for.
+          <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 16, color: "rgba(44,24,16,0.65)", maxWidth: 620, margin: "0 auto", lineHeight: 1.55 }}>
+            Three brews, three jobs. Pick the one that matches the moment — who it&apos;s for, when to drink it, how to serve it, and what to expect when you pop the cap.
           </p>
         </div>
 
-        <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 18 }}>
-          {products.map(p => (
-            <Link key={p.id} href={`/shop/${p.id}`} style={{ background: "#FDF6EC", border: "1px solid rgba(44,24,16,0.06)", borderRadius: 18, padding: 22, textAlign: "left", fontFamily: "var(--gb-font-sans)", display: "block" }}>
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><BottleImage flavor={p.flavor} size={120} src={p.heroImage}/></div>
-              <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810", marginBottom: 4 }}>{p.title}</div>
-              <div style={{ fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", color: "#C8893C", fontWeight: 700, marginBottom: 12 }}>
-                {p.id === "beer" ? "For cocktail nights" : p.id === "ale" ? "For easy sipping" : p.id === "shot" ? "For your morning kick" : "For the purists"}
-              </div>
-              <div style={{ display: "flex", gap: 3, marginBottom: 12 }}>
-                {[1,2,3,4,5].map(i => <span key={i} style={{ width: 14, height: 4, borderRadius: 2, background: i <= p.heat ? "linear-gradient(90deg, #C8893C, #8B3A1A)" : "rgba(44,24,16,0.08)" }}/>)}
-              </div>
-              <div style={{ fontSize: 13, color: "rgba(44,24,16,0.7)", lineHeight: 1.55 }}>{p.blurb.split(".")[0] + "."}</div>
-            </Link>
-          ))}
+        <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
+          {products.map(p => {
+            const g = GUIDES[p.id];
+            const subtitle = p.id === "beer" ? "Cocktails & dinner" : p.id === "ale" ? "Easy sipping" : "Morning fuel";
+            return (
+              <Link key={p.id} href={`/shop/${p.id}`} style={{ background: "#FDF6EC", border: "1px solid rgba(44,24,16,0.06)", borderRadius: 18, padding: 24, textAlign: "left", fontFamily: "var(--gb-font-sans)", display: "block", transition: "transform 200ms, box-shadow 200ms" }}
+                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 32px rgba(44,24,16,0.08)"; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
+              >
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                  <BottleImage flavor={p.flavor} size={140} src={p.heroImage}/>
+                </div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810", marginBottom: 2 }}>{p.title}</div>
+                <div style={{ fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", color: "#C8893C", fontWeight: 700, marginBottom: 14 }}>
+                  {subtitle}
+                </div>
+
+                {/* Heat */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                  <span style={{ fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(44,24,16,0.5)" }}>Heat</span>
+                  <div style={{ display: "flex", gap: 3 }}>
+                    {[1,2,3,4,5].map(i => <span key={i} style={{ width: 16, height: 5, borderRadius: 2, background: i <= p.heat ? "linear-gradient(90deg, #C8893C, #8B3A1A)" : "rgba(44,24,16,0.08)" }}/>)}
+                  </div>
+                  <span style={{ fontSize: 11, color: "rgba(44,24,16,0.6)", marginLeft: 4 }}>{["","Mellow","Bright","Warm","Fiery","Scorcher"][p.heat]}</span>
+                </div>
+
+                {/* Detail rows */}
+                <div style={{ display: "grid", gap: 12, fontSize: 13, lineHeight: 1.55, color: "rgba(44,24,16,0.78)" }}>
+                  <div>
+                    <div style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A7C3F", marginBottom: 3 }}>Who it&apos;s for</div>
+                    {g.who}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A7C3F", marginBottom: 3 }}>When to drink it</div>
+                    {g.when}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A7C3F", marginBottom: 3 }}>How to serve</div>
+                    {g.how}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A7C3F", marginBottom: 3 }}>What to expect</div>
+                    {g.expect}
+                  </div>
+                </div>
+
+                <div style={{ marginTop: 18, paddingTop: 16, borderTop: "1px solid rgba(44,24,16,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13 }}>
+                  <span style={{ fontWeight: 700, color: "#C8893C" }}>From ฿{p.single}</span>
+                  <span style={{ color: "#2C1810", fontWeight: 600 }}>Shop {p.title.split(" ")[1]} →</span>
+                </div>
+              </Link>
+            );
+          })}
         </div>
+
+        <p style={{ textAlign: "center", marginTop: 36, fontSize: 13, color: "rgba(44,24,16,0.6)", fontFamily: "var(--gb-font-sans)" }}>
+          Still can&apos;t decide? <Link href="#bundle" style={{ color: "#C8893C", fontWeight: 700, textDecoration: "underline" }}>Build a 6-pack</Link> with any mix of the three.
+        </p>
       </div>
     </section>
   );

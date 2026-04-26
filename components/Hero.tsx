@@ -24,13 +24,18 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
           position: "relative", zIndex: 2,
         }}>
           <div style={{ position: "relative" }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "6px 14px 6px 6px", background: "rgba(255,255,255,0.7)", border: "1px solid rgba(44,24,16,0.08)", borderRadius: 9999, marginBottom: 22, backdropFilter: "blur(8px)" }}>
+            <a
+              href="#bundle"
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "6px 14px 6px 6px", background: "rgba(255,255,255,0.7)", border: "1px solid rgba(44,24,16,0.08)", borderRadius: 9999, marginBottom: 22, backdropFilter: "blur(8px)", textDecoration: "none", color: "inherit", transition: "transform 200ms" }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; }}
+            >
               <span style={{ background: "#4A7C3F", color: "#fff", fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", padding: "4px 10px", borderRadius: 9999 }}>NEW</span>
               <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 13, color: "rgba(44,24,16,0.75)" }}>
-                Unpasteurized Ginger Beer — now shipping
+                Build-your-own 6-pack — mix any flavors, save 10%
               </span>
               <Icon d={ICONS.chevRight} size={13} stroke={2}/>
-            </div>
+            </a>
 
             <p style={{
               color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700,

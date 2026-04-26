@@ -120,9 +120,11 @@ export async function POST(req: Request) {
     payment_method_types: isSubscription ? ["card"] : ["card", "promptpay"],
   };
 
-  // Shipping options for one-off purchases (Stripe doesn't support shipping_options on subscriptions in the same way).
+  // Always let Stripe collect the shipping address — it's the source of truth.
+  sessionParams.shipping_address_collection = { allowed_countries: ["TH"] };
+  sessionParams.phone_number_collection = { enabled: true };
+
   if (!isSubscription) {
-    sessionParams.shipping_address_collection = { allowed_countries: ["TH"] };
     sessionParams.shipping_options = [
       {
         shipping_rate_data: {

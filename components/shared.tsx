@@ -57,7 +57,7 @@ export function Logo({ color = "dark", size = 24, accent = "#C8893C" }: { color?
  * BottleImage: prefers a real product photo when one is provided,
  * falls back to the CSS-drawn Bottle svg.
  */
-export function BottleImage({ flavor = "beer", size = 160, src }: { flavor?: "beer" | "shot" | "ale" | "unpast"; size?: number; src?: string }) {
+export function BottleImage({ flavor = "beer", size = 160, src }: { flavor?: "beer" | "shot" | "ale"; size?: number; src?: string }) {
   if (src) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
@@ -67,12 +67,11 @@ export function BottleImage({ flavor = "beer", size = 160, src }: { flavor?: "be
   return <Bottle flavor={flavor} size={size}/>;
 }
 
-export function Bottle({ flavor = "beer", size = 160 }: { flavor?: "beer" | "shot" | "ale" | "unpast"; size?: number }) {
+export function Bottle({ flavor = "beer", size = 160 }: { flavor?: "beer" | "shot" | "ale"; size?: number }) {
   const palettes: Record<string, { body: string; cap: string; label: string; accent: string; name: string }> = {
     shot:  { body: "#8B3A1A", cap: "#2C1810", label: "#FDF6EC", accent: "#C8893C", name: "SHOT" },
     beer:  { body: "#C8893C", cap: "#2C1810", label: "#FDF6EC", accent: "#8B3A1A", name: "BEER" },
     ale:   { body: "#E8B86A", cap: "#2C1810", label: "#FDF6EC", accent: "#4A7C3F", name: "ALE" },
-    unpast:{ body: "#9C6B2E", cap: "#1a0f08", label: "#FDF6EC", accent: "#4A7C3F", name: "UNPAST." },
   };
   const p = palettes[flavor] || palettes.beer;
   const w = size * 0.42, h = size;

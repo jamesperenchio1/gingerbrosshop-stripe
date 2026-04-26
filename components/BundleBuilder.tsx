@@ -32,7 +32,7 @@ export function BundleBuilder({ products }: { products: Product[] }) {
   };
 
   return (
-    <section style={{ padding: "96px 0", background: "linear-gradient(180deg, #FDF6EC 0%, #F5E6D3 100%)", position: "relative", overflow: "hidden" }}>
+    <section id="bundle" style={{ padding: "96px 0", background: "linear-gradient(180deg, #FDF6EC 0%, #F5E6D3 100%)", position: "relative", overflow: "hidden", scrollMarginTop: 80 }}>
       <div className="gb-pad-40" style={{ maxWidth: 1440, margin: "0 auto", padding: "0 40px" }}>
         <div className="gb-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 440px", gap: 56, alignItems: "flex-start" }}>
           <div>

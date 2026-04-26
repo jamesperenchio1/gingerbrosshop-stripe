@@ -126,7 +126,7 @@ export function ProductDetail({ product, stock }: { product: Product; stock?: nu
               </span>
             </div>
             <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", fontSize: 11, margin: "0 0 8px" }}>
-              {product.flavor === "shot" ? "Concentrated Kick · 60ml" : product.flavor === "beer" ? "Naturally Fermented · 330ml" : product.flavor === "ale" ? "Crisp & Carbonated · 330ml" : "Wild Ferment · 330ml"}
+              {product.flavor === "shot" ? "Concentrated Kick · 60ml" : product.flavor === "beer" ? "Naturally Fermented · 330ml" : "Crisp & Carbonated · 330ml"}
             </p>
             <h1 style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
               {product.title}

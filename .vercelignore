@@ -1,0 +1,6 @@
+bottles/
+.scaffold-stash/
+stripe-ids/
+node_modules
+.next
+.git

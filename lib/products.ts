@@ -2,7 +2,7 @@
 // Stripe Price IDs are populated from the test-mode account (acct_1TC1Ee4xTvnGlHCD).
 // Amounts in THB (฿); display values are whole baht.
 
-export type FlavorId = "beer" | "shot" | "ale" | "unpast";
+export type FlavorId = "beer" | "shot" | "ale";
 
 export type Product = {
   id: FlavorId;
@@ -101,25 +101,6 @@ export const PRODUCTS: Product[] = [
       single:  "price_1TQWl24xTvnGlHCD81fnXsF4",
       sixpack: "price_1TQWl24xTvnGlHCDKOe9r89R",
       sub:     "price_1TQWl44xTvnGlHCDvUZaTOZq",
-    },
-  },
-  {
-    id: "unpast", flavor: "unpast", title: "Unpasteurized Beer",
-    subtitle: "Wild ferment · 330ml",
-    single: 149, sixpack: 799, singlePrice: 149,
-    rating: 5, reviews: 42, heat: 5,
-    tag: "NEW",
-    tagColor: "#4A7C3F",
-    lowStock: true,
-    filterTags: ["new", "fiery"],
-    blurb: "Live cultures, wild ferment, full depth. For the drinker who wants their ginger beer to taste like a proper brewery.",
-    about: "A wilder sibling. Unpasteurized means the ferment is alive — keep it cold, pop it gently, and drink within 14 days.",
-    ingredients: "Fresh Thai ginger, cane sugar, filtered water, live culture. No pasteurization.",
-    stripeProductId: "prod_UPLRuk9ssmFNNO",
-    prices: {
-      single:  "price_1TQWl34xTvnGlHCDQM6YIqs0",
-      sixpack: "price_1TQWl34xTvnGlHCDd0E8Tpzd",
-      sub:     "price_1TQWl54xTvnGlHCD12gBAq43",
     },
   },
 ];
