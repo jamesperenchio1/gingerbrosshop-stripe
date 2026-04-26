@@ -28,6 +28,10 @@ export type Product = {
     sub: string;
   };
   stripeProductId: string;
+  /** Primary, transparent-background image used on cards / PDP hero. */
+  heroImage?: string;
+  /** Additional photos shown on the PDP gallery. */
+  gallery?: string[];
 };
 
 export const PRODUCTS: Product[] = [
@@ -47,6 +51,13 @@ export const PRODUCTS: Product[] = [
       sixpack: "price_1TQWl04xTvnGlHCDDlql93Ha",
       sub:     "price_1TQWl44xTvnGlHCD7XsubBUU",
     },
+    heroImage: "/products/ginger-beer-bg.png",
+    gallery: [
+      "/products/ginger-beer-bg.png",
+      "/products/ginger-beer-1.jpg",
+      "/products/ginger-beer-2.jpg",
+      "/products/ginger-beer-3.jpg",
+    ],
   },
   {
     id: "shot", flavor: "shot", title: "Ginger Shot",
@@ -64,6 +75,16 @@ export const PRODUCTS: Product[] = [
       sixpack: "price_1TQWl14xTvnGlHCDMwBlPHRp",
       sub:     "price_1TQWl44xTvnGlHCDsMhf7ama",
     },
+    heroImage: "/products/ginger-shot-bg.png",
+    gallery: [
+      "/products/ginger-shot-bg.png",
+      "/products/ginger-shot-1.jpg",
+      "/products/ginger-shot-2.jpg",
+      "/products/ginger-shot-3.jpg",
+      "/products/ginger-shot-4.jpg",
+      "/products/ginger-shot-5.jpg",
+      "/products/ginger-shot-6.jpg",
+    ],
   },
   {
     id: "ale", flavor: "ale", title: "Ginger Ale",

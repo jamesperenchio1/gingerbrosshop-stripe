@@ -53,6 +53,20 @@ export function Logo({ color = "dark", size = 24, accent = "#C8893C" }: { color?
   );
 }
 
+/**
+ * BottleImage: prefers a real product photo when one is provided,
+ * falls back to the CSS-drawn Bottle svg.
+ */
+export function BottleImage({ flavor = "beer", size = 160, src }: { flavor?: "beer" | "shot" | "ale" | "unpast"; size?: number; src?: string }) {
+  if (src) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={src} alt={`${flavor} bottle`} style={{ width: "auto", height: size, maxWidth: "100%", display: "block", objectFit: "contain" }}/>
+    );
+  }
+  return <Bottle flavor={flavor} size={size}/>;
+}
+
 export function Bottle({ flavor = "beer", size = 160 }: { flavor?: "beer" | "shot" | "ale" | "unpast"; size?: number }) {
   const palettes: Record<string, { body: string; cap: string; label: string; accent: string; name: string }> = {
     shot:  { body: "#8B3A1A", cap: "#2C1810", label: "#FDF6EC", accent: "#C8893C", name: "SHOT" },

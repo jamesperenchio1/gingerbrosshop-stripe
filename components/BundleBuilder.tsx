@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Bottle, Icon, ICONS } from "./shared";
+import { Bottle, BottleImage, Icon, ICONS } from "./shared";
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/products";
 
@@ -54,8 +54,8 @@ export function BundleBuilder({ products }: { products: Product[] }) {
                   cursor: picks.length >= max ? "not-allowed" : "pointer", opacity: picks.length >= max ? 0.5 : 1,
                   textAlign: "left", fontFamily: "var(--gb-font-sans)",
                 }}>
-                  <div style={{ width: 44, height: 56, background: "linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <Bottle flavor={p.flavor} size={48}/>
+                  <div style={{ width: 44, height: 56, background: "linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, padding: 3 }}>
+                    <BottleImage flavor={p.flavor} size={50} src={p.heroImage}/>
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 15, fontWeight: 600, color: "#2C1810" }}>{p.title}</div>
@@ -96,9 +96,9 @@ export function BundleBuilder({ products }: { products: Product[] }) {
                     height: 70, borderRadius: 10, border: p ? "none" : "1px dashed rgba(44,24,16,0.2)",
                     background: p ? "linear-gradient(145deg,#F5E6D3,#FDF6EC)" : "transparent",
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    cursor: p ? "pointer" : "default",
+                    cursor: p ? "pointer" : "default", padding: 4,
                   }}>
-                    {p && <Bottle flavor={p.flavor} size={52}/>}
+                    {p && <BottleImage flavor={p.flavor} size={60} src={p.heroImage}/>}
                   </div>
                 );
               })}
@@ -185,9 +185,9 @@ export function SubscriptionBlock() {
               </div>
             </div>
             <div style={{ display: "flex", gap: 8, marginBottom: 22 }}>
-              <Bottle flavor="beer" size={90}/>
+              <BottleImage flavor="beer" size={90} src="/products/ginger-beer-bg.png"/>
               <Bottle flavor="ale" size={90}/>
-              <Bottle flavor="shot" size={90}/>
+              <BottleImage flavor="shot" size={90} src="/products/ginger-shot-bg.png"/>
             </div>
             <div style={{ borderTop: "1px solid rgba(253,246,236,0.1)", paddingTop: 16, fontSize: 13, color: "rgba(253,246,236,0.7)", fontFamily: "var(--gb-font-sans)", lineHeight: 1.6 }}>
               Your first box ships within 2 days. Then every 30 days — or whenever you tell us to.

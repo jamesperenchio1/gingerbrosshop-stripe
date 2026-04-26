@@ -1,8 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Bottle, Icon, ICONS } from "./shared";
+import { BottleImage, Icon, ICONS } from "./shared";
 import { useCart } from "@/lib/cart";
+import { PRODUCTS, type FlavorId } from "@/lib/products";
 
 export function CheckoutClient() {
   const { items, subtotal, clear } = useCart();
@@ -211,10 +212,12 @@ export function CheckoutClient() {
             <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810", marginBottom: 16 }}>Order summary</div>
 
             <div style={{ maxHeight: 280, overflowY: "auto", marginBottom: 16 }}>
-              {items.map(i => (
+              {items.map(i => {
+                const heroSrc = PRODUCTS.find(p => p.id === (i.flavor as FlavorId))?.heroImage;
+                return (
                 <div key={i.uid} style={{ display: "grid", gridTemplateColumns: "60px 1fr auto", gap: 12, padding: "12px 0", borderBottom: "1px solid rgba(44,24,16,0.06)", alignItems: "center" }}>
-                  <div style={{ width: 60, height: 72, background: "linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-                    <Bottle flavor={i.flavor} size={52}/>
+                  <div style={{ width: 60, height: 72, background: "linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", padding: 4 }}>
+                    <BottleImage flavor={i.flavor} size={64} src={heroSrc}/>
                     <span style={{ position: "absolute", top: -6, right: -6, background: "#2C1810", color: "#FDF6EC", fontFamily: "var(--gb-font-sans)", fontSize: 10, fontWeight: 700, width: 20, height: 20, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>{i.qty}</span>
                   </div>
                   <div style={{ fontFamily: "var(--gb-font-sans)" }}>
@@ -223,7 +226,8 @@ export function CheckoutClient() {
                   </div>
                   <div style={{ fontFamily: "var(--gb-font-sans)", fontWeight: 700, color: "#C8893C", fontSize: 13 }}>฿{i.price * i.qty}</div>
                 </div>
-              ))}
+              );
+              })}
             </div>
 
             <div style={{ borderTop: "1px solid rgba(44,24,16,0.08)", paddingTop: 14, fontFamily: "var(--gb-font-sans)" }}>

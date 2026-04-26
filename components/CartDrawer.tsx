@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { Bottle, Icon, ICONS } from "./shared";
+import { BottleImage, Icon, ICONS } from "./shared";
 import { useCart } from "@/lib/cart";
-import { getProduct } from "@/lib/products";
+import { getProduct, PRODUCTS, type FlavorId } from "@/lib/products";
 
 export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { items, remove, changeQty, subtotal, add } = useCart();
@@ -72,10 +72,12 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
               </div>
             </div>
             <div style={{ flex:1, overflowY:"auto", padding:"0 24px" }}>
-              {items.map(i => (
+              {items.map(i => {
+                const heroSrc = PRODUCTS.find(p => p.id === (i.flavor as FlavorId))?.heroImage;
+                return (
                 <div key={i.uid} style={{ display:"grid", gridTemplateColumns:"80px 1fr auto", gap:14, padding:"18px 0", borderBottom:"1px solid rgba(44,24,16,0.06)" }}>
-                  <div style={{ width:80, height:96, background:"linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                    <Bottle flavor={i.flavor} size={70}/>
+                  <div style={{ width:80, height:96, background:"linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", padding: 6 }}>
+                    <BottleImage flavor={i.flavor} size={84} src={heroSrc}/>
                   </div>
                   <div>
                     <div style={{ fontFamily:"var(--gb-font-display)", fontWeight:600, fontSize:15, color:"#2C1810" }}>{i.title}</div>
@@ -92,15 +94,16 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                   </div>
                   <div style={{ fontFamily:"var(--gb-font-sans)", fontWeight:700, color:"#C8893C", fontSize:15 }}>฿{i.price * i.qty}</div>
                 </div>
-              ))}
+                );
+              })}
 
               {/* Cross-sell shot */}
               {!items.find(i => i.id === "shot" && i.variant === "Single" && !i.sub) && (
                 <div style={{ margin: "20px 0", padding: 16, background: "#fff", borderRadius: 14 }}>
                   <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#C8893C", fontWeight: 700, marginBottom: 12, fontFamily: "var(--gb-font-sans)" }}>Often added with this</div>
                   <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    <div style={{ width: 52, height: 64, background: "linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <Bottle flavor="shot" size={44}/>
+                    <div style={{ width: 52, height: 64, background: "linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", padding: 4 }}>
+                      <BottleImage flavor="shot" size={56} src={getProduct("shot").heroImage}/>
                     </div>
                     <div style={{ flex: 1, fontFamily: "var(--gb-font-sans)" }}>
                       <div style={{ fontSize: 13, fontWeight: 600, color: "#2C1810" }}>Ginger Shot · Single</div>

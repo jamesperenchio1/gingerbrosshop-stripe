@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Bottle, Icon, ICONS, Stars } from "./shared";
+import { Bottle, BottleImage, Icon, ICONS, Stars } from "./shared";
 import type { Product } from "@/lib/products";
 
 function ProductCard({ product, variant = "Single", showSavings = false, stock }: {
@@ -64,7 +64,7 @@ function ProductCard({ product, variant = "Single", showSavings = false, stock }
           borderRadius: "50%", filter: "blur(40px)",
         }}/>
         <div style={{ position: "relative", transform: hovered ? "translateY(-6px) rotate(-2deg)" : "translateY(0)", transition: "transform 400ms" }}>
-          <Bottle flavor={product.flavor} size={230}/>
+          <BottleImage flavor={product.flavor} size={230} src={product.heroImage}/>
         </div>
 
         <div style={{
@@ -206,7 +206,7 @@ export function TasteGuide({ products }: { products: Product[] }) {
         <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 18 }}>
           {products.map(p => (
             <Link key={p.id} href={`/shop/${p.id}`} style={{ background: "#FDF6EC", border: "1px solid rgba(44,24,16,0.06)", borderRadius: 18, padding: 22, textAlign: "left", fontFamily: "var(--gb-font-sans)", display: "block" }}>
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><Bottle flavor={p.flavor} size={120}/></div>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><BottleImage flavor={p.flavor} size={120} src={p.heroImage}/></div>
               <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810", marginBottom: 4 }}>{p.title}</div>
               <div style={{ fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", color: "#C8893C", fontWeight: 700, marginBottom: 12 }}>
                 {p.id === "beer" ? "For cocktail nights" : p.id === "ale" ? "For easy sipping" : p.id === "shot" ? "For your morning kick" : "For the purists"}

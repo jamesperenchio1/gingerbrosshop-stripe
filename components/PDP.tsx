@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Bottle, Icon, ICONS, Stars } from "./shared";
+import { Bottle, BottleImage, Icon, ICONS, Stars } from "./shared";
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/products";
 
@@ -54,25 +54,25 @@ export function ProductDetail({ product, stock }: { product: Product; stock?: nu
               position: "relative", overflow: "hidden",
             }}>
               <div style={{ position: "absolute", width: 480, height: 480, background: "rgba(200,137,60,0.14)", borderRadius: "50%", filter: "blur(80px)" }}/>
-              {activeImg === 0 && <Bottle flavor={product.flavor} size={460}/>}
-              {activeImg === 1 && (
-                <div style={{ display: "flex", gap: 12 }}>
-                  <Bottle flavor={product.flavor} size={320}/>
-                  <Bottle flavor={product.flavor} size={320}/>
-                </div>
-              )}
-              {activeImg === 2 && (
-                <div style={{ textAlign: "center", fontFamily: "var(--gb-font-display)", color: "rgba(44,24,16,0.4)", fontStyle: "italic" }}>
-                  <div style={{ fontSize: 14, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 6 }}>Lifestyle</div>
-                  <div style={{ fontSize: 22 }}>[ Product in hand ]</div>
-                </div>
-              )}
-              {activeImg === 3 && (
-                <div style={{ textAlign: "center", fontFamily: "var(--gb-font-display)", color: "rgba(44,24,16,0.4)", fontStyle: "italic" }}>
-                  <div style={{ fontSize: 14, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 6 }}>Behind the brew</div>
-                  <div style={{ fontSize: 22 }}>[ Fermenter close-up ]</div>
-                </div>
-              )}
+              {(() => {
+                const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : [];
+                const src = gallery[activeImg];
+                if (src) {
+                  return (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={src} alt={product.title} style={{ maxHeight: 540, maxWidth: "90%", objectFit: "contain", display: "block" }}/>
+                  );
+                }
+                if (activeImg === 1) {
+                  return (
+                    <div style={{ display: "flex", gap: 12 }}>
+                      <Bottle flavor={product.flavor} size={320}/>
+                      <Bottle flavor={product.flavor} size={320}/>
+                    </div>
+                  );
+                }
+                return <Bottle flavor={product.flavor} size={460}/>;
+              })()}
 
               <div style={{ position: "absolute", top: 20, left: 20, display: "flex", flexDirection: "column", gap: 8 }}>
                 <span style={{ background: "#2C1810", color: "#FDF6EC", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 9999 }}>{product.tag}</span>
@@ -88,16 +88,28 @@ export function ProductDetail({ product, stock }: { product: Product; stock?: nu
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10, marginTop: 12 }}>
-              {[0,1,2,3].map(i => (
-                <button key={i} onClick={() => setActiveImg(i)} style={{
-                  background: activeImg === i ? "#fff" : "linear-gradient(145deg,#F5E6D3,#FDF6EC)",
-                  borderRadius: 10, height: 100, display: "flex", alignItems: "center", justifyContent: "center",
-                  cursor: "pointer", border: 0, boxShadow: activeImg === i ? "inset 0 0 0 2px #2C1810" : "none",
-                }}>
-                  <Bottle flavor={product.flavor} size={58}/>
-                </button>
-              ))}
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(product.gallery?.length ?? 4, 6)},1fr)`, gap: 10, marginTop: 12 }}>
+              {(product.gallery && product.gallery.length > 0
+                ? product.gallery.slice(0, 6).map((src, i) => (
+                  <button key={i} onClick={() => setActiveImg(i)} style={{
+                    background: activeImg === i ? "#fff" : "linear-gradient(145deg,#F5E6D3,#FDF6EC)",
+                    borderRadius: 10, height: 100, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden",
+                    cursor: "pointer", border: 0, boxShadow: activeImg === i ? "inset 0 0 0 2px #2C1810" : "none", padding: 6,
+                  }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt="" style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }}/>
+                  </button>
+                ))
+                : [0,1,2,3].map(i => (
+                  <button key={i} onClick={() => setActiveImg(i)} style={{
+                    background: activeImg === i ? "#fff" : "linear-gradient(145deg,#F5E6D3,#FDF6EC)",
+                    borderRadius: 10, height: 100, display: "flex", alignItems: "center", justifyContent: "center",
+                    cursor: "pointer", border: 0, boxShadow: activeImg === i ? "inset 0 0 0 2px #2C1810" : "none",
+                  }}>
+                    <Bottle flavor={product.flavor} size={58}/>
+                  </button>
+                ))
+              )}
             </div>
           </div>
 

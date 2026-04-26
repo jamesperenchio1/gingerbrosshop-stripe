@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Bottle, Icon, ICONS } from "./shared";
+import { BottleImage, Icon, ICONS } from "./shared";
 import { PRODUCTS } from "@/lib/products";
 
 export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -31,8 +31,8 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
           </div>
           {matches.map(p => (
             <Link key={p.id} href={`/shop/${p.id}`} onClick={onClose} style={{ width: "100%", display: "flex", gap: 14, alignItems: "center", padding: 12, borderRadius: 12, fontFamily: "var(--gb-font-sans)" }}>
-              <div style={{ width: 44, height: 54, background: "linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Bottle flavor={p.flavor} size={40}/>
+              <div style={{ width: 44, height: 54, background: "linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", padding: 3 }}>
+                <BottleImage flavor={p.flavor} size={48} src={p.heroImage}/>
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 15, fontWeight: 600, color: "#2C1810" }}>{p.title}</div>

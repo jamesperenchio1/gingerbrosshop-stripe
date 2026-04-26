@@ -1,5 +1,5 @@
 "use client";
-import { Bottle, Icon, ICONS, Stars, Wave } from "./shared";
+import { Bottle, BottleImage, Icon, ICONS, Stars, Wave } from "./shared";
 
 const HEADLINES = {
   craft: { eyebrow: "Thai Craft · Since 2024", line1: "Real ginger,", line2: "properly brewed.", sub: "Small-batch Thai ginger beer, ale, and shots. Pressed, fermented, and bottled by hand in Bangkok — nothing from a flavor lab." },
@@ -92,10 +92,10 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
                 <Bottle flavor="ale" size={380}/>
               </div>
               <div style={{ position: "absolute", zIndex: 3, bottom: 40 }}>
-                <Bottle flavor="beer" size={460}/>
+                <BottleImage flavor="beer" size={460} src="/products/ginger-beer-bg.png"/>
               </div>
               <div style={{ transform: "translateX(90px) translateY(-30px) rotate(6deg)", zIndex: 1 }}>
-                <Bottle flavor="shot" size={380}/>
+                <BottleImage flavor="shot" size={380} src="/products/ginger-shot-bg.png"/>
               </div>
             </div>
 
