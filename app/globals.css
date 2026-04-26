@@ -1,49 +1,89 @@
+/* Gingerbros design tokens — ported from gb.css */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gb-primary:     #C8893C;
+  --gb-primary-90:  #B57A2F;
+  --gb-background:  #FDF6EC;
+  --gb-dark:        #2C1810;
+  --gb-accent:      #4A7C3F;
+  --gb-light:       #F5E6D3;
+  --gb-white:       #FFFFFF;
+
+  --gb-font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --gb-font-sans:    var(--font-nunito), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --gb-radius-large: 16px;
+  --gb-radius-circle: 9999px;
+  --gb-shadow-primary-glow: 0 8px 24px -4px rgba(200, 137, 60, 0.25);
+
+  --gb-ease: cubic-bezier(0.5, 0, 0.5, 1);
+  --gb-dur-slow: 300ms;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+* { box-sizing: border-box; }
 
-html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
+html, body {
   margin: 0;
+  padding: 0;
+  background: var(--gb-background);
+  font-family: var(--gb-font-sans);
+  color: var(--gb-dark);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
 }
 
-a {
-  color: inherit;
+button { font-family: inherit; }
+input, textarea, select { font-family: inherit; }
+::selection { background: var(--gb-primary); color: #fff; }
+html { scroll-behavior: smooth; }
+a { color: inherit; text-decoration: none; }
+
+/* Buttons */
+.gb-btn {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: var(--gb-radius-circle);
+  font-family: var(--gb-font-sans);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all var(--gb-dur-slow) var(--gb-ease);
   text-decoration: none;
+  border: 0;
+  line-height: 1;
 }
+.gb-btn--primary { background: var(--gb-primary); color: var(--gb-white); }
+.gb-btn--primary:hover {
+  background: var(--gb-primary-90);
+  box-shadow: var(--gb-shadow-primary-glow);
+  transform: translateY(-2px);
+}
+.gb-btn--outline {
+  background: transparent;
+  color: var(--gb-primary);
+  border: 2px solid var(--gb-primary);
+  padding: 12px 26px;
+}
+.gb-btn--outline:hover { background: var(--gb-primary); color: var(--gb-white); }
+.gb-btn--ghost { background: transparent; color: var(--gb-dark); }
+.gb-btn--ghost:hover { color: var(--gb-primary); }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+@keyframes gbMarquee { to { transform: translateX(-50%); } }
+@keyframes gbPulse { 0%,100% { opacity: 1 } 50% { opacity: 0.4 } }
+
+/* Modest mobile fallbacks for the grid-heavy hero/sections */
+@media (max-width: 1024px) {
+  .gb-grid-2 { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .gb-grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .gb-hero-grid { grid-template-columns: 1fr !important; padding: 56px 24px !important; }
+  .gb-hide-mobile { display: none !important; }
+  .gb-pad-40 { padding-left: 24px !important; padding-right: 24px !important; }
+}
+@media (max-width: 600px) {
+  .gb-grid-4 { grid-template-columns: 1fr !important; }
+  .gb-h1 { font-size: 48px !important; line-height: 1.05 !important; }
+  .gb-h2 { font-size: 36px !important; }
 }

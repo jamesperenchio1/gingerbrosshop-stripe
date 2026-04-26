@@ -1,0 +1,148 @@
+"use client";
+import { Bottle, Icon, ICONS, Stars, Wave } from "./shared";
+
+const HEADLINES = {
+  craft: { eyebrow: "Thai Craft · Since 2024", line1: "Real ginger,", line2: "properly brewed.", sub: "Small-batch Thai ginger beer, ale, and shots. Pressed, fermented, and bottled by hand in Bangkok — nothing from a flavor lab." },
+  maker: { eyebrow: "Handmade in Bangkok", line1: "Ginger with", line2: "a kick you can feel.", sub: "Fresh ginger, real fermentation, no syrupy shortcuts. The kind of drink that makes the supermarket version taste like tap water with sugar." },
+  love:  { eyebrow: "Thai Craft Beverages", line1: "Brewed with", line2: "Ginger & Love.", sub: "Handcrafted ginger beverages from the heart of Thailand. Bold flavors, natural ingredients, zero compromise." },
+};
+
+export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }) {
+  const h = HEADLINES[variant] || HEADLINES.craft;
+  return (
+    <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
+      <div style={{
+        position: "relative", minHeight: 660,
+        background: "linear-gradient(160deg, #FDF6EC 0%, #F5E6D3 60%, #FDF6EC 100%)",
+      }}>
+        <div style={{ position:"absolute", top:40, left:-80, width:420, height:420, background:"rgba(200,137,60,0.14)", borderRadius:"50%", filter:"blur(80px)" }}/>
+        <div style={{ position:"absolute", bottom:-80, right:-60, width:460, height:460, background:"rgba(74,124,63,0.10)", borderRadius:"50%", filter:"blur(80px)" }}/>
+
+        <div className="gb-hero-grid" style={{
+          maxWidth: 1440, margin: "0 auto", padding: "72px 40px 120px",
+          display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 60, alignItems: "center",
+          position: "relative", zIndex: 2,
+        }}>
+          <div style={{ position: "relative" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "6px 14px 6px 6px", background: "rgba(255,255,255,0.7)", border: "1px solid rgba(44,24,16,0.08)", borderRadius: 9999, marginBottom: 22, backdropFilter: "blur(8px)" }}>
+              <span style={{ background: "#4A7C3F", color: "#fff", fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", padding: "4px 10px", borderRadius: 9999 }}>NEW</span>
+              <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 13, color: "rgba(44,24,16,0.75)" }}>
+                Unpasteurized Ginger Beer — now shipping
+              </span>
+              <Icon d={ICONS.chevRight} size={13} stroke={2}/>
+            </div>
+
+            <p style={{
+              color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700,
+              letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12,
+              margin: "0 0 20px",
+            }}>{h.eyebrow}</p>
+
+            <h1 className="gb-h1" style={{
+              fontFamily: "var(--gb-font-display)", fontSize: 78, fontWeight: 700,
+              color: "#2C1810", lineHeight: 1.02, margin: "0 0 24px", letterSpacing: "-0.02em",
+            }}>
+              {h.line1}<br/>
+              <span style={{
+                background: "linear-gradient(90deg, #C8893C 0%, #8B3A1A 100%)",
+                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+                fontStyle: "italic",
+              }}>{h.line2}</span>
+            </h1>
+
+            <p style={{
+              fontFamily: "var(--gb-font-sans)", fontSize: 18,
+              color: "rgba(44,24,16,0.72)", maxWidth: 520, margin: "0 0 36px", lineHeight: 1.6,
+            }}>{h.sub}</p>
+
+            <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+              <a href="#shop" className="gb-btn gb-btn--primary" style={{ fontSize: 15, padding: "16px 30px" }}>
+                Shop the range <Icon d={ICONS.arrow} size={16}/>
+              </a>
+              <a href="#taste-guide" className="gb-btn gb-btn--ghost" style={{ fontSize: 14 }}>
+                Taste guide <Icon d={ICONS.chevRight} size={14}/>
+              </a>
+            </div>
+
+            <div style={{ display: "flex", gap: 28, marginTop: 44, flexWrap: "wrap" }}>
+              <div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <Stars value={5} size={14}/>
+                  <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 13, fontWeight: 700, color: "#2C1810" }}>4.9</span>
+                </div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>From verified buyers</div>
+              </div>
+              <div style={{ width: 1, background: "rgba(44,24,16,0.12)" }}/>
+              <div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>48h</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>bottle-to-doorstep</div>
+              </div>
+              <div style={{ width: 1, background: "rgba(44,24,16,0.12)" }}/>
+              <div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>14-day</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>natural ferment</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="gb-hide-mobile" style={{ position: "relative", height: 560 }}>
+            <div style={{ position: "absolute", inset: 0, display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
+              <div style={{ position: "absolute", bottom: 40, width: 380, height: 30, background: "radial-gradient(ellipse, rgba(44,24,16,0.25) 0%, transparent 70%)", filter: "blur(6px)" }}/>
+              <div style={{ transform: "translateX(-90px) translateY(-30px) rotate(-6deg)", zIndex: 1 }}>
+                <Bottle flavor="ale" size={380}/>
+              </div>
+              <div style={{ position: "absolute", zIndex: 3, bottom: 40 }}>
+                <Bottle flavor="beer" size={460}/>
+              </div>
+              <div style={{ transform: "translateX(90px) translateY(-30px) rotate(6deg)", zIndex: 1 }}>
+                <Bottle flavor="shot" size={380}/>
+              </div>
+            </div>
+
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, width: 260, zIndex: 5,
+              background: "#fff", borderRadius: 16, padding: "16px 18px",
+              boxShadow: "0 12px 28px rgba(44,24,16,0.12)",
+              fontFamily: "var(--gb-font-sans)",
+            }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#C8893C", fontWeight: 700, textTransform: "uppercase", marginBottom: 8 }}>Customer · Anchalee R.</div>
+              <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 15, fontWeight: 500, color: "#2C1810", lineHeight: 1.45 }}>
+                &ldquo;Supermarket ginger beer will never taste the same.&rdquo;
+              </div>
+            </div>
+
+            <div style={{
+              position: "absolute", top: 10, right: 10, width: 110, height: 110,
+              borderRadius: "50%", background: "#2C1810", color: "#FDF6EC",
+              display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column",
+              fontFamily: "var(--gb-font-sans)", textAlign: "center",
+              boxShadow: "0 8px 20px rgba(44,24,16,0.25)",
+            }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#C8893C", fontWeight: 700 }}>SINCE</div>
+              <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 28, fontWeight: 700, lineHeight: 1 }}>2024</div>
+              <div style={{ fontSize: 9, letterSpacing: "0.18em", opacity: 0.7, marginTop: 4 }}>BANGKOK</div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          position: "absolute", left: 0, right: 0, bottom: 40, overflow: "hidden",
+          padding: "10px 0", borderTop: "1px solid rgba(44,24,16,0.08)", borderBottom: "1px solid rgba(44,24,16,0.08)",
+        }}>
+          <div style={{ display: "inline-flex", whiteSpace: "nowrap", animation: "gbMarquee 40s linear infinite" }}>
+            {Array.from({ length: 4 }).map((_, k) => (
+              <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: 28, fontFamily: "var(--gb-font-display)", fontStyle: "italic", fontSize: 18, color: "rgba(44,24,16,0.55)", marginRight: 28 }}>
+                Fresh Thai ginger <span style={{ color: "#C8893C" }}>✦</span>
+                14-day natural ferment <span style={{ color: "#C8893C" }}>✦</span>
+                No flavoring agents <span style={{ color: "#C8893C" }}>✦</span>
+                Glass, not plastic <span style={{ color: "#C8893C" }}>✦</span>
+                Brewed in Bangkok <span style={{ color: "#C8893C" }}>✦</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+      <Wave fill="#FFFFFF" height={70}/>
+    </div>
+  );
+}

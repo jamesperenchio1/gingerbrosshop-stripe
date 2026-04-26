@@ -1,0 +1,46 @@
+import { kv } from "@vercel/kv";
+import type { FlavorId } from "./products";
+
+// Default starting stock counts. Sourced from the mockup's "Low stock" / "28 bottles left" hints.
+const SEED: Record<FlavorId, number> = {
+  beer: 480,
+  shot: 600,
+  ale: 360,
+  unpast: 28, // matches PDP copy "28 bottles left"
+};
+
+const LOW_STOCK_THRESHOLD = 36;
+
+const key = (id: FlavorId) => `gb:stock:${id}`;
+const HAS_KV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+
+export async function getStock(id: FlavorId): Promise<number> {
+  if (!HAS_KV) return SEED[id];
+  const v = await kv.get<number>(key(id));
+  if (v == null) {
+    await kv.set(key(id), SEED[id]);
+    return SEED[id];
+  }
+  return v;
+}
+
+export async function getAllStock(): Promise<Record<FlavorId, number>> {
+  const ids: FlavorId[] = ["beer", "shot", "ale", "unpast"];
+  const entries = await Promise.all(ids.map(async id => [id, await getStock(id)] as const));
+  return Object.fromEntries(entries) as Record<FlavorId, number>;
+}
+
+export async function decrementStock(id: FlavorId, by: number): Promise<number> {
+  if (!HAS_KV) return Math.max(0, SEED[id] - by);
+  const next = await kv.decrby(key(id), by);
+  return next;
+}
+
+export async function setStock(id: FlavorId, value: number): Promise<void> {
+  if (!HAS_KV) return;
+  await kv.set(key(id), value);
+}
+
+export function isLowStock(count: number): boolean {
+  return count <= LOW_STOCK_THRESHOLD;
+}
