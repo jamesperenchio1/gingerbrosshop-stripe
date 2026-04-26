@@ -137,7 +137,7 @@ export function ShopSection({ products, stock }: { products: Product[]; stock?: 
               Pick your pour.
             </h2>
             <p style={{ fontFamily: "var(--gb-font-sans)", color: "rgba(44,24,16,0.65)", fontSize: 16, marginTop: 10, maxWidth: 480 }}>
-              Four brews, one obsessive recipe process. Shot, ale, beer, and our new unpasteurized beer for the adventurers.
+              Three brews, one obsessive recipe. The flagship beer, a crisp easy-drinking ale, and a concentrated morning shot.
             </p>
           </div>
 

@@ -117,7 +117,7 @@ export function Footer() {
             <Socials/>
           </div>
           {[
-            { h: "Shop", items: ["All brews", "Ginger Beer", "Ginger Ale", "Ginger Shot", "Unpasteurized", "Build a 6-pack", "Subscriptions"] },
+            { h: "Shop", items: ["All brews", "Ginger Beer", "Ginger Ale", "Ginger Shot", "Build a 6-pack", "Subscriptions"] },
             { h: "Learn", items: ["Our story", "Where we source", "Brewing process", "Recipes", "Press"] },
             { h: "Help", items: ["Shipping info", "Track my order", "Returns", "FAQ", "Contact us"] },
             { h: "More", items: ["Gifting", "Refer a friend", "Press kit"] },
