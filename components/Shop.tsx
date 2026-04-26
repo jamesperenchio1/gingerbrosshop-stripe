@@ -84,11 +84,19 @@ function ProductCard({ product, variant = "Single", showSavings = false, stock }
       </div>
 
       <div style={{ padding: "20px 22px 22px" }}>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>
-          <Stars value={product.rating || 5} size={12}/>
-          <span style={{ fontSize: 11, fontFamily: "var(--gb-font-sans)", color: "rgba(44,24,16,0.55)" }}>
-            {product.reviews}
-          </span>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8, minHeight: 18 }}>
+          {product.reviews > 0 ? (
+            <>
+              <Stars value={product.rating} size={12}/>
+              <span style={{ fontSize: 11, fontFamily: "var(--gb-font-sans)", color: "rgba(44,24,16,0.55)" }}>
+                {product.reviews}
+              </span>
+            </>
+          ) : (
+            <span style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700, color: "rgba(44,24,16,0.45)" }}>
+              New · be the first to review
+            </span>
+          )}
           {lowStock && (
             <span style={{ marginLeft: "auto", fontSize: 10, fontWeight: 700, color: "#8B3A1A", letterSpacing: "0.08em", textTransform: "uppercase" }}>
               Low stock
@@ -226,8 +234,8 @@ const GUIDES: Record<string, GuideCard> = {
   shot: {
     badge: "⚡ Morning fuel",
     badgeColor: "#C8893C",
-    tagline: "Raw ginger + cayenne. No sugar.",
-    bestFor: ["Pre-workout", "Cold? Drink this", "3pm slump"],
+    tagline: "Ginger + coconut water + taurine. No sugar.",
+    bestFor: ["Pre-workout", "Hydration", "3pm slump"],
     stats: [
       { label: "Heat", value: 5 },
       { label: "Fizz", value: 0 },

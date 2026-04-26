@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Bottle, BottleImage, Icon, ICONS, Stars } from "./shared";
+import { Bottle, BottleImage, Icon, ICONS } from "./shared";
+import { PdpRatingHeader, ReviewsBlock } from "./Reviews";
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/products";
 
@@ -48,83 +49,81 @@ export function ProductDetail({ product, stock }: { product: Product; stock?: nu
       <div className="gb-pad-40" style={{ maxWidth: 1440, margin: "0 auto", padding: "24px 40px 80px" }}>
         <div className="gb-grid-2" style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 64 }}>
           <div style={{ position: "sticky", top: 120, alignSelf: "start" }}>
-            <div style={{
-              background: "linear-gradient(155deg, #F5E6D3 0%, #FDF6EC 100%)", borderRadius: 20,
-              height: 600, display: "flex", alignItems: "center", justifyContent: "center",
-              position: "relative", overflow: "hidden",
-            }}>
-              <div style={{ position: "absolute", width: 480, height: 480, background: "rgba(200,137,60,0.14)", borderRadius: "50%", filter: "blur(80px)" }}/>
-              {(() => {
-                const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : [];
-                const src = gallery[activeImg];
-                if (src) {
-                  return (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img src={src} alt={product.title} style={{ maxHeight: 540, maxWidth: "90%", objectFit: "contain", display: "block" }}/>
-                  );
-                }
-                if (activeImg === 1) {
-                  return (
-                    <div style={{ display: "flex", gap: 12 }}>
-                      <Bottle flavor={product.flavor} size={320}/>
-                      <Bottle flavor={product.flavor} size={320}/>
+            {(() => {
+              const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : [];
+              const total = gallery.length;
+              const safeIdx = total === 0 ? 0 : ((activeImg % total) + total) % total;
+              const src = gallery[safeIdx];
+              const goPrev = () => total > 0 && setActiveImg((safeIdx - 1 + total) % total);
+              const goNext = () => total > 0 && setActiveImg((safeIdx + 1) % total);
+
+              const arrowBtn: React.CSSProperties = {
+                position: "absolute", top: "50%", transform: "translateY(-50%)",
+                width: 44, height: 44, borderRadius: "50%",
+                background: "rgba(253,246,236,0.95)", border: "1px solid rgba(44,24,16,0.08)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer", color: "#2C1810",
+                boxShadow: "0 4px 14px rgba(44,24,16,0.12)", zIndex: 5,
+              };
+
+              return (
+                <>
+                  <div style={{
+                    background: "linear-gradient(155deg, #F5E6D3 0%, #FDF6EC 100%)", borderRadius: 20,
+                    height: 600, display: "flex", alignItems: "center", justifyContent: "center",
+                    position: "relative", overflow: "hidden",
+                  }}>
+                    <div style={{ position: "absolute", width: 480, height: 480, background: "rgba(200,137,60,0.14)", borderRadius: "50%", filter: "blur(80px)" }}/>
+
+                    {src ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img key={src} src={src} alt={`${product.title} — image ${safeIdx + 1}`} style={{ maxHeight: 540, maxWidth: "85%", objectFit: "contain", display: "block", animation: "gbFade 200ms ease-out" }}/>
+                    ) : (
+                      <Bottle flavor={product.flavor} size={460}/>
+                    )}
+
+                    <div style={{ position: "absolute", top: 20, left: 20, display: "flex", flexDirection: "column", gap: 8, zIndex: 4 }}>
+                      <span style={{ background: "#2C1810", color: "#FDF6EC", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 9999 }}>{product.tag}</span>
+                      <span style={{ background: "#fff", color: "#4A7C3F", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 9999 }}>No added flavor</span>
                     </div>
-                  );
-                }
-                return <Bottle flavor={product.flavor} size={460}/>;
-              })()}
 
-              <div style={{ position: "absolute", top: 20, left: 20, display: "flex", flexDirection: "column", gap: 8 }}>
-                <span style={{ background: "#2C1810", color: "#FDF6EC", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 9999 }}>{product.tag}</span>
-                <span style={{ background: "#fff", color: "#4A7C3F", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 9999 }}>No added flavor</span>
-              </div>
+                    {total > 1 && (
+                      <>
+                        <button type="button" onClick={goPrev} aria-label="Previous photo" style={{ ...arrowBtn, left: 14 }}>
+                          <Icon d={ICONS.arrowLeft} size={18} stroke={2}/>
+                        </button>
+                        <button type="button" onClick={goNext} aria-label="Next photo" style={{ ...arrowBtn, right: 14 }}>
+                          <Icon d={ICONS.arrow} size={18} stroke={2}/>
+                        </button>
+                        <div style={{ position: "absolute", bottom: 16, right: 18, fontFamily: "var(--gb-font-sans)", fontSize: 11, fontWeight: 700, color: "rgba(44,24,16,0.55)", background: "rgba(253,246,236,0.85)", padding: "4px 10px", borderRadius: 9999, zIndex: 4 }}>
+                          {safeIdx + 1} / {total}
+                        </div>
+                      </>
+                    )}
+                  </div>
 
-              <div style={{ position: "absolute", bottom: 20, left: 20, right: 20, background: "rgba(253,246,236,0.92)", backdropFilter: "blur(10px)", padding: "14px 18px", borderRadius: 12 }}>
-                <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#C8893C", fontWeight: 700, textTransform: "uppercase", marginBottom: 6 }}>★★★★★ Customer Favorite</div>
-                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 15, fontStyle: "italic", color: "#2C1810", lineHeight: 1.45 }}>
-                  &ldquo;The ginger beer I&apos;ve been chasing for years.&rdquo;
-                  <span style={{ fontFamily: "var(--gb-font-sans)", fontStyle: "normal", fontSize: 11, color: "rgba(44,24,16,0.6)", marginLeft: 8 }}>— Anchalee R.</span>
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(product.gallery?.length ?? 4, 6)},1fr)`, gap: 10, marginTop: 12 }}>
-              {(product.gallery && product.gallery.length > 0
-                ? product.gallery.slice(0, 6).map((src, i) => (
-                  <button key={i} onClick={() => setActiveImg(i)} style={{
-                    background: activeImg === i ? "#fff" : "linear-gradient(145deg,#F5E6D3,#FDF6EC)",
-                    borderRadius: 10, height: 100, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden",
-                    cursor: "pointer", border: 0, boxShadow: activeImg === i ? "inset 0 0 0 2px #2C1810" : "none", padding: 6,
-                  }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt="" style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }}/>
-                  </button>
-                ))
-                : [0,1,2,3].map(i => (
-                  <button key={i} onClick={() => setActiveImg(i)} style={{
-                    background: activeImg === i ? "#fff" : "linear-gradient(145deg,#F5E6D3,#FDF6EC)",
-                    borderRadius: 10, height: 100, display: "flex", alignItems: "center", justifyContent: "center",
-                    cursor: "pointer", border: 0, boxShadow: activeImg === i ? "inset 0 0 0 2px #2C1810" : "none",
-                  }}>
-                    <Bottle flavor={product.flavor} size={58}/>
-                  </button>
-                ))
-              )}
-            </div>
+                  {total > 0 && (
+                    <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(total, 7)},1fr)`, gap: 10, marginTop: 12 }}>
+                      {gallery.slice(0, 7).map((thumb, i) => (
+                        <button key={i} onClick={() => setActiveImg(i)} aria-label={`View image ${i + 1}`} style={{
+                          background: safeIdx === i ? "#fff" : "linear-gradient(145deg,#F5E6D3,#FDF6EC)",
+                          borderRadius: 10, height: 80, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden",
+                          cursor: "pointer", border: 0, boxShadow: safeIdx === i ? "inset 0 0 0 2px #2C1810" : "none", padding: 6,
+                          transition: "transform 200ms",
+                        }}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={thumb} alt="" style={{ maxHeight: "100%", maxWidth: "100%", objectFit: "contain" }}/>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </div>
 
           <div style={{ paddingTop: 8 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-              <Stars value={5} size={16}/>
-              <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 13, fontWeight: 700, color: "#2C1810" }}>4.9</span>
-              <a href="#reviews" style={{ fontSize: 13, color: "rgba(44,24,16,0.6)", fontFamily: "var(--gb-font-sans)", textDecoration: "underline" }}>
-                {product.reviews} reviews
-              </a>
-              <span style={{ marginLeft: "auto", fontSize: 11, color: "#8B3A1A", fontWeight: 600, fontFamily: "var(--gb-font-sans)", display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#8B3A1A", animation: "gbPulse 1.6s infinite" }}/>
-                42 bought this week
-              </span>
-            </div>
+            <PdpRatingHeader productId={product.id}/>
             <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", fontSize: 11, margin: "0 0 8px" }}>
               {product.flavor === "shot" ? "Concentrated Kick · 60ml" : product.flavor === "beer" ? "Naturally Fermented · 330ml" : "Crisp & Carbonated · 330ml"}
             </p>
@@ -199,7 +198,7 @@ export function ProductDetail({ product, stock }: { product: Product; stock?: nu
               {[
                 { icon: ICONS.truck, title: "Ships in 48h", body: "Free over ฿500 · Bangkok next-day" },
                 { icon: ICONS.shield, title: "Bottle guarantee", body: "Broken on arrival? Free replacement." },
-                { icon: ICONS.box, title: lowStock ? "Low stock" : "In stock", body: stock !== undefined ? `${stock} bottles left · restocked weekly` : "Plenty in the fridge · restocked weekly" },
+                { icon: ICONS.box, title: lowStock ? "Low stock" : "In stock", body: lowStock ? "Almost out — order soon" : "Restocked weekly · ships within 48h" },
                 { icon: ICONS.leaf, title: "Real ingredients", body: "No flavoring, no preservatives" },
               ].map(b => (
                 <div key={b.title} style={{ padding: "10px 12px", background: "#fff", borderRadius: 10, border: "1px solid rgba(44,24,16,0.06)", display: "flex", gap: 10, alignItems: "flex-start", fontFamily: "var(--gb-font-sans)" }}>
@@ -236,42 +235,7 @@ export function ProductDetail({ product, stock }: { product: Product; stock?: nu
           </div>
         </div>
 
-        {/* Reviews */}
-        <div id="reviews" style={{ marginTop: 80 }}>
-          <div className="gb-grid-2" style={{ display: "grid", gridTemplateColumns: "340px 1fr", gap: 48, padding: "48px 40px", background: "#fff", borderRadius: 20 }}>
-            <div>
-              <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 56, fontWeight: 700, color: "#2C1810", lineHeight: 1 }}>4.9</div>
-              <Stars value={5} size={18}/>
-              <div style={{ fontSize: 13, color: "rgba(44,24,16,0.6)", fontFamily: "var(--gb-font-sans)", marginTop: 8 }}>Based on {product.reviews} reviews</div>
-              <div style={{ marginTop: 20 }}>
-                {[{s:5,p:86},{s:4,p:10},{s:3,p:3},{s:2,p:1},{s:1,p:0}].map(r => (
-                  <div key={r.s} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, fontFamily: "var(--gb-font-sans)", fontSize: 12 }}>
-                    <span style={{ width: 12, color: "rgba(44,24,16,0.7)" }}>{r.s}</span>
-                    <div style={{ flex: 1, height: 6, background: "#F5E6D3", borderRadius: 3, overflow: "hidden" }}>
-                      <div style={{ width: `${r.p}%`, height: "100%", background: "#C8893C" }}/>
-                    </div>
-                    <span style={{ width: 30, textAlign: "right", color: "rgba(44,24,16,0.55)" }}>{r.p}%</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="gb-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-              {[
-                { name: "Sarawut T.", role: "Verified buyer", quote: "Proper spicy. The ale is my kid's favorite — no added sugar that makes her bounce off walls." },
-                { name: "Em L.", role: "Verified buyer · Bangkok", quote: "I was cutting soda. This replaced it entirely. The shot gets me through afternoon meetings." },
-                { name: "Jan R.", role: "Subscriber for 6 months", quote: "The unpasteurized beer has a depth you can't fake. Tastes like a proper brewery, not a syrup." },
-                { name: "Mook P.", role: "Verified buyer", quote: "Packaging is beautiful and nothing arrived broken. 6-pack discount makes it a no-brainer." },
-              ].map(r => (
-                <div key={r.name} style={{ padding: 18, background: "#FDF6EC", borderRadius: 14, fontFamily: "var(--gb-font-sans)" }}>
-                  <Stars value={5} size={13}/>
-                  <p style={{ fontFamily: "var(--gb-font-display)", fontSize: 15, color: "#2C1810", lineHeight: 1.55, margin: "10px 0 12px", fontStyle: "italic" }}>&ldquo;{r.quote}&rdquo;</p>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "#2C1810" }}>{r.name}</div>
-                  <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 2 }}>{r.role}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <ReviewsBlock productId={product.id}/>
       </div>
     </div>
   );

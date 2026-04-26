@@ -1,5 +1,5 @@
 "use client";
-import { Bottle, BottleImage, Icon, ICONS, Stars, Wave } from "./shared";
+import { Bottle, BottleImage, Icon, ICONS, Wave } from "./shared";
 
 const HEADLINES = {
   craft: { eyebrow: "Thai Craft · Since 2024", line1: "Real ginger,", line2: "properly brewed.", sub: "Small-batch Thai ginger beer, ale, and shots. Pressed, fermented, and bottled by hand in Bangkok — nothing from a flavor lab." },
@@ -71,11 +71,8 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
 
             <div style={{ display: "flex", gap: 28, marginTop: 44, flexWrap: "wrap" }}>
               <div>
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                  <Stars value={5} size={14}/>
-                  <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 13, fontWeight: 700, color: "#2C1810" }}>4.9</span>
-                </div>
-                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>From verified buyers</div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>14-day</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>natural ferment</div>
               </div>
               <div style={{ width: 1, background: "rgba(44,24,16,0.12)" }}/>
               <div>
@@ -84,8 +81,8 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
               </div>
               <div style={{ width: 1, background: "rgba(44,24,16,0.12)" }}/>
               <div>
-                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>14-day</div>
-                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>natural ferment</div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>0g</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>added sugar</div>
               </div>
             </div>
           </div>
@@ -110,9 +107,9 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
               boxShadow: "0 12px 28px rgba(44,24,16,0.12)",
               fontFamily: "var(--gb-font-sans)",
             }}>
-              <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#C8893C", fontWeight: 700, textTransform: "uppercase", marginBottom: 8 }}>Customer · Anchalee R.</div>
+              <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#C8893C", fontWeight: 700, textTransform: "uppercase", marginBottom: 8 }}>Brewed in Bangkok</div>
               <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 15, fontWeight: 500, color: "#2C1810", lineHeight: 1.45 }}>
-                &ldquo;Supermarket ginger beer will never taste the same.&rdquo;
+                Real ginger, 14-day ferment, glass bottles. Nothing from a flavor lab.
               </div>
             </div>
 

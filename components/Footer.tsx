@@ -74,16 +74,24 @@ export function StoryStrip() {
   );
 }
 
+const SOCIALS = [
+  { label: "Instagram", icon: ICONS.ig,     href: "https://www.instagram.com/gingerbrosbrew" },
+  { label: "TikTok",    icon: ICONS.tiktok, href: "https://www.tiktok.com/@gingerbrosbrew" },
+  { label: "Facebook",  icon: ICONS.fb,     href: "https://www.facebook.com/people/Ginger-Bros-Brewery/61573086524067/" },
+  { label: "LINE",      icon: ICONS.line,   href: "https://line.me/R/ti/p/@852nqred?ts=07142313&oat_content=url" },
+];
+
 function Socials() {
-  const items = [ICONS.ig, ICONS.tiktok, ICONS.fb, ICONS.line];
-  const labels = ["Instagram", "TikTok", "Facebook", "LINE"];
   return (
-    <div style={{ display: "flex", gap: 14 }}>
-      {items.map((d, i) => (
-        <a key={labels[i]} href="#" aria-label={labels[i]} style={{ color: "rgba(255,255,255,0.7)", width: 36, height: 36, borderRadius: "50%", border: "1px solid currentColor", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-          <Icon d={d} size={16}/>
+    <div style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
+      {SOCIALS.map(s => (
+        <a key={s.label} href={s.href} aria-label={s.label} target="_blank" rel="noreferrer noopener" style={{ color: "rgba(255,255,255,0.7)", width: 36, height: 36, borderRadius: "50%", border: "1px solid currentColor", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+          <Icon d={s.icon} size={16}/>
         </a>
       ))}
+      <a href="https://shopee.co.th/gingerbros" target="_blank" rel="noreferrer noopener" style={{ color: "rgba(255,255,255,0.7)", padding: "8px 14px", borderRadius: 9999, border: "1px solid currentColor", fontSize: 12, fontFamily: "var(--gb-font-sans)", fontWeight: 600, letterSpacing: "0.06em", textDecoration: "none" }}>
+        Shop on Shopee →
+      </a>
     </div>
   );
 }
@@ -127,7 +135,6 @@ export function Footer() {
             ] },
             { h: "Learn", items: [
               { label: "Our story",        href: "/story" },
-              { label: "Where we source", href: "/sourcing" },
               { label: "Brewing process", href: "/process" },
               { label: "Recipes",          href: "/recipes" },
               { label: "Press",            href: "/press" },
@@ -137,20 +144,34 @@ export function Footer() {
               { label: "Track my order",  href: "/tracking" },
               { label: "Returns",          href: "/returns" },
               { label: "FAQ",              href: "/faq" },
-              { label: "Contact us",      href: "mailto:gingerbros.brew@gmail.com" },
+              { label: "Contact us",      href: "/contact" },
             ] },
-            { h: "More", items: [
-              { label: "Gifting",          href: "/gifting" },
+            { h: "Connect", items: [
+              { label: "Instagram",       href: "https://www.instagram.com/gingerbrosbrew" },
+              { label: "TikTok",          href: "https://www.tiktok.com/@gingerbrosbrew" },
+              { label: "LINE",            href: "https://line.me/R/ti/p/@852nqred?ts=07142313&oat_content=url" },
+              { label: "Shopee",          href: "https://shopee.co.th/gingerbros" },
               { label: "Refer a friend",  href: "/referrals" },
-              { label: "Press kit",        href: "/press-kit" },
             ] },
           ].map(col => (
             <div key={col.h}>
               <div style={{ fontFamily: "var(--gb-font-sans)", fontWeight: 700, color: "#C8893C", fontSize: 12, letterSpacing: "0.24em", textTransform: "uppercase", marginBottom: 18 }}>{col.h}</div>
               <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 10 }}>
-                {col.items.map(i => (
-                  <li key={i.label}><a href={i.href} style={{ color: "rgba(255,255,255,0.65)", fontFamily: "var(--gb-font-sans)", fontSize: 13, textDecoration: "none" }}>{i.label}</a></li>
-                ))}
+                {col.items.map(i => {
+                  const isExternal = i.href.startsWith("http");
+                  return (
+                    <li key={i.label}>
+                      <a
+                        href={i.href}
+                        target={isExternal ? "_blank" : undefined}
+                        rel={isExternal ? "noreferrer noopener" : undefined}
+                        style={{ color: "rgba(255,255,255,0.65)", fontFamily: "var(--gb-font-sans)", fontSize: 13, textDecoration: "none" }}
+                      >
+                        {i.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
@@ -160,7 +181,7 @@ export function Footer() {
           <div style={{ display: "flex", gap: 20 }}>
             <a href="/returns" style={{ color: "inherit", textDecoration: "none" }}>Returns</a>
             <a href="/faq" style={{ color: "inherit", textDecoration: "none" }}>FAQ</a>
-            <a href="mailto:gingerbros.brew@gmail.com" style={{ color: "inherit", textDecoration: "none" }}>Contact</a>
+            <a href="/contact" style={{ color: "inherit", textDecoration: "none" }}>Contact</a>
           </div>
           <span>Brewed in Bangkok 🇹🇭</span>
         </div>
