@@ -188,105 +188,136 @@ export function ShopSection({ products, stock }: { products: Product[]; stock?: 
   );
 }
 
-type GuideCopy = {
-  who: string;
-  when: string;
-  how: string;
-  expect: string;
+type Stat = { label: string; value: number };
+type GuideCard = {
+  badge: string;
+  badgeColor: string;
+  tagline: string;       // one short sentence — top of the card
+  bestFor: string[];     // 2–3 chips
+  stats: Stat[];         // bars 0–5
+  size: string;          // "330ml", etc.
 };
 
-const GUIDES: Record<string, GuideCopy> = {
+const GUIDES: Record<string, GuideCard> = {
   beer: {
-    who: "First-time buyers, dark spirit drinkers, anyone tired of supermarket ginger beer.",
-    when: "Friday night with rum or whisky. Cocktail mixer for moscow mules. Pairs with rich, fatty street food.",
-    how: "Serve cold over ice. Pop the cap slowly — it's properly carbonated. Try it neat first, then build a Mule.",
-    expect: "Bold ginger heat, real bubbles, a mouthfeel that holds up to spirits. Not sweet — properly fermented.",
+    badge: "🥃 Cocktails",
+    badgeColor: "#8B3A1A",
+    tagline: "The flagship. Bold heat, real bubbles.",
+    bestFor: ["Moscow Mule", "With dinner", "Friday night"],
+    stats: [
+      { label: "Heat", value: 4 },
+      { label: "Fizz", value: 5 },
+      { label: "Sweet", value: 2 },
+    ],
+    size: "330ml",
   },
   ale: {
-    who: "Mild-spice drinkers, kids, and anyone who wants ginger flavor without the burn.",
-    when: "Weekday dinner. Hot afternoons. Anywhere you'd reach for a soft drink but want something better.",
-    how: "Serve cold. Great with lime and ice. Splash into dark rum for an easy highball.",
-    expect: "Crisp, gently carbonated, citrus-forward. The lightest of the range — think 'bright', not 'fiery'.",
+    badge: "☀️ Easy sipping",
+    badgeColor: "#4A7C3F",
+    tagline: "Crisp, light, citrus-forward.",
+    bestFor: ["With lime", "Hot days", "Kids"],
+    stats: [
+      { label: "Heat", value: 2 },
+      { label: "Fizz", value: 4 },
+      { label: "Sweet", value: 3 },
+    ],
+    size: "330ml",
   },
   shot: {
-    who: "Morning routine people, post-gym, anyone fighting a cold or the 3pm slump.",
-    when: "First thing in the morning, before coffee. Or 30 minutes before a workout. Or when you feel a sniffle.",
-    how: "60ml — drink it like a wellness shot. Cold from the fridge. Chase with water if the cayenne hits hard.",
-    expect: "Concentrated raw ginger heat with cayenne and lemon. No sugar, no filler. It's a kick — that's the point.",
+    badge: "⚡ Morning fuel",
+    badgeColor: "#C8893C",
+    tagline: "Raw ginger + cayenne. No sugar.",
+    bestFor: ["Pre-workout", "Cold? Drink this", "3pm slump"],
+    stats: [
+      { label: "Heat", value: 5 },
+      { label: "Fizz", value: 0 },
+      { label: "Sweet", value: 0 },
+    ],
+    size: "60ml",
   },
 };
+
+function StatBar({ label, value }: Stat) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "44px 1fr 14px", alignItems: "center", gap: 8 }}>
+      <span style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700, color: "rgba(44,24,16,0.55)" }}>{label}</span>
+      <div style={{ display: "flex", gap: 3 }}>
+        {[1,2,3,4,5].map(i => (
+          <span key={i} style={{ flex: 1, height: 6, borderRadius: 2, background: i <= value ? "linear-gradient(90deg, #C8893C, #8B3A1A)" : "rgba(44,24,16,0.08)" }}/>
+        ))}
+      </div>
+      <span style={{ fontSize: 11, fontWeight: 700, color: "rgba(44,24,16,0.6)", textAlign: "right" }}>{value}</span>
+    </div>
+  );
+}
 
 export function TasteGuide({ products }: { products: Product[] }) {
   return (
     <section id="taste-guide" style={{ padding: "96px 0", background: "#fff", scrollMarginTop: 80 }}>
       <div className="gb-pad-40" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>Taste Guide</p>
-          <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 52, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", letterSpacing: "-0.02em" }}>
-            Not sure where to <span style={{ fontStyle: "italic", color: "#C8893C" }}>start?</span>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>Taste guide</p>
+          <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 52, fontWeight: 700, color: "#2C1810", margin: 0, letterSpacing: "-0.02em" }}>
+            Pick your <span style={{ fontStyle: "italic", color: "#C8893C" }}>moment.</span>
           </h2>
-          <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 16, color: "rgba(44,24,16,0.65)", maxWidth: 620, margin: "0 auto", lineHeight: 1.55 }}>
-            Three brews, three jobs. Pick the one that matches the moment — who it&apos;s for, when to drink it, how to serve it, and what to expect when you pop the cap.
-          </p>
         </div>
 
         <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
           {products.map(p => {
             const g = GUIDES[p.id];
-            const subtitle = p.id === "beer" ? "Cocktails & dinner" : p.id === "ale" ? "Easy sipping" : "Morning fuel";
             return (
-              <Link key={p.id} href={`/shop/${p.id}`} style={{ background: "#FDF6EC", border: "1px solid rgba(44,24,16,0.06)", borderRadius: 18, padding: 24, textAlign: "left", fontFamily: "var(--gb-font-sans)", display: "block", transition: "transform 200ms, box-shadow 200ms" }}
+              <Link
+                key={p.id}
+                href={`/shop/${p.id}`}
+                style={{ background: "#FDF6EC", border: "1px solid rgba(44,24,16,0.06)", borderRadius: 18, padding: 22, fontFamily: "var(--gb-font-sans)", display: "flex", flexDirection: "column", gap: 14, transition: "transform 200ms, box-shadow 200ms" }}
                 onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 32px rgba(44,24,16,0.08)"; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
               >
-                <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-                  <BottleImage flavor={p.flavor} size={140} src={p.heroImage}/>
-                </div>
-                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810", marginBottom: 2 }}>{p.title}</div>
-                <div style={{ fontSize: 12, letterSpacing: "0.14em", textTransform: "uppercase", color: "#C8893C", fontWeight: 700, marginBottom: 14 }}>
-                  {subtitle}
-                </div>
-
-                {/* Heat */}
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-                  <span style={{ fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(44,24,16,0.5)" }}>Heat</span>
-                  <div style={{ display: "flex", gap: 3 }}>
-                    {[1,2,3,4,5].map(i => <span key={i} style={{ width: 16, height: 5, borderRadius: 2, background: i <= p.heat ? "linear-gradient(90deg, #C8893C, #8B3A1A)" : "rgba(44,24,16,0.08)" }}/>)}
-                  </div>
-                  <span style={{ fontSize: 11, color: "rgba(44,24,16,0.6)", marginLeft: 4 }}>{["","Mellow","Bright","Warm","Fiery","Scorcher"][p.heat]}</span>
+                {/* Top: badge + size */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ background: g.badgeColor, color: "#fff", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", padding: "5px 11px", borderRadius: 9999 }}>
+                    {g.badge}
+                  </span>
+                  <span style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", fontWeight: 600 }}>{g.size}</span>
                 </div>
 
-                {/* Detail rows */}
-                <div style={{ display: "grid", gap: 12, fontSize: 13, lineHeight: 1.55, color: "rgba(44,24,16,0.78)" }}>
-                  <div>
-                    <div style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A7C3F", marginBottom: 3 }}>Who it&apos;s for</div>
-                    {g.who}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A7C3F", marginBottom: 3 }}>When to drink it</div>
-                    {g.when}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A7C3F", marginBottom: 3 }}>How to serve</div>
-                    {g.how}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#4A7C3F", marginBottom: 3 }}>What to expect</div>
-                    {g.expect}
-                  </div>
+                {/* Bottle */}
+                <div style={{ display: "flex", justifyContent: "center", padding: "8px 0" }}>
+                  <BottleImage flavor={p.flavor} size={150} src={p.heroImage}/>
                 </div>
 
-                <div style={{ marginTop: 18, paddingTop: 16, borderTop: "1px solid rgba(44,24,16,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13 }}>
-                  <span style={{ fontWeight: 700, color: "#C8893C" }}>From ฿{p.single}</span>
-                  <span style={{ color: "#2C1810", fontWeight: 600 }}>Shop {p.title.split(" ")[1]} →</span>
+                {/* Title + tagline */}
+                <div>
+                  <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810", marginBottom: 4 }}>{p.title}</div>
+                  <div style={{ fontSize: 13, color: "rgba(44,24,16,0.7)", lineHeight: 1.4 }}>{g.tagline}</div>
+                </div>
+
+                {/* Stat bars */}
+                <div style={{ display: "grid", gap: 7, padding: "12px 14px", background: "#fff", borderRadius: 12 }}>
+                  {g.stats.map(s => <StatBar key={s.label} label={s.label} value={s.value}/>)}
+                </div>
+
+                {/* Best-for chips */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {g.bestFor.map(b => (
+                    <span key={b} style={{ background: "#fff", border: "1px solid rgba(44,24,16,0.08)", borderRadius: 9999, padding: "4px 10px", fontSize: 11, fontWeight: 600, color: "rgba(44,24,16,0.75)" }}>{b}</span>
+                  ))}
+                </div>
+
+                {/* Footer: price + arrow */}
+                <div style={{ marginTop: "auto", paddingTop: 12, borderTop: "1px solid rgba(44,24,16,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontFamily: "var(--gb-font-display)", fontWeight: 700, color: "#C8893C", fontSize: 18 }}>฿{p.single}</span>
+                  <span style={{ color: "#2C1810", fontWeight: 700, fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    Shop <Icon d={ICONS.arrow} size={14} stroke={2}/>
+                  </span>
                 </div>
               </Link>
             );
           })}
         </div>
 
-        <p style={{ textAlign: "center", marginTop: 36, fontSize: 13, color: "rgba(44,24,16,0.6)", fontFamily: "var(--gb-font-sans)" }}>
-          Still can&apos;t decide? <Link href="#bundle" style={{ color: "#C8893C", fontWeight: 700, textDecoration: "underline" }}>Build a 6-pack</Link> with any mix of the three.
+        <p style={{ textAlign: "center", marginTop: 32, fontSize: 13, color: "rgba(44,24,16,0.6)", fontFamily: "var(--gb-font-sans)" }}>
+          Want all three? <Link href="#bundle" style={{ color: "#C8893C", fontWeight: 700, textDecoration: "underline" }}>Build a 6-pack</Link> →
         </p>
       </div>
     </section>

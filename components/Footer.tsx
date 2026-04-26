@@ -117,16 +117,39 @@ export function Footer() {
             <Socials/>
           </div>
           {[
-            { h: "Shop", items: ["All brews", "Ginger Beer", "Ginger Ale", "Ginger Shot", "Build a 6-pack", "Subscriptions"] },
-            { h: "Learn", items: ["Our story", "Where we source", "Brewing process", "Recipes", "Press"] },
-            { h: "Help", items: ["Shipping info", "Track my order", "Returns", "FAQ", "Contact us"] },
-            { h: "More", items: ["Gifting", "Refer a friend", "Press kit"] },
+            { h: "Shop", items: [
+              { label: "All brews",        href: "/#shop" },
+              { label: "Ginger Beer",      href: "/shop/beer" },
+              { label: "Ginger Ale",       href: "/shop/ale" },
+              { label: "Ginger Shot",      href: "/shop/shot" },
+              { label: "Build a 6-pack",   href: "/#bundle" },
+              { label: "Subscriptions",    href: "/shop/beer" },
+            ] },
+            { h: "Learn", items: [
+              { label: "Our story",        href: "/story" },
+              { label: "Where we source", href: "/sourcing" },
+              { label: "Brewing process", href: "/process" },
+              { label: "Recipes",          href: "/recipes" },
+              { label: "Press",            href: "/press" },
+            ] },
+            { h: "Help", items: [
+              { label: "Shipping info",   href: "/shipping" },
+              { label: "Track my order",  href: "/tracking" },
+              { label: "Returns",          href: "/returns" },
+              { label: "FAQ",              href: "/faq" },
+              { label: "Contact us",      href: "mailto:gingerbros.brew@gmail.com" },
+            ] },
+            { h: "More", items: [
+              { label: "Gifting",          href: "/gifting" },
+              { label: "Refer a friend",  href: "/referrals" },
+              { label: "Press kit",        href: "/press-kit" },
+            ] },
           ].map(col => (
             <div key={col.h}>
               <div style={{ fontFamily: "var(--gb-font-sans)", fontWeight: 700, color: "#C8893C", fontSize: 12, letterSpacing: "0.24em", textTransform: "uppercase", marginBottom: 18 }}>{col.h}</div>
               <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 10 }}>
                 {col.items.map(i => (
-                  <li key={i}><a href="#" style={{ color: "rgba(255,255,255,0.65)", fontFamily: "var(--gb-font-sans)", fontSize: 13, textDecoration: "none" }}>{i}</a></li>
+                  <li key={i.label}><a href={i.href} style={{ color: "rgba(255,255,255,0.65)", fontFamily: "var(--gb-font-sans)", fontSize: 13, textDecoration: "none" }}>{i.label}</a></li>
                 ))}
               </ul>
             </div>
@@ -135,9 +158,9 @@ export function Footer() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "24px 0", borderTop: "1px solid rgba(255,255,255,0.1)", fontFamily: "var(--gb-font-sans)", fontSize: 12, color: "rgba(255,255,255,0.4)", flexWrap: "wrap", gap: 10 }}>
           <span>© 2026 Gingerbros · All rights reserved</span>
           <div style={{ display: "flex", gap: 20 }}>
-            <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Privacy</a>
-            <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Terms</a>
-            <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Cookies</a>
+            <a href="/returns" style={{ color: "inherit", textDecoration: "none" }}>Returns</a>
+            <a href="/faq" style={{ color: "inherit", textDecoration: "none" }}>FAQ</a>
+            <a href="mailto:gingerbros.brew@gmail.com" style={{ color: "inherit", textDecoration: "none" }}>Contact</a>
           </div>
           <span>Brewed in Bangkok 🇹🇭</span>
         </div>
