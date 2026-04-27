@@ -25,7 +25,9 @@ const Item = z.object({
 const Body = z.object({
   items: z.array(Item).min(1),
   customer: z.object({
-    email: z.string().email(),
+    // Optional for embedded flow; Stripe collects email on the form.
+    // Required for COD because we need to email the buyer ourselves.
+    email: z.string().email().or(z.literal("")).optional(),
     first: z.string().optional(),
     last: z.string().optional(),
     phone: z.string().optional(),
@@ -65,6 +67,9 @@ export async function POST(req: Request) {
 
   // ---- COD path: skip Stripe Checkout, just record + email ----
   if (body.method === "cod") {
+    if (!body.customer.email) {
+      return NextResponse.json({ error: "Email is required for COD orders" }, { status: 400 });
+    }
     const total = subtotal + shippingCost;
     const trackUrl = `${siteUrl()}/tracking/${orderId}`;
     if (HAS_KV) {
