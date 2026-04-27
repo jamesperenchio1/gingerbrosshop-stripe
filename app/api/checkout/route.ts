@@ -4,43 +4,65 @@ import { stripe, siteUrl } from "@/lib/stripe";
 import { kv } from "@vercel/kv";
 import { z } from "zod";
 import { sendOrderEmails } from "@/lib/resend";
-import { formatBundlePicks } from "@/lib/products";
+import { formatBundlePicks, getProduct } from "@/lib/products";
 import type { FlavorId } from "@/lib/products";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
+import { sign } from "@/lib/sign";
+import { cookies } from "next/headers";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const PHONE_RE = /^[0-9+\-\s()]{8,20}$/;
+const TH_POSTAL_RE = /^\d{5}$/;
+const MAX_TOTAL_QTY = 60;
+
 const Item = z.object({
   id: z.string(),
   flavor: z.enum(["beer", "shot", "ale", "unpast"]),
-  title: z.string(),
-  variant: z.string(),
+  title: z.string().max(120),
+  variant: z.string().max(40),
   priceId: z.string().optional(),
-  bundlePicks: z.array(z.string()).optional(),
+  bundlePicks: z.array(z.enum(["beer", "shot", "ale"])).optional(),
   price: z.number(),
   qty: z.number().int().min(1).max(50),
   sub: z.boolean().optional(),
 });
 
 const Body = z.object({
-  items: z.array(Item).min(1),
+  items: z.array(Item).min(1).max(20),
   customer: z.object({
-    // Optional for embedded flow; Stripe collects email on the form.
-    // Required for COD because we need to email the buyer ourselves.
     email: z.string().email().or(z.literal("")).optional(),
-    first: z.string().optional(),
-    last: z.string().optional(),
-    phone: z.string().optional(),
+    first: z.string().max(60).optional(),
+    last: z.string().max(60).optional(),
+    phone: z.string().regex(PHONE_RE, "Invalid phone").optional().or(z.literal("")),
   }),
   shipping: z.object({
-    addr1: z.string().optional(),
-    city: z.string().optional(),
-    zip: z.string().optional(),
+    addr1: z.string().max(200).optional(),
+    city: z.string().max(80).optional(),
+    zip: z.string().regex(TH_POSTAL_RE, "Invalid postal code").optional().or(z.literal("")),
     method: z.enum(["std", "next"]).default("std"),
   }),
   method: z.enum(["stripe", "cod"]).default("stripe"),
   embedded: z.boolean().optional(),
+}).superRefine((data, ctx) => {
+  const totalQty = data.items.reduce((a, i) => a + i.qty, 0);
+  if (totalQty > MAX_TOTAL_QTY) {
+    ctx.addIssue({ code: "custom", message: `Cart exceeds ${MAX_TOTAL_QTY} items total`, path: ["items"] });
+  }
+  if (data.method === "cod") {
+    if (!data.customer.email) ctx.addIssue({ code: "custom", message: "Email required for COD", path: ["customer", "email"] });
+    if (!data.customer.phone) ctx.addIssue({ code: "custom", message: "Phone required for COD", path: ["customer", "phone"] });
+    if (!data.shipping.addr1) ctx.addIssue({ code: "custom", message: "Address required for COD", path: ["shipping", "addr1"] });
+    if (!data.shipping.zip) ctx.addIssue({ code: "custom", message: "Postal code required for COD", path: ["shipping", "zip"] });
+  }
 });
+
+/** Recompute bundle unit price server-side from the picks. Trust nothing the client sent. */
+function bundleUnitPrice(picks: FlavorId[]): number {
+  const sum = picks.reduce((a, f) => a + getProduct(f).single, 0);
+  return Math.round(sum * 0.9);
+}
 
 function newOrderId(): string {
   const stamp = new Date().toISOString().slice(0,10).replace(/-/g,"");
@@ -49,16 +71,37 @@ function newOrderId(): string {
 }
 
 export async function POST(req: Request) {
+  const rl = await rateLimit({ bucket: "checkout", ip: clientIp(req), limit: 10, windowSec: 60 });
+  if (!rl.ok) {
+    return NextResponse.json({ error: "Too many requests, slow down" }, { status: 429, headers: { "Retry-After": String(rl.retryAfter) } });
+  }
+
   let body: z.infer<typeof Body>;
   try {
     body = Body.parse(await req.json());
   } catch (e) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    const msg = e instanceof z.ZodError ? e.issues[0]?.message ?? "Invalid request" : "Invalid request";
+    return NextResponse.json({ error: msg }, { status: 400 });
+  }
+
+  // Server-side price computation. We trust priceId for catalog lookups and recompute bundle price from picks.
+  let items: typeof body.items;
+  try {
+    items = body.items.map(i => {
+      if (i.id === "bundle") {
+        const picks = (i.bundlePicks ?? []) as FlavorId[];
+        if (picks.length !== 6) throw new Error("Bundle must contain exactly 6 picks");
+        return { ...i, price: bundleUnitPrice(picks) };
+      }
+      return i;
+    });
+  } catch (e) {
+    return NextResponse.json({ error: e instanceof Error ? e.message : "Invalid bundle" }, { status: 400 });
   }
 
   const orderId = newOrderId();
-  const isSubscription = body.items.some(i => i.sub);
-  const subtotal = body.items.reduce((a, i) => a + i.price * i.qty, 0);
+  const isSubscription = items.some(i => i.sub);
+  const subtotal = items.reduce((a, i) => a + i.price * i.qty, 0);
   const shippingCost = body.method === "cod"
     ? (subtotal >= 500 ? 0 : 60)
     : (body.shipping.method === "next" ? 120 : (subtotal >= 500 ? 0 : 60));
@@ -78,7 +121,7 @@ export async function POST(req: Request) {
         status: "received",
         email: body.customer.email,
         method: "cod",
-        items: body.items.map(i => ({ priceId: i.priceId, flavor: i.flavor, title: i.title, variant: i.variant, qty: i.qty })),
+        items: items.map(i => ({ priceId: i.priceId, flavor: i.flavor, title: i.title, variant: i.variant, qty: i.qty })),
       });
     }
     try {
@@ -86,7 +129,7 @@ export async function POST(req: Request) {
         orderId,
         email: body.customer.email,
         total, shipping: shippingCost, subtotal,
-        items: body.items.map(i => ({ title: i.title, variant: i.variant, qty: i.qty, price: i.price })),
+        items: items.map(i => ({ title: i.title, variant: i.variant, qty: i.qty, price: i.price })),
         trackUrl,
         isCOD: true,
       });
@@ -99,7 +142,7 @@ export async function POST(req: Request) {
   // ---- Stripe Checkout path ----
   type CreateParams = NonNullable<Parameters<typeof stripe.checkout.sessions.create>[0]>;
   type LineItem = NonNullable<CreateParams["line_items"]>[number];
-  const lineItems: LineItem[] = body.items.map(i => {
+  const lineItems: LineItem[] = items.map(i => {
     if (i.id === "bundle") {
       const breakdown = formatBundlePicks(i.bundlePicks as FlavorId[] | undefined);
       return {
@@ -182,8 +225,22 @@ export async function POST(req: Request) {
       email: body.customer.email,
       sessionId: session.id,
       method: "stripe",
-      items: body.items.map(i => ({ priceId: i.priceId, flavor: i.flavor, title: i.title, variant: i.variant, qty: i.qty })),
+      items: items.map(i => ({ priceId: i.priceId, flavor: i.flavor, title: i.title, variant: i.variant, qty: i.qty })),
     });
+  }
+
+  // Signed cookie scopes /success access to the buyer in this browser. Short-lived.
+  try {
+    const c = await cookies();
+    c.set("gb_order", sign(orderId), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60,
+      path: "/",
+    });
+  } catch {
+    // cookies() can throw outside a request scope (RSC stream edge); non-fatal.
   }
 
   if (body.embedded) {

@@ -46,7 +46,7 @@ export function TrackLookup() {
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
         <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", fontSize: 11, margin: "0 0 10px" }}>Track an order</p>
         <h1 style={{ fontFamily: "var(--gb-font-display)", fontSize: 44, fontWeight: 700, color: "#2C1810", margin: "0 0 12px", letterSpacing: "-0.02em" }}>
-          Where&apos;s my <span style={{ fontStyle: "italic", color: "#C8893C" }}>brew?</span>
+          Where&apos;s my <span style={{ fontStyle: "italic", color: "#C8893C" }}>order?</span>
         </h1>
         <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 15, color: "rgba(44,24,16,0.7)", lineHeight: 1.6, margin: "0 0 28px" }}>
           Enter your order number (it starts with <code style={{ background: "rgba(44,24,16,0.08)", padding: "1px 6px", borderRadius: 4 }}>GB-</code>) and the email you used at checkout. We&apos;ll show you exactly where it is in our flow.

@@ -22,12 +22,12 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
       <div style={{ position: "fixed", top: 60, left: "50%", transform: "translateX(-50%)", width: "min(640px, calc(100% - 40px))", background: "#fff", borderRadius: 20, zIndex: 201, boxShadow: "0 24px 60px rgba(44,24,16,0.25)", overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "18px 20px", borderBottom: "1px solid rgba(44,24,16,0.08)" }}>
           <span style={{ color: "rgba(44,24,16,0.5)" }}><Icon d={ICONS.search} size={18}/></span>
-          <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="Search brews, recipes, FAQs..." style={{ flex: 1, border: 0, outline: "none", fontFamily: "var(--gb-font-sans)", fontSize: 16, background: "transparent", color: "#2C1810" }}/>
+          <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="Search drinks, recipes, FAQs..." style={{ flex: 1, border: 0, outline: "none", fontFamily: "var(--gb-font-sans)", fontSize: 16, background: "transparent", color: "#2C1810" }}/>
           <button onClick={onClose} style={{ background: "#FDF6EC", border: 0, borderRadius: 9999, padding: "4px 10px", fontFamily: "var(--gb-font-sans)", fontSize: 11, fontWeight: 600, cursor: "pointer", color: "rgba(44,24,16,0.6)" }}>Esc</button>
         </div>
         <div style={{ padding: "12px 20px 20px", maxHeight: 420, overflowY: "auto" }}>
           <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700, color: "rgba(44,24,16,0.5)", fontFamily: "var(--gb-font-sans)", margin: "12px 0 10px" }}>
-            {q ? `${matches.length} results` : "Popular brews"}
+            {q ? `${matches.length} results` : "Popular drinks"}
           </div>
           {matches.map(p => (
             <Link key={p.id} href={`/shop/${p.id}`} onClick={onClose} style={{ width: "100%", display: "flex", gap: 14, alignItems: "center", padding: 12, borderRadius: 12, fontFamily: "var(--gb-font-sans)" }}>

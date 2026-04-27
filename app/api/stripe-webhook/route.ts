@@ -26,6 +26,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Bad signature" }, { status: 400 });
   }
 
+  // Idempotency: Stripe retries webhooks aggressively. The same event.id can
+  // arrive multiple times — without this guard we'd double-decrement inventory
+  // and double-send emails.
+  if (HAS_KV) {
+    const fresh = await kv.set(`gb:webhook:${event.id}`, "1", { nx: true, ex: 60 * 60 * 24 });
+    if (fresh === null) {
+      return NextResponse.json({ ok: true, dedup: true });
+    }
+  }
+
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     await handleCompleted(session);

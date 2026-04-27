@@ -66,18 +66,18 @@ function customerHtml(d: OrderEmailData): string {
         </div>
         ${codNote}
         <div style="text-align:center; margin: 24px 0 8px;">
-          <a class="btn" href="${d.trackUrl}">Track your brew</a>
+          <a class="btn" href="${d.trackUrl}">Track your order</a>
         </div>
         ${subBlock}
       </div>
-      <div class="footer">Brewed in Bangkok · ginger@gingerbrosshop.com</div>
+      <div class="footer">Made in Bangkok · ginger@gingerbrosshop.com</div>
     </div>
   </body></html>`;
 }
 
 function ownerHtml(d: OrderEmailData): string {
   const itemRows = d.items.map(i => `<div class="row"><span>${escapeHtml(i.title)} · ${escapeHtml(i.variant)} × ${i.qty}</span><span>฿${i.price * i.qty}</span></div>`).join("");
-  const flag = d.isCOD ? `<p style="background:#fee; color:#8B3A1A; padding:10px; border-radius:8px; font-weight:700;">⚠️ DRIVER COLLECTS ฿${d.total}</p>` : "";
+  const flag = d.isCOD ? `<p style="background:#fee; color:#8B3A1A; padding:10px; border-radius:8px; font-weight:700;">DRIVER COLLECTS ฿${d.total}</p>` : "";
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${baseStyles}</style></head><body>
     <div class="wrap">
       <div class="card">

@@ -32,6 +32,14 @@ export async function getAllStock(): Promise<Record<FlavorId, number>> {
 export async function decrementStock(id: FlavorId, by: number): Promise<number> {
   if (!HAS_KV) return Math.max(0, SEED[id] - by);
   const next = await kv.decrby(key(id), by);
+  if (next < 0) {
+    // Floor at 0 so the visible stock never reads negative. We log so an
+    // operator can chase the over-sell, but we still return 0 (the order
+    // already completed payment by the time this runs).
+    console.warn(`[inventory] oversell on ${id}: went to ${next}, flooring to 0`);
+    await kv.set(key(id), 0);
+    return 0;
+  }
   return next;
 }
 

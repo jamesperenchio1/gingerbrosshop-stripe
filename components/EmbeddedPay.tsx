@@ -74,7 +74,7 @@ export function EmbeddedPay() {
       <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 40, fontFamily: "var(--gb-font-sans)" }}>
         <div style={{ textAlign: "center" }}>
           <h2 style={{ fontFamily: "var(--gb-font-display)", fontSize: 32, color: "#2C1810" }}>Your cart is empty</h2>
-          <p style={{ color: "rgba(44,24,16,0.6)" }}>Add a brew to get started.</p>
+          <p style={{ color: "rgba(44,24,16,0.6)" }}>Add a drink to get started.</p>
           <Link href="/" className="gb-btn gb-btn--primary" style={{ marginTop: 16 }}>Shop the range</Link>
         </div>
       </div>

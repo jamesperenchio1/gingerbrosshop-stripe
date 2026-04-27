@@ -27,8 +27,10 @@ export function CheckoutClient() {
   const isSubscription = items.some(i => i.sub);
   const codDisabled = isSubscription;
 
+  const PHONE_RE = /^[0-9+\-\s()]{8,20}$/;
+  const ZIP_RE = /^\d{5}$/;
   const stripeReady = email.includes("@") && items.length > 0;
-  const codReady = stripeReady && first && last && phone && addr1 && zip.trim().length >= 4 && !codDisabled;
+  const codReady = stripeReady && first && last && PHONE_RE.test(phone) && addr1 && ZIP_RE.test(zip.trim()) && !codDisabled;
 
   const labelStyle: React.CSSProperties = { fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(44,24,16,0.6)", fontFamily: "var(--gb-font-sans)", marginBottom: 6, display: "block" };
   const inputStyle: React.CSSProperties = { width: "100%", padding: "14px 16px", border: "1px solid rgba(44,24,16,0.15)", borderRadius: 10, fontFamily: "var(--gb-font-sans)", fontSize: 14, background: "#fff", outline: "none", color: "#2C1810" };
@@ -36,7 +38,7 @@ export function CheckoutClient() {
   const submit = async () => {
     setErr(null);
     if (method === "stripe" && !stripeReady) { setErr("Enter your email to continue."); return; }
-    if (method === "cod" && !codReady) { setErr("Fill in name, phone, address, city, and postcode."); return; }
+    if (method === "cod" && !codReady) { setErr("Fill in name, phone (8–20 digits), address, city, and a 5-digit postcode."); return; }
     setBusy(true);
     try {
       const res = await fetch("/api/checkout", {
@@ -71,7 +73,7 @@ export function CheckoutClient() {
       <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 40 }}>
         <div style={{ textAlign: "center" }}>
           <h2 style={{ fontFamily: "var(--gb-font-display)", fontSize: 32, color: "#2C1810" }}>Your cart is empty</h2>
-          <p style={{ fontFamily: "var(--gb-font-sans)", color: "rgba(44,24,16,0.6)" }}>Add a brew to get started.</p>
+          <p style={{ fontFamily: "var(--gb-font-sans)", color: "rgba(44,24,16,0.6)" }}>Add a drink to get started.</p>
           <button onClick={() => router.push("/")} className="gb-btn gb-btn--primary" style={{ marginTop: 16 }}>Shop the range</button>
         </div>
       </div>
