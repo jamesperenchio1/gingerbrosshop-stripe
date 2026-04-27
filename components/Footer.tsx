@@ -41,15 +41,15 @@ export function StoryStrip() {
           <div>
             <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 14px" }}>Our Craft</p>
             <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 52, fontWeight: 700, color: "#2C1810", margin: "0 0 20px", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
-              Small batch. <span style={{ fontStyle: "italic", color: "#C8893C" }}>One stubborn recipe.</span>
+              Started for a clean morning, <span style={{ fontStyle: "italic", color: "#C8893C" }}>not a brand.</span>
             </h2>
             <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.7)", lineHeight: 1.65, margin: "0 0 32px" }}>
-              Gingerbros is a tiny Bangkok kitchen making three ginger drinks the way we wanted to drink them — real ginger, fully fermented, sweetened back with erythritol so the bottle has zero residual sugar. Glass, not plastic. Slow batches.
+              I cut sugar from my mornings and wanted a sharp, clean ginger drink to start the day with. Nothing on the shelf in Bangkok actually fit — every ginger beer was loaded with sugar, every shot was overpriced concentrate. So I started making my own, a few liters at a time. Three drinks now, all 0g residual sugar.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
               {[
                 { n: "0g", u: "residual sugar" },
-                { n: "Small", u: "every batch" },
+                { n: "Tiny", u: "every batch" },
                 { n: "Glass", u: "every bottle" },
               ].map(s => (
                 <div key={s.u} style={{ borderTop: "1px solid rgba(44,24,16,0.12)", paddingTop: 14 }}>

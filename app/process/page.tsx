@@ -12,37 +12,37 @@ const STEPS: Step[] = [
   {
     day: "Step 1",
     title: "Start the ginger bug",
-    body: "We grate fresh ginger, mix it with sugar and water, and let wild yeast take over. After a few days the starter is bubbling — that's the live culture we'll use to ferment the batch.",
+    body: "Fresh ginger gets grated and stirred with sugar and water. Wild yeast on the ginger takes over. After a few days the jar is actively bubbling — that's the live starter we use to inoculate the batch.",
     icon: ICONS.sparkle,
   },
   {
     day: "Step 2",
     title: "Brew the ginger tea",
-    body: "Strong ginger tea, more sugar, water. The sugar is fuel for the yeast — by the end of fermentation it's gone. We add it knowing it won't end up in the bottle.",
+    body: "A strong ginger tea with more ginger, more sugar, more water. The sugar here is fuel for the fermentation — it doesn't end up in the bottle, but the yeast needs something to eat.",
     icon: ICONS.leaf,
   },
   {
     day: "Step 3",
     title: "Pitch + ferment",
-    body: "We blend the bug into the tea and let it ferment until the sugar is fully consumed. Time varies batch-to-batch — we taste-test, we don't rush it. Live culture, real flavor.",
+    body: "We blend the bug into the tea and let it ferment for 10–14 days, taste-tested every couple of days. Done means the sugar is gone and the ginger character is rounded — not on a calendar. If a batch isn't there yet, it gets more time.",
     icon: ICONS.flame,
   },
   {
     day: "Step 4",
     title: "Pasteurize",
-    body: "Once the ferment is where we want it, we pasteurize to lock the flavor profile in. This stops the yeast so the bottle is shelf-stable.",
+    body: "Once the ferment is right, we pasteurize. This stops the yeast cold so the bottle is shelf-stable, and locks the flavor profile in.",
     icon: ICONS.shield,
   },
   {
     day: "Step 5",
-    title: "Sweeten + finish",
-    body: "Erythritol goes in for sweetness — yeast can't metabolize it, so it stays in the bottle as a clean, zero-calorie sweetener. Then a hit of fresh lime to brighten it.",
+    title: "Sweeten back + finish",
+    body: "Erythritol goes in for sweetness — zero-calorie, and yeast can't metabolize it (which is why we add it after pasteurization, not before). Then fresh lime to brighten it.",
     icon: ICONS.sparkle,
   },
   {
     day: "Step 6",
     title: "Force-carbonate + bottle",
-    body: "We force-carbonate to get crisp, consistent fizz, then bottle. Glass bottles, capped fresh, into the cool room.",
+    body: "We force-carbonate for clean, consistent fizz, then bottle in glass. Capped fresh, into the cool room.",
     icon: ICONS.box,
   },
   {
@@ -54,9 +54,9 @@ const STEPS: Step[] = [
 ];
 
 const DIFFERENCES = [
-  { row: "Ginger flavoring + high-fructose syrup",   vs: "Real ginger, fermented for real flavor" },
+  { row: "Ginger flavoring + high-fructose syrup",   vs: "Real ginger root, fermented for real flavor" },
   { row: "Up to 35g sugar per 330ml bottle",          vs: "0g residual sugar — sweetened with erythritol after fermentation" },
-  { row: "Made in days from concentrate",             vs: "Batch-by-batch wild ferment, taste-tested before bottling" },
+  { row: "Made in days from concentrate, on a timer",vs: "10–14 day wild ferment, taste-tested before bottling" },
   { row: "Plastic bottles",                           vs: "Glass, every time" },
 ];
 
@@ -70,7 +70,7 @@ export default function ProcessPage() {
             Wild fermentation, <span style={{ fontStyle: "italic", color: "#C8893C" }}>small batches.</span>
           </h1>
           <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.72)", margin: "0 0 32px", lineHeight: 1.6 }}>
-            Beer and ale go through a wild ginger-bug fermentation — slow, real, no shortcuts. Here&apos;s what happens between fresh root and the bottle in your hand. The shot is a different process: cold-pressed and bottled, no fermentation. <Link href="/shop/shot" style={{ color: "#C8893C", textDecoration: "underline", fontWeight: 700 }}>See the shot →</Link>
+            Beer and ale go through a wild ginger-bug fermentation. Tiny batches — a few liters at a time — taste-tested every couple of days, bottled when the ferment says it&apos;s ready (usually 10–14 days). The shot is a different animal: cold-pressed only, no fermentation. <Link href="/shop/shot" style={{ color: "#C8893C", textDecoration: "underline", fontWeight: 700 }}>See the shot →</Link>
           </p>
 
           {/* Timeline */}
