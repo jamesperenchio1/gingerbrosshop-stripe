@@ -227,7 +227,8 @@ export function TasteGuide({ products, summaries: _summaries }: { products: Prod
           </Link>
         </div>
 
-        <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "180px repeat(3, 1fr)", gap: 0, background: "#FDF6EC", borderRadius: 18, overflow: "hidden", border: "1px solid rgba(44,24,16,0.06)" }}>
+        {/* Desktop: spec-sheet grid */}
+        <div className="gb-show-desktop" style={{ display: "grid", gridTemplateColumns: "180px repeat(3, 1fr)", gap: 0, background: "#FDF6EC", borderRadius: 18, overflow: "hidden", border: "1px solid rgba(44,24,16,0.06)" }}>
           {/* Header row */}
           <div style={{ padding: "28px 22px 18px", borderRight: "1px solid rgba(44,24,16,0.06)", display: "flex", alignItems: "flex-end" }}/>
           {SPEC_COLS.map(c => {
@@ -272,6 +273,44 @@ export function TasteGuide({ products, summaries: _summaries }: { products: Prod
                 <Link href={`/shop/${p.id}`} className="gb-btn gb-btn--primary" style={{ width: "100%", justifyContent: "center", fontSize: 13, padding: "12px 18px" }}>
                   Shop <Icon d={ICONS.arrow} size={14} stroke={2}/>
                 </Link>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Mobile: vertical stack of cards, one per product */}
+        <div className="gb-show-mobile" style={{ display: "grid", gap: 14 }}>
+          {SPEC_COLS.map(c => {
+            const p = byId[c.id];
+            if (!p) return null;
+            return (
+              <div key={c.id} style={{ background: "#FDF6EC", borderRadius: 16, padding: 22, fontFamily: "var(--gb-font-sans)", border: "1px solid rgba(44,24,16,0.06)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+                  <div style={{ width: 72, height: 100, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <BottleImage flavor={p.flavor} size={100} src={p.heroImage}/>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#C8893C", marginBottom: 4 }}>{c.label}</div>
+                    <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810" }}>{p.title}</div>
+                  </div>
+                </div>
+                <div style={{ display: "grid", gap: 6, marginBottom: 16, padding: "12px 14px", background: "#fff", borderRadius: 10 }}>
+                  {SPEC_ROWS.map(row => (
+                    <div key={row.label} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, padding: "4px 0" }}>
+                      <span style={{ fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(44,24,16,0.5)" }}>{row.label}</span>
+                      <span style={{ fontWeight: 600, color: "#2C1810" }}>{row.render(c)}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#C8893C" }}>฿{p.single}</div>
+                    <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)" }}>or ฿{p.sixpack} / 6-pack</div>
+                  </div>
+                  <Link href={`/shop/${p.id}`} className="gb-btn gb-btn--primary" style={{ fontSize: 13, padding: "10px 18px" }}>
+                    Shop <Icon d={ICONS.arrow} size={14} stroke={2}/>
+                  </Link>
+                </div>
               </div>
             );
           })}
