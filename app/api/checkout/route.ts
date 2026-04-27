@@ -37,6 +37,7 @@ const Body = z.object({
     method: z.enum(["std", "next"]).default("std"),
   }),
   method: z.enum(["stripe", "cod"]).default("stripe"),
+  embedded: z.boolean().optional(),
 });
 
 function newOrderId(): string {
@@ -115,13 +116,24 @@ export async function POST(req: Request) {
   const sessionParams: CreateParams = {
     mode: isSubscription ? "subscription" : "payment",
     line_items: lineItems,
-    customer_email: body.customer.email,
     allow_promotion_codes: true,
-    success_url: `${siteUrl()}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${siteUrl()}/checkout`,
     metadata: { orderId, source: "gingerbrosshop", isSubscription: isSubscription ? "1" : "0" },
     payment_method_types: isSubscription ? ["card"] : ["card", "promptpay"],
   };
+
+  if (body.embedded) {
+    // Embedded Checkout — Stripe-hosted form rendered inline on our site.
+    // Stripe API accepts "embedded" but the SDK types lag; cast to bypass.
+    (sessionParams as Record<string, unknown>).ui_mode = "embedded";
+    sessionParams.return_url = `${siteUrl()}/success?session_id={CHECKOUT_SESSION_ID}`;
+  } else {
+    // Hosted (redirect) Checkout — fallback path.
+    sessionParams.success_url = `${siteUrl()}/success?session_id={CHECKOUT_SESSION_ID}`;
+    sessionParams.cancel_url = `${siteUrl()}/checkout`;
+  }
+  if (body.customer.email) {
+    sessionParams.customer_email = body.customer.email;
+  }
 
   // Always let Stripe collect the shipping address — it's the source of truth.
   sessionParams.shipping_address_collection = { allowed_countries: ["TH"] };
@@ -170,5 +182,8 @@ export async function POST(req: Request) {
     });
   }
 
+  if (body.embedded) {
+    return NextResponse.json({ orderId, clientSecret: session.client_secret, sessionId: session.id });
+  }
   return NextResponse.json({ orderId, url: session.url });
 }

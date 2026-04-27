@@ -94,9 +94,9 @@ export function CheckoutClient() {
 
       <div className="gb-grid-2 gb-pad-40" style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 40px", display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 40 }}>
         <div>
-          <h1 style={{ fontFamily: "var(--gb-font-display)", fontSize: 36, fontWeight: 700, color: "#2C1810", margin: "0 0 6px", letterSpacing: "-0.02em" }}>Checkout</h1>
+          <h1 style={{ fontFamily: "var(--gb-font-display)", fontSize: 36, fontWeight: 700, color: "#2C1810", margin: "0 0 6px", letterSpacing: "-0.02em" }}>Pay on delivery</h1>
           <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 14, color: "rgba(44,24,16,0.65)", margin: "0 0 28px" }}>
-            Pay on delivery is set up below. Want to pay online instead? <button type="button" onClick={() => setMethod("stripe")} style={{ background: "none", border: 0, padding: 0, color: "#C8893C", fontWeight: 700, textDecoration: "underline", cursor: "pointer", fontFamily: "inherit", fontSize: "inherit" }}>Switch to online checkout →</button>
+            Driver collects cash on arrival. Want to pay online instead? <a href="/checkout/pay" style={{ color: "#C8893C", fontWeight: 700, textDecoration: "underline" }}>Pay with card / PromptPay →</a>
           </p>
 
           {/* Email — needed for both paths */}
@@ -112,31 +112,14 @@ export function CheckoutClient() {
             />
           </div>
 
-          {/* Payment method picker */}
-          <div style={{ background: "#fff", borderRadius: 16, padding: 24, marginBottom: 16 }}>
-            <div style={{ ...labelStyle, marginBottom: 12 }}>Payment method</div>
-            <div style={{ display: "grid", gap: 10 }}>
-              <label style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 18px", border: `2px solid ${method === "stripe" ? "#2C1810" : "rgba(44,24,16,0.1)"}`, borderRadius: 12, cursor: "pointer", fontFamily: "var(--gb-font-sans)", background: method === "stripe" ? "#FDF6EC" : "#fff" }}>
-                <input type="radio" name="pay" checked={method === "stripe"} onChange={() => setMethod("stripe")} style={{ accentColor: "#C8893C" }}/>
-                <span style={{ color: "#C8893C" }}><Icon d={ICONS.shield} size={20} stroke={2}/></span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#2C1810" }}>Pay online · card, PromptPay, Apple Pay, Google Pay</div>
-                  <div style={{ fontSize: 12, color: "rgba(44,24,16,0.6)", marginTop: 2 }}>One click — Stripe&apos;s secure page collects address &amp; payment.</div>
-                </div>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#4A7C3F", letterSpacing: "0.16em", textTransform: "uppercase" }}>Recommended</span>
-              </label>
-              <label style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 18px", border: `2px solid ${method === "cod" ? "#2C1810" : "rgba(44,24,16,0.1)"}`, borderRadius: 12, cursor: codDisabled ? "not-allowed" : "pointer", fontFamily: "var(--gb-font-sans)", background: method === "cod" ? "#FDF6EC" : "#fff", opacity: codDisabled ? 0.5 : 1 }}>
-                <input type="radio" name="pay" checked={method === "cod"} onChange={() => !codDisabled && setMethod("cod")} disabled={codDisabled} style={{ accentColor: "#C8893C" }}/>
-                <span style={{ color: "#C8893C" }}><Icon d={ICONS.truck} size={20} stroke={2}/></span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#2C1810" }}>Pay on delivery</div>
-                  <div style={{ fontSize: 12, color: "rgba(44,24,16,0.6)", marginTop: 2 }}>
-                    {codDisabled ? "Subscriptions need an online payment." : "Hand cash to the driver. Available Thailand-wide via Kerry Express."}
-                  </div>
-                </div>
-              </label>
+          {codDisabled && (
+            <div style={{ background: "#fff", borderRadius: 16, padding: 24, marginBottom: 16, fontFamily: "var(--gb-font-sans)" }}>
+              <div style={{ fontSize: 14, color: "#8B3A1A", fontWeight: 700, marginBottom: 6 }}>Subscriptions need an online payment.</div>
+              <p style={{ fontSize: 13, color: "rgba(44,24,16,0.7)", margin: 0 }}>
+                Pay-on-delivery isn&apos;t available for recurring orders. <a href="/checkout/pay" style={{ color: "#C8893C", textDecoration: "underline", fontWeight: 700 }}>Pay online →</a>
+              </p>
             </div>
-          </div>
+          )}
 
           {/* COD form (only when COD picked) */}
           {method === "cod" && !codDisabled && (
@@ -167,19 +150,19 @@ export function CheckoutClient() {
 
           <button
             onClick={submit}
-            disabled={busy || (method === "stripe" ? !stripeReady : !codReady)}
+            disabled={busy || !codReady}
             className="gb-btn gb-btn--primary"
             style={{
               width: "100%", justifyContent: "center", fontSize: 15, padding: "18px 28px",
-              opacity: busy ? 0.6 : ((method === "stripe" ? stripeReady : codReady) ? 1 : 0.45),
+              opacity: busy ? 0.6 : (codReady ? 1 : 0.45),
               cursor: busy ? "wait" : "pointer",
             }}
           >
-            {busy ? "Working..." : method === "cod" ? `Place COD order · ฿${total}` : `Continue to secure checkout · ฿${total}`}
+            {busy ? "Working..." : `Place COD order · ฿${total}`}
             <Icon d={ICONS.arrow} size={16}/>
           </button>
 
-          {method === "stripe" && (
+          {false && (
             <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 12, color: "rgba(44,24,16,0.55)", margin: "12px 4px 0", lineHeight: 1.5 }}>
               You&apos;ll land on Stripe&apos;s secure page next. Promo code field, shipping address, and payment all live there. Final total may include the chosen shipping option.
             </p>
