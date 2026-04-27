@@ -1,16 +1,45 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { BottleImage, Icon, ICONS, MixBottles } from "./shared";
 import { useCart } from "@/lib/cart";
-import { getProduct, PRODUCTS, type FlavorId } from "@/lib/products";
+import { formatBundlePicks, getProduct, PRODUCTS, type FlavorId } from "@/lib/products";
 
 export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { items, remove, changeQty, subtotal, add } = useCart();
   const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
   const shipping = subtotal === 0 ? 0 : subtotal >= 500 ? 0 : 60;
   const freeShipProgress = Math.min(100, (subtotal / 500) * 100);
 
-  const onCheckout = () => { onClose(); router.push("/checkout"); };
+  const goCOD = () => { onClose(); router.push("/checkout"); };
+
+  const expressCheckout = async () => {
+    setBusy(true); setErr(null);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map(i => ({
+            id: i.id, flavor: i.flavor, title: i.title, variant: i.variant,
+            priceId: i.priceId, bundlePicks: i.bundlePicks, price: i.price, qty: i.qty, sub: !!i.sub,
+          })),
+          customer: { email: "" },
+          shipping: { method: "std" },
+          method: "stripe",
+        }),
+      });
+      const data: { url?: string; error?: string } = await res.json();
+      if (!res.ok) { setErr(data.error || "Checkout failed"); setBusy(false); return; }
+      if (data.url) { window.location.href = data.url; return; }
+      setErr("Unexpected response"); setBusy(false);
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : "Network error");
+      setBusy(false);
+    }
+  };
   const addCrossSell = () => {
     const shot = getProduct("shot");
     add({
@@ -84,7 +113,9 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                   </div>
                   <div>
                     <div style={{ fontFamily:"var(--gb-font-display)", fontWeight:600, fontSize:15, color:"#2C1810" }}>{i.title}</div>
-                    <div style={{ fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", color:"rgba(44,24,16,0.5)", marginTop:3 }}>{i.variant}</div>
+                    <div style={{ fontSize:11, textTransform:"uppercase", letterSpacing:"0.14em", color:"rgba(44,24,16,0.5)", marginTop:3 }}>
+                      {isBundle ? formatBundlePicks(i.bundlePicks) : i.variant}
+                    </div>
                     {i.sub && <div style={{ display: "inline-block", marginTop: 6, padding: "2px 8px", background: "rgba(74,124,63,0.14)", color: "#4A7C3F", fontSize: 10, fontWeight: 700, borderRadius: 9999, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.1em" }}>SUBSCRIPTION · 10% OFF</div>}
                     <div style={{ display:"flex", alignItems:"center", gap:10, marginTop:10 }}>
                       <div style={{ display:"flex", alignItems:"center", border:"1px solid rgba(44,24,16,0.12)", borderRadius:9999, background: "#fff" }}>
@@ -129,12 +160,16 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
               <div style={{ display:"flex", justifyContent:"space-between", fontFamily:"var(--gb-font-display)", fontSize:24, fontWeight:700, color:"#2C1810", marginBottom:16 }}>
                 <span>Total</span><span>฿{subtotal + shipping}</span>
               </div>
-              <button onClick={onCheckout} className="gb-btn gb-btn--primary" style={{ width:"100%", justifyContent:"center", fontSize: 15 }}>
-                Checkout · ฿{subtotal + shipping} <Icon d={ICONS.arrow} size={16}/>
+              {err && <div style={{ padding: "8px 10px", background: "#fee", color: "#8B3A1A", borderRadius: 8, fontSize: 12, marginBottom: 10, fontFamily: "var(--gb-font-sans)" }}>{err}</div>}
+              <button onClick={expressCheckout} disabled={busy} className="gb-btn gb-btn--primary" style={{ width:"100%", justifyContent:"center", fontSize: 15, opacity: busy ? 0.6 : 1 }}>
+                {busy ? "Working..." : <>Pay online · ฿{subtotal + shipping}</>} <Icon d={ICONS.arrow} size={16}/>
+              </button>
+              <button onClick={goCOD} disabled={busy} style={{ width: "100%", padding: "10px 14px", marginTop: 10, background: "transparent", border: "1px solid rgba(44,24,16,0.15)", borderRadius: 9999, fontFamily: "var(--gb-font-sans)", fontSize: 13, fontWeight: 600, color: "#2C1810", cursor: busy ? "not-allowed" : "pointer" }}>
+                Pay on delivery instead
               </button>
               <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 12, fontFamily: "var(--gb-font-sans)", fontSize: 11, color: "rgba(44,24,16,0.5)" }}>
                 <Icon d={ICONS.shield} size={12} stroke={2}/>
-                Secure · Stripe + PromptPay QR
+                Secure · Card / PromptPay / Apple Pay / Google Pay
               </div>
             </div>
           </>

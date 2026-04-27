@@ -120,3 +120,19 @@ export function getProduct(id: FlavorId): Product {
   if (!p) throw new Error(`Unknown product: ${id}`);
   return p;
 }
+
+const SHORT: Record<FlavorId, string> = { beer: "Beer", shot: "Shot", ale: "Ale" };
+
+/** Format ["beer","beer","ale","ale","ale","shot"] -> "2x Beer * 3x Ale * 1x Shot". */
+export function formatBundlePicks(picks: FlavorId[] | undefined, sep = " · "): string {
+  if (!picks || picks.length === 0) return "Custom 6-Pack";
+  const counts = picks.reduce((acc, f) => {
+    acc[f] = (acc[f] ?? 0) + 1;
+    return acc;
+  }, {} as Record<FlavorId, number>);
+  const order: FlavorId[] = ["beer", "ale", "shot"];
+  return order
+    .filter(f => (counts[f] ?? 0) > 0)
+    .map(f => `${counts[f]}× ${SHORT[f]}`)
+    .join(sep);
+}

@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BottleImage, Icon, ICONS, MixBottles } from "./shared";
 import { useCart } from "@/lib/cart";
-import { PRODUCTS, type FlavorId } from "@/lib/products";
+import { formatBundlePicks, PRODUCTS, type FlavorId } from "@/lib/products";
 
 export function CheckoutClient() {
   const { items, subtotal, clear } = useCart();
@@ -12,7 +12,7 @@ export function CheckoutClient() {
   const [err, setErr] = useState<string | null>(null);
 
   const [email, setEmail] = useState("");
-  const [method, setMethod] = useState<"stripe" | "cod">("stripe");
+  const [method, setMethod] = useState<"stripe" | "cod">("cod");
 
   const [first, setFirst] = useState("");
   const [last, setLast] = useState("");
@@ -21,15 +21,14 @@ export function CheckoutClient() {
   const [city, setCity] = useState("Bangkok");
   const [zip, setZip] = useState("");
 
-  const codEligible = /^10\d{3}$/.test(zip.trim());
-  const shippingPreview = method === "cod" ? 20 : (subtotal >= 500 ? 0 : 60);
+  const shippingPreview = method === "cod" ? (subtotal >= 500 ? 0 : 60) : (subtotal >= 500 ? 0 : 60);
   const total = subtotal + shippingPreview;
 
   const isSubscription = items.some(i => i.sub);
   const codDisabled = isSubscription;
 
   const stripeReady = email.includes("@") && items.length > 0;
-  const codReady = stripeReady && first && last && phone && addr1 && codEligible && !codDisabled;
+  const codReady = stripeReady && first && last && phone && addr1 && zip.trim().length >= 4 && !codDisabled;
 
   const labelStyle: React.CSSProperties = { fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(44,24,16,0.6)", fontFamily: "var(--gb-font-sans)", marginBottom: 6, display: "block" };
   const inputStyle: React.CSSProperties = { width: "100%", padding: "14px 16px", border: "1px solid rgba(44,24,16,0.15)", borderRadius: 10, fontFamily: "var(--gb-font-sans)", fontSize: 14, background: "#fff", outline: "none", color: "#2C1810" };
@@ -37,7 +36,7 @@ export function CheckoutClient() {
   const submit = async () => {
     setErr(null);
     if (method === "stripe" && !stripeReady) { setErr("Enter your email to continue."); return; }
-    if (method === "cod" && !codReady) { setErr("Fill in name, phone, address, and a Bangkok postcode (10xxx)."); return; }
+    if (method === "cod" && !codReady) { setErr("Fill in name, phone, address, city, and postcode."); return; }
     setBusy(true);
     try {
       const res = await fetch("/api/checkout", {
@@ -97,7 +96,7 @@ export function CheckoutClient() {
         <div>
           <h1 style={{ fontFamily: "var(--gb-font-display)", fontSize: 36, fontWeight: 700, color: "#2C1810", margin: "0 0 6px", letterSpacing: "-0.02em" }}>Checkout</h1>
           <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 14, color: "rgba(44,24,16,0.65)", margin: "0 0 28px" }}>
-            Fast path: pay online and Stripe collects your shipping address on the next page.
+            Pay on delivery is set up below. Want to pay online instead? <button type="button" onClick={() => setMethod("stripe")} style={{ background: "none", border: 0, padding: 0, color: "#C8893C", fontWeight: 700, textDecoration: "underline", cursor: "pointer", fontFamily: "inherit", fontSize: "inherit" }}>Switch to online checkout →</button>
           </p>
 
           {/* Email — needed for both paths */}
@@ -130,9 +129,9 @@ export function CheckoutClient() {
                 <input type="radio" name="pay" checked={method === "cod"} onChange={() => !codDisabled && setMethod("cod")} disabled={codDisabled} style={{ accentColor: "#C8893C" }}/>
                 <span style={{ color: "#C8893C" }}><Icon d={ICONS.truck} size={20} stroke={2}/></span>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#2C1810" }}>Pay on delivery · Bangkok metro only</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#2C1810" }}>Pay on delivery</div>
                   <div style={{ fontSize: 12, color: "rgba(44,24,16,0.6)", marginTop: 2 }}>
-                    {codDisabled ? "Subscriptions need an online payment." : "Hand cash to the driver. ฿20 fee. Postcode must be 10xxx."}
+                    {codDisabled ? "Subscriptions need an online payment." : "Hand cash to the driver. Available Thailand-wide via Kerry Express."}
                   </div>
                 </div>
               </label>
@@ -142,7 +141,7 @@ export function CheckoutClient() {
           {/* COD form (only when COD picked) */}
           {method === "cod" && !codDisabled && (
             <div style={{ background: "#fff", borderRadius: 16, padding: 24, marginBottom: 16 }}>
-              <div style={{ ...labelStyle, marginBottom: 12 }}>Delivery address (Bangkok)</div>
+              <div style={{ ...labelStyle, marginBottom: 12 }}>Delivery address</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                 <div><label style={labelStyle}>First name</label><input value={first} onChange={e => setFirst(e.target.value)} autoComplete="given-name" style={inputStyle}/></div>
                 <div><label style={labelStyle}>Last name</label><input value={last} onChange={e => setLast(e.target.value)} autoComplete="family-name" style={inputStyle}/></div>
@@ -150,15 +149,17 @@ export function CheckoutClient() {
               <label style={labelStyle}>Phone (driver will call)</label>
               <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+66 81 234 5678" autoComplete="tel" style={{ ...inputStyle, marginBottom: 12 }}/>
               <label style={labelStyle}>Street address</label>
-              <input value={addr1} onChange={e => setAddr1(e.target.value)} placeholder="Floor / unit / soi" autoComplete="street-address" style={{ ...inputStyle, marginBottom: 12 }}/>
+              <input value={addr1} onChange={e => setAddr1(e.target.value)} placeholder="House no. / soi / unit" autoComplete="street-address" style={{ ...inputStyle, marginBottom: 12 }}/>
               <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 12 }}>
-                <div><label style={labelStyle}>City</label><input value={city} onChange={e => setCity(e.target.value)} style={inputStyle}/></div>
+                <div><label style={labelStyle}>City / district</label><input value={city} onChange={e => setCity(e.target.value)} style={inputStyle}/></div>
                 <div>
                   <label style={labelStyle}>Postcode</label>
-                  <input value={zip} onChange={e => setZip(e.target.value)} placeholder="10110" autoComplete="postal-code" style={{ ...inputStyle, borderColor: zip && !codEligible ? "#8B3A1A" : "rgba(44,24,16,0.15)" }}/>
-                  {zip && !codEligible && <div style={{ fontSize: 11, color: "#8B3A1A", marginTop: 4 }}>Bangkok metro postcodes start with 10.</div>}
+                  <input value={zip} onChange={e => setZip(e.target.value)} placeholder="10110" autoComplete="postal-code" style={inputStyle}/>
                 </div>
               </div>
+              <p style={{ marginTop: 12, fontSize: 12, color: "rgba(44,24,16,0.6)", lineHeight: 1.5 }}>
+                COD orders ship via Kerry Express. The driver will call before they arrive. Have the exact amount in cash ready.
+              </p>
             </div>
           )}
 
@@ -201,7 +202,7 @@ export function CheckoutClient() {
                     </div>
                     <div style={{ fontFamily: "var(--gb-font-sans)" }}>
                       <div style={{ fontSize: 13, fontWeight: 600, color: "#2C1810", fontFamily: "var(--gb-font-display)" }}>{i.title}</div>
-                      <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.12em" }}>{i.variant}{i.sub ? " · Subscription" : ""}</div>
+                      <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.12em" }}>{isBundle ? formatBundlePicks(i.bundlePicks) : i.variant}{i.sub ? " · Subscription" : ""}</div>
                     </div>
                     <div style={{ fontFamily: "var(--gb-font-sans)", fontWeight: 700, color: "#C8893C", fontSize: 13 }}>฿{i.price * i.qty}</div>
                   </div>

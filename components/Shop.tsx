@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Bottle, BottleImage, Icon, ICONS, Stars } from "./shared";
 import type { Product, FlavorId } from "@/lib/products";
 import type { ReviewSummary } from "@/lib/reviews";
@@ -36,13 +36,6 @@ function ProductCard({ product, variant = "Single", showSavings = false, stock, 
               fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
               padding: "5px 11px", borderRadius: 6, lineHeight: 1.2, display: "inline-flex", alignItems: "center",
             }}>{product.tag}</span>
-          )}
-          {savings > 0 && (
-            <span style={{
-              background: "#4A7C3F", color: "#fff",
-              fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
-              padding: "5px 10px", borderRadius: 9999,
-            }}>Save ฿{savings}</span>
           )}
         </div>
         <span style={{
@@ -110,9 +103,14 @@ function ProductCard({ product, variant = "Single", showSavings = false, stock, 
         <div style={{ marginTop: 4, fontSize: 12, color: "rgba(44,24,16,0.6)", fontFamily: "var(--gb-font-sans)" }}>
           {product.subtitle}
         </div>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 14 }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 14, flexWrap: "wrap" }}>
           <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 22, fontWeight: 700, color: "#C8893C" }}>฿{price}</span>
           {origPrice && <span style={{ fontSize: 13, color: "rgba(44,24,16,0.4)", textDecoration: "line-through" }}>฿{origPrice}</span>}
+          {savings > 0 && (
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#4A7C3F", letterSpacing: "0.06em" }}>
+              Save ฿{savings}
+            </span>
+          )}
           {perBottle && <span style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginLeft: "auto", fontFamily: "var(--gb-font-sans)" }}>฿{perBottle}/bottle</span>}
         </div>
         <div style={{ marginTop: 14, display: "flex", alignItems: "center", gap: 8 }}>
@@ -160,7 +158,7 @@ export function ShopSection({ products, stock, summaries }: { products: Product[
                   fontFamily: "var(--gb-font-sans)", fontSize: 13, fontWeight: 600,
                   transition: "all 200ms",
                 }}>
-                  {s}{s === "6-Pack" && <span style={{ marginLeft: 6, background: "#4A7C3F", color: "#fff", padding: "2px 7px", borderRadius: 9999, fontSize: 10, fontWeight: 700 }}>SAVE</span>}
+                  {s}{s === "6-Pack" && <span style={{ marginLeft: 6, color: "#4A7C3F", fontSize: 10, fontWeight: 700, letterSpacing: "0.08em" }}>−16%</span>}
                 </button>
               ))}
             </div>
@@ -197,154 +195,87 @@ export function ShopSection({ products, stock, summaries }: { products: Product[
   );
 }
 
-type Stat = { label: string; value: number };
-type GuideCard = {
-  badge: string;
-  badgeColor: string;
-  tagline: string;       // one short sentence — top of the card
-  bestFor: string[];     // 2–3 chips
-  stats: Stat[];         // bars 0–5
-  size: string;          // "330ml", etc.
-};
-
-const GUIDES: Record<string, GuideCard> = {
-  beer: {
-    badge: "🥃 Cocktails",
-    badgeColor: "#8B3A1A",
-    tagline: "The flagship. Bold heat, real bubbles.",
-    bestFor: ["Moscow Mule", "With dinner", "Friday night"],
-    stats: [
-      { label: "Heat", value: 4 },
-      { label: "Fizz", value: 5 },
-      { label: "Sweet", value: 2 },
-    ],
-    size: "330ml",
-  },
-  ale: {
-    badge: "☀️ Easy sipping",
-    badgeColor: "#4A7C3F",
-    tagline: "Crisp, light, citrus-forward.",
-    bestFor: ["With lime", "Hot days", "Kids"],
-    stats: [
-      { label: "Heat", value: 2 },
-      { label: "Fizz", value: 4 },
-      { label: "Sweet", value: 3 },
-    ],
-    size: "330ml",
-  },
-  shot: {
-    badge: "⚡ Morning fuel",
-    badgeColor: "#C8893C",
-    tagline: "Ginger + coconut water + taurine. No sugar.",
-    bestFor: ["Pre-workout", "Hydration", "3pm slump"],
-    stats: [
-      { label: "Heat", value: 5 },
-      { label: "Fizz", value: 0 },
-      { label: "Sweet", value: 0 },
-    ],
-    size: "60ml",
-  },
-};
-
-function StatBar({ label, value }: Stat) {
-  return (
-    <div style={{ display: "grid", gridTemplateColumns: "44px 1fr 14px", alignItems: "center", gap: 8 }}>
-      <span style={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700, color: "rgba(44,24,16,0.55)" }}>{label}</span>
-      <div style={{ display: "flex", gap: 3 }}>
-        {[1,2,3,4,5].map(i => (
-          <span key={i} style={{ flex: 1, height: 6, borderRadius: 2, background: i <= value ? "linear-gradient(90deg, #C8893C, #8B3A1A)" : "rgba(44,24,16,0.08)" }}/>
-        ))}
-      </div>
-      <span style={{ fontSize: 11, fontWeight: 700, color: "rgba(44,24,16,0.6)", textAlign: "right" }}>{value}</span>
-    </div>
-  );
-}
+// Taste guide — clean comparison panel.
+type SpecCol = { id: FlavorId; label: string; volume: string; carbonation: string; heat: string; bestFor: string };
+const SPEC_COLS: SpecCol[] = [
+  { id: "beer", label: "Daily mixer",      volume: "330ml glass", carbonation: "Natural ferment", heat: "Bold",  bestFor: "Cocktails, dinner" },
+  { id: "ale",  label: "Easy drinker",     volume: "330ml glass", carbonation: "Natural ferment", heat: "Mild",  bestFor: "Daily, with food"  },
+  { id: "shot", label: "Wellness shot",    volume: "60ml",        carbonation: "Still",           heat: "Sharp", bestFor: "Mornings, post-gym" },
+];
+const SPEC_ROWS: { label: string; render: (c: SpecCol) => string }[] = [
+  { label: "Volume",      render: c => c.volume },
+  { label: "Sugar",       render: ()  => "0g added" },
+  { label: "Carbonation", render: c => c.carbonation },
+  { label: "Heat",        render: c => c.heat },
+  { label: "Best for",    render: c => c.bestFor },
+];
 
 export function TasteGuide({ products, summaries: _summaries }: { products: Product[]; summaries?: Record<FlavorId, ReviewSummary> }) {
+  const byId = Object.fromEntries(products.map(p => [p.id, p])) as Record<FlavorId, Product>;
   return (
     <section id="taste-guide" style={{ padding: "96px 0", background: "#fff", scrollMarginTop: 80 }}>
       <div className="gb-pad-40" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>Taste guide</p>
-          <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 52, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", letterSpacing: "-0.02em" }}>
-            Pick your <span style={{ fontStyle: "italic", color: "#C8893C" }}>moment.</span>
-          </h2>
-          <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 15, color: "rgba(44,24,16,0.65)", margin: "0 auto", maxWidth: 540, lineHeight: 1.5 }}>
-            One question: what are you reaching for it for? Tap the closest answer.
-          </p>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 24, marginBottom: 36 }}>
+          <div>
+            <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>Compare</p>
+            <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: 0, letterSpacing: "-0.02em" }}>
+              The lineup, side by side.
+            </h2>
+          </div>
+          <Link href="#bundle" style={{ fontFamily: "var(--gb-font-sans)", fontSize: 14, fontWeight: 700, color: "#C8893C", textDecoration: "underline" }}>
+            Or build a 6-pack with all three →
+          </Link>
         </div>
 
-        {/* Decision strip — three quick prompts that anchor on each card */}
-        <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 24 }}>
-          {[
-            { label: "Mixing a cocktail", anchor: "#guide-beer" },
-            { label: "Drinking with dinner", anchor: "#guide-ale" },
-            { label: "Need a wake-up", anchor: "#guide-shot" },
-          ].map(p => (
-            <a key={p.label} href={p.anchor} style={{ display: "block", padding: "14px 16px", background: "#FDF6EC", borderRadius: 12, fontFamily: "var(--gb-font-sans)", fontSize: 14, fontWeight: 600, color: "#2C1810", textDecoration: "none", border: "1px solid rgba(44,24,16,0.06)", textAlign: "center" }}>
-              {p.label} →
-            </a>
-          ))}
-        </div>
-
-        <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
-          {products.map(p => {
-            const g = GUIDES[p.id];
+        <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "180px repeat(3, 1fr)", gap: 0, background: "#FDF6EC", borderRadius: 18, overflow: "hidden", border: "1px solid rgba(44,24,16,0.06)" }}>
+          {/* Header row */}
+          <div style={{ padding: "28px 22px 18px", borderRight: "1px solid rgba(44,24,16,0.06)", display: "flex", alignItems: "flex-end" }}/>
+          {SPEC_COLS.map(c => {
+            const p = byId[c.id];
+            if (!p) return null;
             return (
-              <Link
-                key={p.id}
-                id={`guide-${p.id}`}
-                href={`/shop/${p.id}`}
-                style={{ background: "#FDF6EC", border: "1px solid rgba(44,24,16,0.06)", borderRadius: 18, padding: 22, fontFamily: "var(--gb-font-sans)", display: "flex", flexDirection: "column", gap: 14, transition: "transform 200ms, box-shadow 200ms", scrollMarginTop: 100 }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 32px rgba(44,24,16,0.08)"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
-              >
-                {/* Top: badge + size */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ background: g.badgeColor, color: "#fff", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", padding: "5px 11px", borderRadius: 9999 }}>
-                    {g.badge}
-                  </span>
-                  <span style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", fontWeight: 600 }}>{g.size}</span>
+              <div key={c.id} style={{ padding: "28px 22px 18px", textAlign: "center", borderRight: "1px solid rgba(44,24,16,0.06)" }}>
+                <div style={{ height: 160, display: "flex", alignItems: "flex-end", justifyContent: "center", marginBottom: 14 }}>
+                  <BottleImage flavor={p.flavor} size={160} src={p.heroImage}/>
                 </div>
+                <div style={{ fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#C8893C", marginBottom: 6 }}>{c.label}</div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 24, fontWeight: 700, color: "#2C1810" }}>{p.title}</div>
+              </div>
+            );
+          })}
 
-                {/* Bottle */}
-                <div style={{ display: "flex", justifyContent: "center", padding: "8px 0" }}>
-                  <BottleImage flavor={p.flavor} size={150} src={p.heroImage}/>
+          {/* Spec rows */}
+          {SPEC_ROWS.map((row, i) => (
+            <React.Fragment key={row.label}>
+              <div style={{ padding: "16px 22px", borderTop: "1px solid rgba(44,24,16,0.08)", borderRight: "1px solid rgba(44,24,16,0.06)", fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(44,24,16,0.55)", display: "flex", alignItems: "center", background: i % 2 === 0 ? "transparent" : "rgba(44,24,16,0.02)" }}>
+                {row.label}
+              </div>
+              {SPEC_COLS.map(c => (
+                <div key={c.id + row.label} style={{ padding: "16px 22px", borderTop: "1px solid rgba(44,24,16,0.08)", borderRight: "1px solid rgba(44,24,16,0.06)", fontFamily: "var(--gb-font-sans)", fontSize: 14, fontWeight: 600, color: "#2C1810", textAlign: "center", background: i % 2 === 0 ? "transparent" : "rgba(44,24,16,0.02)" }}>
+                  {row.render(c)}
                 </div>
+              ))}
+            </React.Fragment>
+          ))}
 
-                {/* Title + tagline */}
-                <div>
-                  <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810", marginBottom: 4 }}>{p.title}</div>
-                  <div style={{ fontSize: 13, color: "rgba(44,24,16,0.7)", lineHeight: 1.4 }}>{g.tagline}</div>
-                </div>
-
-                {/* Stat bars */}
-                <div style={{ display: "grid", gap: 7, padding: "12px 14px", background: "#fff", borderRadius: 12 }}>
-                  {g.stats.map(s => <StatBar key={s.label} label={s.label} value={s.value}/>)}
-                </div>
-
-                {/* Best-for chips */}
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {g.bestFor.map(b => (
-                    <span key={b} style={{ background: "#fff", border: "1px solid rgba(44,24,16,0.08)", borderRadius: 9999, padding: "4px 10px", fontSize: 11, fontWeight: 600, color: "rgba(44,24,16,0.75)" }}>{b}</span>
-                  ))}
-                </div>
-
-                {/* Footer: price + arrow */}
-                <div style={{ marginTop: "auto", paddingTop: 12, borderTop: "1px solid rgba(44,24,16,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontFamily: "var(--gb-font-display)", fontWeight: 700, color: "#C8893C", fontSize: 18 }}>฿{p.single}</span>
-                  <span style={{ color: "#2C1810", fontWeight: 700, fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6 }}>
-                    Shop <Icon d={ICONS.arrow} size={14} stroke={2}/>
-                  </span>
-                </div>
-              </Link>
+          {/* Price + CTA row */}
+          <div style={{ padding: "20px 22px 26px", borderTop: "1px solid rgba(44,24,16,0.08)", borderRight: "1px solid rgba(44,24,16,0.06)", fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(44,24,16,0.55)", display: "flex", alignItems: "center" }}>
+            From
+          </div>
+          {SPEC_COLS.map(c => {
+            const p = byId[c.id];
+            if (!p) return null;
+            return (
+              <div key={c.id + "-cta"} style={{ padding: "20px 22px 26px", borderTop: "1px solid rgba(44,24,16,0.08)", borderRight: "1px solid rgba(44,24,16,0.06)", textAlign: "center" }}>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 26, fontWeight: 700, color: "#C8893C", marginBottom: 4 }}>฿{p.single}</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginBottom: 14 }}>or ฿{p.sixpack} / 6-pack</div>
+                <Link href={`/shop/${p.id}`} className="gb-btn gb-btn--primary" style={{ width: "100%", justifyContent: "center", fontSize: 13, padding: "12px 18px" }}>
+                  Shop <Icon d={ICONS.arrow} size={14} stroke={2}/>
+                </Link>
+              </div>
             );
           })}
         </div>
-
-        <p style={{ textAlign: "center", marginTop: 32, fontSize: 13, color: "rgba(44,24,16,0.6)", fontFamily: "var(--gb-font-sans)" }}>
-          Want all three? <Link href="#bundle" style={{ color: "#C8893C", fontWeight: 700, textDecoration: "underline" }}>Build a 6-pack</Link> →
-        </p>
       </div>
     </section>
   );

@@ -4,6 +4,8 @@ import { stripe, siteUrl } from "@/lib/stripe";
 import { kv } from "@vercel/kv";
 import { z } from "zod";
 import { sendOrderEmails } from "@/lib/resend";
+import { formatBundlePicks } from "@/lib/products";
+import type { FlavorId } from "@/lib/products";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -55,7 +57,7 @@ export async function POST(req: Request) {
   const isSubscription = body.items.some(i => i.sub);
   const subtotal = body.items.reduce((a, i) => a + i.price * i.qty, 0);
   const shippingCost = body.method === "cod"
-    ? 20
+    ? (subtotal >= 500 ? 0 : 60)
     : (body.shipping.method === "next" ? 120 : (subtotal >= 500 ? 0 : 60));
 
   const HAS_KV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
@@ -93,14 +95,15 @@ export async function POST(req: Request) {
   type LineItem = NonNullable<CreateParams["line_items"]>[number];
   const lineItems: LineItem[] = body.items.map(i => {
     if (i.id === "bundle") {
+      const breakdown = formatBundlePicks(i.bundlePicks as FlavorId[] | undefined);
       return {
         quantity: i.qty,
         price_data: {
           currency: "thb",
           unit_amount: i.price * 100,
           product_data: {
-            name: "Mix-your-own 6-Pack",
-            description: i.bundlePicks ? `Custom 6-pack: ${i.bundlePicks.join(", ")}` : undefined,
+            name: `Mix-your-own 6-Pack — ${breakdown}`,
+            description: `Custom 6-pack: ${breakdown}`,
           },
         },
       };
