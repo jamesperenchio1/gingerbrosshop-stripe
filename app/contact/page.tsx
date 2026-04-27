@@ -25,7 +25,7 @@ export default function ContactPage() {
           </div>
 
           <p style={{ marginTop: 32, fontFamily: "var(--gb-font-sans)", fontSize: 13, color: "rgba(44,24,16,0.55)", lineHeight: 1.55 }}>
-            Brewed and shipped from Bangkok. We&apos;re a tiny team — sometimes replies take a day or two. We&apos;ll always answer.
+            Made and shipped from Bangkok. We&apos;re a tiny team — sometimes replies take a day or two. We&apos;ll always answer.
           </p>
         </div>
       </article>

@@ -16,7 +16,7 @@ export function OrderTracking({ orderId, status, items, eta, customerEmail }: {
   const order = (
     [
       { key: "received", label: "Order received", time: "Confirmed",         icon: ICONS.check },
-      { key: "brewing",  label: "Brewed & bottled", time: "Within 24h",       icon: ICONS.flame },
+      { key: "brewing",  label: "Made & bottled", time: "Within 24h",         icon: ICONS.flame },
       { key: "packed",   label: "Packed at warehouse", time: "Bangkok depot", icon: ICONS.box },
       { key: "shipped",  label: "Out for delivery", time: "Kerry Express",   icon: ICONS.truck },
       { key: "delivered",label: "Delivered", time: eta ?? "Soon",             icon: ICONS.check },
@@ -70,7 +70,7 @@ export function OrderTracking({ orderId, status, items, eta, customerEmail }: {
               Bangkok warehouse
             </div>
             <div style={{ position: "absolute", bottom: 16, right: 16, padding: "8px 14px", background: "rgba(253,246,236,0.95)", borderRadius: 9999, fontFamily: "var(--gb-font-sans)", fontSize: 11, fontWeight: 700, color: "#2C1810" }}>
-              📍 Your door
+              Your door
             </div>
           </div>
 

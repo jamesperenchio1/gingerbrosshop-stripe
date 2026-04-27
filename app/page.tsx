@@ -24,7 +24,7 @@ export default async function Home() {
       <section style={{ padding: "80px 0", background: "#FDF6EC", textAlign: "center" }}>
         <div className="gb-pad-40" style={{ maxWidth: 720, margin: "0 auto", padding: "0 40px" }}>
           <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 44, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", lineHeight: 1.1, letterSpacing: "-0.02em" }}>
-            Already ordered? <span style={{ fontStyle: "italic", color: "#C8893C" }}>Track your brew.</span>
+            Already ordered? <span style={{ fontStyle: "italic", color: "#C8893C" }}>Track your order.</span>
           </h2>
           <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 16, color: "rgba(44,24,16,0.7)", margin: "0 0 28px" }}>
             Live timeline from bottle-line to your door. Because &ldquo;it&apos;ll get there&rdquo; isn&apos;t an update.

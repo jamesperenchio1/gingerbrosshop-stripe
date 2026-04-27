@@ -7,7 +7,7 @@ import { useCart } from "@/lib/cart";
 function AnnouncementBar() {
   const messages = [
     { icon: ICONS.truck, text: "Free shipping on orders over ฿500" },
-    { icon: ICONS.leaf, text: "Brewed fresh in Bangkok · Ships within 48h" },
+    { icon: ICONS.leaf, text: "Made fresh in Bangkok · Ships within 48h" },
     { icon: ICONS.gift, text: "Build-your-own 6-pack — mix any flavors, save 10%" },
   ];
   const [i, setI] = useState(0);
@@ -53,7 +53,7 @@ export function Nav({ onOpenCart, onOpenSearch, onOpenAccount }: {
       <div style={{
         position: "sticky", top: 0, zIndex: 50,
         borderBottom: "1px solid #F5E6D3",
-        background: "rgba(253,246,236,0.92)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)",
+        background: "rgba(253,246,236,0.98)",
       }}>
         <nav style={{
           maxWidth: 1440, margin: "0 auto", padding: "0 32px", height: 68,

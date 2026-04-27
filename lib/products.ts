@@ -9,6 +9,7 @@ export type Product = {
   flavor: FlavorId;
   title: string;
   subtitle: string;
+  size: string;
   single: number;
   sixpack: number;
   singlePrice: number;
@@ -22,6 +23,16 @@ export type Product = {
   blurb: string;
   about: string;
   ingredients: string;
+  /** Compare-table data. */
+  process: string;
+  ingredientsShort: string[];
+  abv: string;
+  serve: string;
+  pairsWith: string;
+  carbonation: string;
+  sugarLabel: string;
+  /** Visual block tone used behind the bottle on cards. */
+  cardTone: { bg: string; bgHover: string };
   prices: {
     single: string;
     sixpack: string;
@@ -37,7 +48,8 @@ export type Product = {
 export const PRODUCTS: Product[] = [
   {
     id: "beer", flavor: "beer", title: "Ginger Beer",
-    subtitle: "Real ferment · 330ml glass",
+    subtitle: "330ml",
+    size: "330ml",
     single: 79, sixpack: 399, singlePrice: 79,
     rating: 0, reviews: 0, heat: 4,
     tag: "Bestseller",
@@ -45,6 +57,14 @@ export const PRODUCTS: Product[] = [
     blurb: "Our flagship. Real ginger, a proper kick, fully carbonated, and zero residual sugar.",
     about: "We start a wild ginger-bug culture from fresh ginger, then blend it into a strong ginger tea with sugar and let it ferment until the sugar is gone. After fermentation we pasteurize, sweeten back up with erythritol, finish with fresh lime, force-carbonate, and bottle. Sugar-free in the bottle, ginger-forward, properly fizzy.",
     ingredients: "Fresh ginger, erythritol, filtered water, lime, ginger-bug culture. Sugar added during fermentation, fully fermented out — 0g residual sugar in the bottle.",
+    process: "Wild ferment · 10–14 days",
+    ingredientsShort: ["Fresh ginger", "Ginger-bug culture", "Erythritol", "Lime", "Water"],
+    abv: "<0.5%",
+    serve: "Cold, with food",
+    pairsWith: "Grilled, spicy, fatty",
+    carbonation: "Force-carbonated",
+    sugarLabel: "0g residual",
+    cardTone: { bg: "#F5E6D3", bgHover: "#EDD9C0" },
     stripeProductId: "prod_UPLRWgaSJebePn",
     prices: {
       single:  "price_1TQWl04xTvnGlHCDwPbXEEto",
@@ -61,7 +81,8 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "shot", flavor: "shot", title: "Ginger Shot",
-    subtitle: "0g sugar · 60ml",
+    subtitle: "60ml",
+    size: "60ml",
     single: 89, sixpack: 449, singlePrice: 89,
     rating: 0, reviews: 0, heat: 5,
     tag: "Morning Ritual",
@@ -69,6 +90,14 @@ export const PRODUCTS: Product[] = [
     blurb: "Cold-pressed ginger blended with coconut water and taurine. A clean morning kick in 60ml. No sugar.",
     about: "We cold-press fresh ginger, then blend it with coconut water for natural electrolytes and a measured dose of taurine for the wake-up. No sugar, no flavor extracts — just three real ingredients. The result is a sharp, hydrating hit that wakes you up without the crash.",
     ingredients: "Fresh ginger, coconut water, taurine. No added sugar.",
+    process: "Cold-pressed",
+    ingredientsShort: ["Fresh ginger", "Coconut water", "Taurine"],
+    abv: "0%",
+    serve: "Mornings, neat",
+    pairsWith: "Coffee, post-workout",
+    carbonation: "Still",
+    sugarLabel: "None",
+    cardTone: { bg: "#E5EBDC", bgHover: "#D7DFC9" },
     stripeProductId: "prod_UPLRTYuEae3E0D",
     prices: {
       single:  "price_1TQWl14xTvnGlHCD127g2bEq",
@@ -88,14 +117,23 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "ale", flavor: "ale", title: "Ginger Ale",
-    subtitle: "Light & lime · 330ml glass",
+    subtitle: "330ml",
+    size: "330ml",
     single: 69, sixpack: 349, singlePrice: 69,
     rating: 0, reviews: 0, heat: 2,
     tag: "Staff Pick",
     filterTags: ["carbonated", "mixer", "everyday"],
     blurb: "Crisp, light, lime-forward. The easy-drinking sibling — great with dinner, or a splash of rum.",
-    about: "Same ginger-bug fermentation as the beer with a lighter ratio of ginger to liquid, so softer ginger heat and a brighter, lime-forward finish. Pasteurized after fermentation, sweetened with erythritol, force-carbonated, bottled.",
-    ingredients: "Fresh ginger, erythritol, filtered water, lime, ginger-bug culture. Sugar added during fermentation, fully fermented out — 0g residual sugar in the bottle.",
+    about: "We cook fresh ginger and lime down into a concentrated syrup, sweeten with erythritol, then blend it with cold soda water to bottle. No fermentation, no shortcuts from a flavor lab — just real ginger syrup and bubbles. Lighter heat than the beer, brighter on the lime, easy to drink alone or with rum.",
+    ingredients: "Fresh ginger, erythritol, filtered water, lime, soda water. No added sugar in the bottle.",
+    process: "Ginger syrup + soda water",
+    ingredientsShort: ["Fresh ginger", "Erythritol", "Lime", "Soda water"],
+    abv: "0%",
+    serve: "Over ice with lime",
+    pairsWith: "Gin, rum, lime",
+    carbonation: "Soda water",
+    sugarLabel: "0g residual",
+    cardTone: { bg: "#FAEBC9", bgHover: "#F2DDB0" },
     stripeProductId: "prod_UPLRxZTxSV1wSb",
     prices: {
       single:  "price_1TQWl24xTvnGlHCD81fnXsF4",

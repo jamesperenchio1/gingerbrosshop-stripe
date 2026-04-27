@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +18,10 @@ type StoredOrder = {
 const HAS_KV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
 
 export async function GET(req: Request) {
+  const rl = await rateLimit({ bucket: "track", ip: clientIp(req), limit: 20, windowSec: 60 });
+  if (!rl.ok) {
+    return NextResponse.json({ error: "Too many lookups, slow down" }, { status: 429, headers: { "Retry-After": String(rl.retryAfter) } });
+  }
   const url = new URL(req.url);
   const orderId = (url.searchParams.get("orderId") ?? "").trim().toUpperCase();
   const email = (url.searchParams.get("email") ?? "").trim().toLowerCase();

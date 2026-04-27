@@ -16,12 +16,12 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Gingerbros · Real ginger, properly brewed",
-  description: "Small-batch Thai ginger beer, ale, and shots. Pressed, fermented, and bottled by hand in Bangkok.",
+  title: "Gingerbros · Real ginger, made by hand",
+  description: "Small-batch Thai ginger beer, ale, and shots. Pressed, mixed, and bottled by hand in Bangkok.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://gingerbrosshop.com"),
   openGraph: {
     title: "Gingerbros — Thai craft ginger beverages",
-    description: "Pressed, fermented, and bottled by hand in Bangkok.",
+    description: "Pressed, mixed, and bottled by hand in Bangkok.",
     type: "website",
   },
 };

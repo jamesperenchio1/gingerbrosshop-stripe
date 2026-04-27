@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { stripe } from "@/lib/stripe";
 import { Footer } from "@/components/Footer";
 import { ClearCartOnMount } from "@/components/ClearCartOnMount";
 import { Icon, ICONS } from "@/components/shared";
+import { verify } from "@/lib/sign";
 
 export const dynamic = "force-dynamic";
 
@@ -13,21 +15,31 @@ export default async function SuccessPage({ searchParams }: { searchParams: Prom
   const { session_id } = await searchParams;
   if (!session_id) redirect("/");
 
+  // Auth: must hold the signed cookie set when /api/checkout created the session,
+  // and the cookie's orderId must match this Stripe session's metadata.
+  const cookieToken = (await cookies()).get("gb_order")?.value;
+  const cookieOrderId = verify(cookieToken);
+
   let email = "your email";
-  let orderId = session_id.slice(-10).toUpperCase();
+  let orderId = (cookieOrderId ?? session_id.slice(-10).toUpperCase());
   let items: LineItemView[] = [];
   let amountSubtotal = 0;
   let amountShipping = 0;
   let amountTotal = 0;
   let address: string | null = null;
   let isSubscription = false;
+  let authorized = false;
 
+  let sessionOrderId: string | undefined;
   try {
     const session = await stripe.checkout.sessions.retrieve(session_id, {
       expand: ["line_items", "shipping_cost.shipping_rate"],
     });
+    sessionOrderId = session.metadata?.orderId as string | undefined;
+    authorized = !!cookieOrderId && !!sessionOrderId && cookieOrderId === sessionOrderId;
+
     email = session.customer_details?.email ?? session.customer_email ?? email;
-    orderId = (session.metadata?.orderId as string) ?? orderId;
+    orderId = sessionOrderId ?? orderId;
     isSubscription = session.mode === "subscription";
     amountSubtotal = (session.amount_subtotal ?? 0) / 100;
     amountShipping = (session.shipping_cost?.amount_total ?? 0) / 100;
@@ -47,6 +59,12 @@ export default async function SuccessPage({ searchParams }: { searchParams: Prom
       total: (li.amount_total ?? 0) / 100,
     }));
   } catch { /* swallow — show fallback */ }
+
+  if (!authorized) {
+    // No matching signed cookie → don't show order details. Send them to the
+    // tracking lookup where they re-enter email to view their order.
+    redirect(sessionOrderId ? `/tracking/${sessionOrderId}` : "/tracking");
+  }
 
   return (
     <div style={{ background: "#FDF6EC", minHeight: "100vh" }}>

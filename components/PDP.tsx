@@ -9,7 +9,9 @@ function brewCopy(id: Product["id"]): string {
   if (id === "shot") {
     return "Fresh ginger gets cold-pressed within a day of arriving at the kitchen. The juice goes into the bottle with coconut water (for natural electrolytes) and a measured dose of taurine. No fermentation, no sugar, no flavor extracts — three ingredients on the label is the whole list.";
   }
-  // beer + ale share a ferment
+  if (id === "ale") {
+    return "We cook fresh ginger with lime down into a concentrated syrup, sweeten with erythritol, then blend it with cold soda water and bottle. No fermentation, no flavor extracts — just real ginger syrup and bubbles. Lighter heat than the beer, brighter on the lime, easy to drink alone or stretched with rum.";
+  }
   return "Ginger-bug method. We start a wild fermentation culture from fresh ginger, then blend it into a strong ginger tea with sugar. The yeast eats the sugar and produces a small amount of CO₂ + a lot of flavor. When fermentation is done we pasteurize to lock the flavor in, sweeten back up with erythritol (which yeast can't metabolize), finish with fresh lime, and force-carbonate before bottling. Result: 0g residual sugar in the bottle, real ginger flavor, full carbonation.";
 }
 
@@ -24,7 +26,7 @@ function shippingCopy(): React.ReactNode {
     <>
       Bangkok next-day available · Thailand-wide via Kerry Express in 3–5 business days · free over ฿500. We ship within 48 hours of bottling. Bottle arrives broken or anything off?{" "}
       <a href="/contact" style={{ color: "#C8893C", fontWeight: 700, textDecoration: "underline" }}>Reach us via LINE / IG / email →</a>
-      {" "}— send a photo and we&apos;ll replace it free. We don&apos;t accept open-bottle returns; it&apos;s a fermented product and we can&apos;t safely resell it.
+      {" "}— send a photo and we&apos;ll replace it free. We don&apos;t accept open-bottle returns; it&apos;s a perishable product and we can&apos;t safely resell it.
     </>
   );
 }
@@ -103,7 +105,7 @@ export function ProductDetail({ product, stock, summary, initialReviews }: {
                     height: 600, display: "flex", alignItems: "center", justifyContent: "center",
                     position: "relative", overflow: "hidden",
                   }}>
-                    <div style={{ position: "absolute", width: 480, height: 480, background: "rgba(200,137,60,0.14)", borderRadius: "50%", filter: "blur(80px)" }}/>
+                    <div aria-hidden style={{ position: "absolute", width: 480, height: 480, background: "radial-gradient(circle at 50% 50%, rgba(200,137,60,0.14) 0%, rgba(200,137,60,0) 70%)", borderRadius: "50%" }}/>
 
                     {src ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -155,7 +157,7 @@ export function ProductDetail({ product, stock, summary, initialReviews }: {
           <div style={{ paddingTop: 8 }}>
             <PdpRatingHeader summary={summary}/>
             <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", fontSize: 11, margin: "0 0 8px" }}>
-              {product.flavor === "shot" ? "Concentrated Kick · 60ml" : product.flavor === "beer" ? "Naturally Fermented · 330ml" : "Crisp & Carbonated · 330ml"}
+              {product.flavor === "shot" ? "Concentrated Kick · 60ml" : product.flavor === "beer" ? "Wild-Fermented · 330ml" : "Syrup + Soda · 330ml"}
             </p>
             <h1 style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
               {product.title}

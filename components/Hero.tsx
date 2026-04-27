@@ -2,9 +2,9 @@
 import { Bottle, BottleImage, Icon, ICONS, Wave } from "./shared";
 
 const HEADLINES = {
-  craft: { eyebrow: "Thai Craft · Since 2024", line1: "Real ginger,", line2: "properly brewed.", sub: "Small-batch Thai ginger beer, ale, and shots. Pressed, fermented, and bottled by hand in Bangkok — nothing from a flavor lab." },
-  maker: { eyebrow: "Handmade in Bangkok", line1: "Ginger with", line2: "a kick you can feel.", sub: "Fresh ginger, real fermentation, no syrupy shortcuts. The kind of drink that makes the supermarket version taste like tap water with sugar." },
-  love:  { eyebrow: "Thai Craft Beverages", line1: "Brewed with", line2: "Ginger & Love.", sub: "Handcrafted ginger beverages from the heart of Thailand. Bold flavors, natural ingredients, zero compromise." },
+  craft: { eyebrow: "Thai Craft · Since 2024", line1: "Real ginger,", line2: "made by hand.", sub: "Small-batch Thai ginger beer, ale, and shots. Pressed, mixed, and bottled by hand in Bangkok — nothing from a flavor lab." },
+  maker: { eyebrow: "Handmade in Bangkok", line1: "Ginger with", line2: "a kick you can feel.", sub: "Fresh ginger, real ingredients, no syrupy shortcuts. The kind of drink that makes the supermarket version taste like tap water with sugar." },
+  love:  { eyebrow: "Thai Craft Beverages", line1: "Made with", line2: "Ginger & Love.", sub: "Handcrafted ginger beverages from the heart of Thailand. Bold flavors, natural ingredients, zero compromise." },
 };
 
 export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }) {
@@ -15,8 +15,8 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
         position: "relative", minHeight: 660,
         background: "linear-gradient(160deg, #FDF6EC 0%, #F5E6D3 60%, #FDF6EC 100%)",
       }}>
-        <div style={{ position:"absolute", top:40, left:-80, width:420, height:420, background:"rgba(200,137,60,0.14)", borderRadius:"50%", filter:"blur(80px)" }}/>
-        <div style={{ position:"absolute", bottom:-80, right:-60, width:460, height:460, background:"rgba(74,124,63,0.10)", borderRadius:"50%", filter:"blur(80px)" }}/>
+        <div aria-hidden style={{ position:"absolute", top:40, left:-80, width:420, height:420, background:"radial-gradient(circle at 50% 50%, rgba(200,137,60,0.14) 0%, rgba(200,137,60,0) 70%)", borderRadius:"50%" }}/>
+        <div aria-hidden style={{ position:"absolute", bottom:-80, right:-60, width:460, height:460, background:"radial-gradient(circle at 50% 50%, rgba(74,124,63,0.10) 0%, rgba(74,124,63,0) 70%)", borderRadius:"50%" }}/>
 
         <div className="gb-hero-grid" style={{
           maxWidth: 1440, margin: "0 auto", padding: "72px 40px 120px",
@@ -26,9 +26,8 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
           <div style={{ position: "relative" }}>
             <a
               href="#bundle"
-              style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "6px 14px 6px 6px", background: "rgba(255,255,255,0.7)", border: "1px solid rgba(44,24,16,0.08)", borderRadius: 9999, marginBottom: 22, backdropFilter: "blur(8px)", textDecoration: "none", color: "inherit", transition: "transform 200ms" }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-1px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; }}
+              className="gb-hero-pill"
+              style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "6px 14px 6px 6px", background: "rgba(255,255,255,0.85)", border: "1px solid rgba(44,24,16,0.08)", borderRadius: 9999, marginBottom: 22, textDecoration: "none", color: "inherit", transition: "transform 200ms" }}
             >
               <span style={{ background: "#4A7C3F", color: "#fff", fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", padding: "4px 10px", borderRadius: 9999 }}>NEW</span>
               <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 13, color: "rgba(44,24,16,0.75)" }}>

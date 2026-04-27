@@ -111,13 +111,13 @@ export function Footer() {
           <div style={{ maxWidth: 280 }}>
             <Logo color="light" size={30}/>
             <p style={{ fontFamily: "var(--gb-font-sans)", color: "rgba(255,255,255,0.6)", fontSize: 13, lineHeight: 1.65, margin: "16px 0 20px" }}>
-              Handcrafted ginger beverages from Thailand. Real root, real ferment, real small-batch.
+              Handcrafted ginger beverages from Thailand. Real ginger, real small-batch, made by hand.
             </p>
             <Socials/>
           </div>
           {[
             { h: "Shop", items: [
-              { label: "All brews",        href: "/#shop" },
+              { label: "All drinks",       href: "/#shop" },
               { label: "Ginger Beer",      href: "/shop/beer" },
               { label: "Ginger Ale",       href: "/shop/ale" },
               { label: "Ginger Shot",      href: "/shop/shot" },
@@ -126,7 +126,7 @@ export function Footer() {
             ] },
             { h: "Learn", items: [
               { label: "Our story",        href: "/story" },
-              { label: "Brewing process", href: "/process" },
+              { label: "How it's made",   href: "/process" },
               { label: "Recipes",          href: "/recipes" },
               { label: "Press",            href: "/press" },
             ] },
@@ -174,7 +174,7 @@ export function Footer() {
             <a href="/faq" style={{ color: "inherit", textDecoration: "none" }}>FAQ</a>
             <a href="/contact" style={{ color: "inherit", textDecoration: "none" }}>Contact</a>
           </div>
-          <span>Brewed in Bangkok 🇹🇭</span>
+          <span>Made in Bangkok</span>
         </div>
       </div>
     </footer>

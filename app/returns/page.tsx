@@ -7,7 +7,7 @@ export default function ReturnsPage() {
     <InfoPage
       eyebrow="Returns"
       title="Freshness guarantee."
-      intro="Because we ship a perishable, fermented product, we don't accept open-bottle returns. We do guarantee every bottle arrives intact and tastes like it should — and if it doesn't, we make it right."
+      intro="Because we ship a perishable product, we don't accept open-bottle returns. We do guarantee every bottle arrives intact and tastes like it should — and if it doesn't, we make it right."
       sections={[
         { h: "Broken on arrival", body: "Snap a photo within 48 hours of delivery and email gingerbros.brew@gmail.com. We'll ship a replacement free, no questions asked." },
         { h: "Off-flavor or fizz issues", body: "Same drill — email us with the order number and what's wrong. We'll send a replacement or refund the affected bottles." },

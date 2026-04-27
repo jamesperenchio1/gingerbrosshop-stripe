@@ -136,8 +136,8 @@ export function BundleBuilder({ products }: { products: Product[] }) {
 export function SubscriptionBlock() {
   return (
     <section style={{ padding: "96px 0", background: "#2C1810", color: "#FDF6EC", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", top: -100, left: -100, width: 400, height: 400, background: "rgba(200,137,60,0.15)", borderRadius: "50%", filter: "blur(100px)" }}/>
-      <div style={{ position: "absolute", bottom: -100, right: -100, width: 500, height: 500, background: "rgba(74,124,63,0.12)", borderRadius: "50%", filter: "blur(100px)" }}/>
+      <div aria-hidden style={{ position: "absolute", top: -100, left: -100, width: 400, height: 400, background: "radial-gradient(circle at 50% 50%, rgba(200,137,60,0.15) 0%, rgba(200,137,60,0) 70%)", borderRadius: "50%" }}/>
+      <div aria-hidden style={{ position: "absolute", bottom: -100, right: -100, width: 500, height: 500, background: "radial-gradient(circle at 50% 50%, rgba(74,124,63,0.12) 0%, rgba(74,124,63,0) 70%)", borderRadius: "50%" }}/>
 
       <div className="gb-pad-40" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px", position: "relative" }}>
         <div className="gb-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
