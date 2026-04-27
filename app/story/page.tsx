@@ -6,24 +6,24 @@ export default function StoryPage() {
   return (
     <InfoPage
       eyebrow="Our story"
-      title="Two brothers, one ginger habit."
-      intro="Gingerbros is a small Bangkok brewery making ginger drinks the way we wanted to drink them — real ginger, no sugar, no flavor lab. We started because we couldn't find anything in Thai supermarkets that was both honest about ingredients and actually fun to drink. So we made our own."
+      title="Small batch. One stubborn recipe."
+      intro="Gingerbros is a tiny Bangkok kitchen making three ginger drinks. We started because the ginger drinks we wanted to drink — real ginger, no residual sugar, no flavor lab — didn't really exist on Thai shelves. So we made our own."
       sections={[
         {
           h: "What we make",
-          body: "Three things, on purpose:\n\n• A naturally fermented ginger beer (14 days, real fizz, real heat).\n• A lighter ginger ale, also fermented, with lime.\n• A 60ml ginger shot blended with coconut water and taurine — for mornings, workouts, and the 3pm slump.\n\nAll three are sweetened with erythritol, so there's zero added sugar in any of them.",
+          body: "Three things, on purpose:\n\n• Ginger Beer — bold, fully carbonated, lime-finished.\n• Ginger Ale — lighter cousin, brighter lime.\n• Ginger Shot — 60ml of cold-pressed ginger, coconut water, and taurine for mornings.\n\nAll three end up with 0g residual sugar in the bottle. The beer + ale ferment the sugar out and we sweeten back with erythritol; the shot has no sugar to begin with.",
         },
         {
-          h: "How we brew it",
-          body: "We use the ginger-bug method. Fresh ginger goes into a wild starter culture for a few days until it's actively fermenting. We brew a strong ginger tea, blend it with the bug, and let the mix ferment until it's where we want it. Then we pasteurize, sweeten with erythritol, hit it with fresh lime, keg, and bottle. Two weeks start to finish.",
+          h: "How the beer + ale are made",
+          body: "1. Wild ginger-bug starter from fresh ginger.\n2. Brew strong ginger tea, blend with the bug + sugar, ferment until the sugar is gone.\n3. Pasteurize to lock the flavor in.\n4. Sweeten back with erythritol (zero-cal, yeast can't eat it).\n5. Hit with fresh lime.\n6. Force-carbonate.\n7. Bottle in glass.\n\nIngredients in the bottle: fresh ginger, erythritol, filtered water, lime, ginger-bug culture.",
         },
         {
-          h: "Where we are now",
-          body: "Tiny operation in Bangkok. Three core SKUs. Glass bottles, not plastic. We ship Thailand-wide via Kerry Express within 48 hours of bottling.",
+          h: "How the shot is made",
+          body: "Cold-press fresh ginger root. Blend with coconut water (for natural electrolytes) and a measured dose of taurine. Bottle cold. No fermentation, no sweetener, no flavoring. Three real ingredients on the label.",
         },
         {
           h: "What we won't do",
-          body: "Add sugar. Use flavoring extracts. Force-carbonate from a CO₂ tank. Ship plastic. Make claims we can't back up.",
+          body: "Use flavoring extracts. Bottle a residual-sugar drink and call it 'natural'. Force-carbonate junk and call it craft. Ship plastic. Make claims we can't back up.",
         },
       ]}
       cta={{ href: "/", label: "Shop the range" }}

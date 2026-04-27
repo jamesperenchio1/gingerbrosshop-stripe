@@ -7,10 +7,10 @@ import type { Review, ReviewSummary } from "@/lib/reviews";
 
 function brewCopy(id: Product["id"]): string {
   if (id === "shot") {
-    return "We cold-press fresh ginger root within 24 hours of arriving at the kitchen. The juice gets blended with coconut water (for natural electrolytes) and taurine, hit with a little lime, then bottled cold. No fermentation, no sugar, no shortcuts.";
+    return "Fresh ginger gets cold-pressed within a day of arriving at the kitchen. The juice goes into the bottle with coconut water (for natural electrolytes) and a measured dose of taurine. No fermentation, no sugar, no flavor extracts — three ingredients on the label is the whole list.";
   }
   // beer + ale share a ferment
-  return "Ginger-bug method. Fresh ginger goes into a wild starter culture for a few days until it's actively fermenting on its own. We brew a strong ginger tea, blend it with the bug, and let the mix ferment until it tastes like it should — about two weeks. Then we pasteurize, sweeten with erythritol, hit it with fresh lime, keg, and bottle.";
+  return "Ginger-bug method. We start a wild fermentation culture from fresh ginger, then blend it into a strong ginger tea with sugar. The yeast eats the sugar and produces a small amount of CO₂ + a lot of flavor. When fermentation is done we pasteurize to lock the flavor in, sweeten back up with erythritol (which yeast can't metabolize), finish with fresh lime, and force-carbonate before bottling. Result: 0g residual sugar in the bottle, real ginger flavor, full carbonation.";
 }
 
 function pairCopy(id: Product["id"]): string {
@@ -19,8 +19,14 @@ function pairCopy(id: Product["id"]): string {
   return "Drink cold, neat, like a wellness shot. First thing in the morning before coffee. 30 minutes before a workout. When you feel a sniffle. Chase with warm water and lemon if the heat is too much for you.";
 }
 
-function shippingCopy(): string {
-  return "Bangkok next-day available · Thailand-wide via Kerry Express in 3–5 business days · free over ฿500. We ship within 48 hours of bottling. Bottle arrives broken? Photo to gingerbros.brew@gmail.com within 48 hours and we replace it free. We don't accept open-bottle returns — it's a fermented product, we can't safely resell it.";
+function shippingCopy(): React.ReactNode {
+  return (
+    <>
+      Bangkok next-day available · Thailand-wide via Kerry Express in 3–5 business days · free over ฿500. We ship within 48 hours of bottling. Bottle arrives broken or anything off?{" "}
+      <a href="/contact" style={{ color: "#C8893C", fontWeight: 700, textDecoration: "underline" }}>Reach us via LINE / IG / email →</a>
+      {" "}— send a photo and we&apos;ll replace it free. We don&apos;t accept open-bottle returns; it&apos;s a fermented product and we can&apos;t safely resell it.
+    </>
+  );
 }
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/products";

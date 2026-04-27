@@ -196,17 +196,29 @@ export function ShopSection({ products, stock, summaries }: { products: Product[
 }
 
 // Taste guide — clean comparison panel.
-type SpecCol = { id: FlavorId; label: string; volume: string; carbonation: string; heat: string; bestFor: string };
+type SpecCol = { id: FlavorId; label: string; volume: string; carbonation: string; bestFor: string };
 const SPEC_COLS: SpecCol[] = [
-  { id: "beer", label: "Daily mixer",      volume: "330ml glass", carbonation: "Natural ferment", heat: "Bold",  bestFor: "Cocktails, dinner" },
-  { id: "ale",  label: "Easy drinker",     volume: "330ml glass", carbonation: "Natural ferment", heat: "Mild",  bestFor: "Daily, with food"  },
-  { id: "shot", label: "Wellness shot",    volume: "60ml",        carbonation: "Still",           heat: "Sharp", bestFor: "Mornings, post-gym" },
+  { id: "beer", label: "Daily mixer",   volume: "330ml glass", carbonation: "Force-carbonated", bestFor: "Cocktails, dinner" },
+  { id: "ale",  label: "Easy drinker",  volume: "330ml glass", carbonation: "Force-carbonated", bestFor: "Daily, with food"  },
+  { id: "shot", label: "Wellness shot", volume: "60ml",        carbonation: "Still",            bestFor: "First thing in the morning" },
 ];
-const SPEC_ROWS: { label: string; render: (c: SpecCol) => string }[] = [
+
+// Heat is rendered as the same 5-bar meter the PDP uses, driven off product.heat.
+function HeatBars({ value }: { value: number }) {
+  return (
+    <div style={{ display: "inline-flex", gap: 3, alignItems: "center" }}>
+      {[1,2,3,4,5].map(i => (
+        <span key={i} style={{ width: 14, height: 5, borderRadius: 2, background: i <= value ? "linear-gradient(90deg, #C8893C, #8B3A1A)" : "rgba(44,24,16,0.12)" }}/>
+      ))}
+    </div>
+  );
+}
+
+const SPEC_ROWS: { label: string; render: (c: SpecCol, p: Product) => React.ReactNode }[] = [
   { label: "Volume",      render: c => c.volume },
-  { label: "Sugar",       render: ()  => "0g added" },
+  { label: "Sugar",       render: (c) => c.id === "shot" ? "None" : "0g residual" },
   { label: "Carbonation", render: c => c.carbonation },
-  { label: "Heat",        render: c => c.heat },
+  { label: "Heat",        render: (_, p) => <HeatBars value={p.heat}/> },
   { label: "Best for",    render: c => c.bestFor },
 ];
 
@@ -251,11 +263,14 @@ export function TasteGuide({ products, summaries: _summaries }: { products: Prod
               <div style={{ padding: "16px 22px", borderTop: "1px solid rgba(44,24,16,0.08)", borderRight: "1px solid rgba(44,24,16,0.06)", fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(44,24,16,0.55)", display: "flex", alignItems: "center", background: i % 2 === 0 ? "transparent" : "rgba(44,24,16,0.02)" }}>
                 {row.label}
               </div>
-              {SPEC_COLS.map(c => (
-                <div key={c.id + row.label} style={{ padding: "16px 22px", borderTop: "1px solid rgba(44,24,16,0.08)", borderRight: "1px solid rgba(44,24,16,0.06)", fontFamily: "var(--gb-font-sans)", fontSize: 14, fontWeight: 600, color: "#2C1810", textAlign: "center", background: i % 2 === 0 ? "transparent" : "rgba(44,24,16,0.02)" }}>
-                  {row.render(c)}
-                </div>
-              ))}
+              {SPEC_COLS.map(c => {
+                const p = byId[c.id];
+                return (
+                  <div key={c.id + row.label} style={{ padding: "16px 22px", borderTop: "1px solid rgba(44,24,16,0.08)", borderRight: "1px solid rgba(44,24,16,0.06)", fontFamily: "var(--gb-font-sans)", fontSize: 14, fontWeight: 600, color: "#2C1810", textAlign: "center", background: i % 2 === 0 ? "transparent" : "rgba(44,24,16,0.02)" }}>
+                    {p ? row.render(c, p) : null}
+                  </div>
+                );
+              })}
             </React.Fragment>
           ))}
 
@@ -298,7 +313,7 @@ export function TasteGuide({ products, summaries: _summaries }: { products: Prod
                   {SPEC_ROWS.map(row => (
                     <div key={row.label} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, padding: "4px 0" }}>
                       <span style={{ fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(44,24,16,0.5)" }}>{row.label}</span>
-                      <span style={{ fontWeight: 600, color: "#2C1810" }}>{row.render(c)}</span>
+                      <span style={{ fontWeight: 600, color: "#2C1810" }}>{row.render(c, p)}</span>
                     </div>
                   ))}
                 </div>

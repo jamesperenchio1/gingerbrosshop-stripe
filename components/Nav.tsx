@@ -61,7 +61,7 @@ export function Nav({ onOpenCart, onOpenSearch, onOpenAccount }: {
         }}>
           <div style={{ display: "flex", gap: 28, alignItems: "center" }} className="gb-hide-mobile">
             <Link href="/#shop" style={navBtn}>Shop</Link>
-            <Link href="/shop/beer" style={navBtn}>Flavors <Icon d={ICONS.chevDown} size={12} stroke={2}/></Link>
+            <Link href="/#taste-guide" style={navBtn}>Flavors</Link>
             <Link href="/#story" style={navBtn}>Our Story</Link>
             <Link href="/tracking" style={navBtn}>Track order</Link>
           </div>

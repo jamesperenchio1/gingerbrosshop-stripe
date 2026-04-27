@@ -42,9 +42,9 @@ export const PRODUCTS: Product[] = [
     rating: 0, reviews: 0, heat: 4,
     tag: "Bestseller",
     filterTags: ["carbonated", "mixer"],
-    blurb: "Our flagship. Two weeks of natural ferment, a proper kick, real bubbles, and zero added sugar.",
-    about: "Made the slow way: fresh ginger goes into a wild ginger-bug starter, then we blend it into a strong ginger tea and ferment for two weeks. Pasteurized, sweetened with erythritol, finished with a hit of lime, kegged and bottled. Real ferment, real fizz, no sugar.",
-    ingredients: "Fresh ginger, erythritol, filtered water, lime, ginger-bug culture. No added sugar.",
+    blurb: "Our flagship. Real ginger, a proper kick, fully carbonated, and zero residual sugar.",
+    about: "We start a wild ginger-bug culture from fresh ginger, then blend it into a strong ginger tea with sugar and let it ferment until the sugar is gone. After fermentation we pasteurize, sweeten back up with erythritol, finish with fresh lime, force-carbonate, and bottle. Sugar-free in the bottle, ginger-forward, properly fizzy.",
+    ingredients: "Fresh ginger, erythritol, filtered water, lime, ginger-bug culture. Sugar added during fermentation, fully fermented out — 0g residual sugar in the bottle.",
     stripeProductId: "prod_UPLRWgaSJebePn",
     prices: {
       single:  "price_1TQWl04xTvnGlHCDwPbXEEto",
@@ -94,8 +94,8 @@ export const PRODUCTS: Product[] = [
     tag: "Staff Pick",
     filterTags: ["carbonated", "mixer", "everyday"],
     blurb: "Crisp, light, lime-forward. The easy-drinking sibling — great with dinner, or a splash of rum.",
-    about: "Same ginger-bug fermentation as the beer, but with a lighter touch — softer ginger heat, more lime, a brighter finish. Pasteurized, sweetened with erythritol, kegged and bottled.",
-    ingredients: "Fresh ginger, erythritol, filtered water, lime, ginger-bug culture. No added sugar.",
+    about: "Same ginger-bug fermentation as the beer with a lighter ratio of ginger to liquid, so softer ginger heat and a brighter, lime-forward finish. Pasteurized after fermentation, sweetened with erythritol, force-carbonated, bottled.",
+    ingredients: "Fresh ginger, erythritol, filtered water, lime, ginger-bug culture. Sugar added during fermentation, fully fermented out — 0g residual sugar in the bottle.",
     stripeProductId: "prod_UPLRxZTxSV1wSb",
     prices: {
       single:  "price_1TQWl24xTvnGlHCD81fnXsF4",
