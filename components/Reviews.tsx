@@ -1,13 +1,14 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Stars } from "./shared";
 import type { FlavorId } from "@/lib/products";
-import type { Review } from "@/lib/reviews";
+import type { Review, ReviewSummary } from "@/lib/reviews";
 
-type Summary = { count: number; average: number; buckets: [number,number,number,number,number] };
+const EMPTY_SUMMARY: ReviewSummary = { count: 0, average: 0, buckets: [0,0,0,0,0] };
 
-function summarize(rs: Review[]): Summary {
-  if (rs.length === 0) return { count: 0, average: 0, buckets: [0,0,0,0,0] };
+function summarize(rs: Review[]): ReviewSummary {
+  if (rs.length === 0) return EMPTY_SUMMARY;
   const total = rs.reduce((a, r) => a + r.rating, 0);
   const counts = [0,0,0,0,0];
   for (const r of rs) counts[5 - r.rating]++;
@@ -15,18 +16,7 @@ function summarize(rs: Review[]): Summary {
   return { count: rs.length, average: total / rs.length, buckets };
 }
 
-export function PdpRatingHeader({ productId }: { productId: FlavorId }) {
-  const [summary, setSummary] = useState<Summary>({ count: 0, average: 0, buckets: [0,0,0,0,0] });
-
-  useEffect(() => {
-    let cancelled = false;
-    fetch(`/api/reviews?id=${productId}`)
-      .then(r => r.json())
-      .then((d: { reviews?: Review[] }) => { if (!cancelled) setSummary(summarize(d.reviews ?? [])); })
-      .catch(() => {});
-    return () => { cancelled = true; };
-  }, [productId]);
-
+export function PdpRatingHeader({ summary }: { summary: ReviewSummary }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
       <Stars value={Math.round(summary.average)} size={16}/>
@@ -75,9 +65,9 @@ function timeAgo(ms: number): string {
   return new Date(ms).toLocaleDateString();
 }
 
-export function ReviewsBlock({ productId }: { productId: FlavorId }) {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [loaded, setLoaded] = useState(false);
+export function ReviewsBlock({ productId, initialReviews }: { productId: FlavorId; initialReviews: Review[] }) {
+  const router = useRouter();
+  const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [name, setName] = useState("");
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
@@ -85,16 +75,10 @@ export function ReviewsBlock({ productId }: { productId: FlavorId }) {
   const [err, setErr] = useState<string | null>(null);
   const [thanks, setThanks] = useState(false);
 
-  const summary = summarize(reviews);
+  // sync when server props change (after router.refresh())
+  useEffect(() => { setReviews(initialReviews); }, [initialReviews]);
 
-  useEffect(() => {
-    let cancelled = false;
-    fetch(`/api/reviews?id=${productId}`)
-      .then(r => r.json())
-      .then((d: { reviews?: Review[] }) => { if (!cancelled) { setReviews(d.reviews ?? []); setLoaded(true); } })
-      .catch(() => { if (!cancelled) setLoaded(true); });
-    return () => { cancelled = true; };
-  }, [productId]);
+  const summary = summarize(reviews);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,6 +98,7 @@ export function ReviewsBlock({ productId }: { productId: FlavorId }) {
       setName(""); setComment(""); setRating(5);
       setThanks(true);
       setTimeout(() => setThanks(false), 2400);
+      router.refresh(); // re-pull server-rendered summary header + shop card counts
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Network error");
     } finally {
@@ -127,7 +112,6 @@ export function ReviewsBlock({ productId }: { productId: FlavorId }) {
   return (
     <div id="reviews" style={{ marginTop: 80 }}>
       <div className="gb-grid-2" style={{ display: "grid", gridTemplateColumns: "340px 1fr", gap: 48, padding: "40px 36px", background: "#fff", borderRadius: 20 }}>
-        {/* Summary */}
         <div>
           <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 56, fontWeight: 700, color: "#2C1810", lineHeight: 1 }}>
             {summary.count > 0 ? summary.average.toFixed(1) : "—"}
@@ -151,9 +135,7 @@ export function ReviewsBlock({ productId }: { productId: FlavorId }) {
           )}
         </div>
 
-        {/* Form + list */}
         <div>
-          {/* Form */}
           <form onSubmit={submit} style={{ background: "#FDF6EC", borderRadius: 14, padding: 20, marginBottom: 28 }}>
             <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 18, fontWeight: 700, color: "#2C1810", marginBottom: 14 }}>
               Leave a review
@@ -179,10 +161,7 @@ export function ReviewsBlock({ productId }: { productId: FlavorId }) {
             </div>
           </form>
 
-          {/* List */}
-          {!loaded ? (
-            <div style={{ fontFamily: "var(--gb-font-sans)", fontSize: 13, color: "rgba(44,24,16,0.5)" }}>Loading reviews…</div>
-          ) : reviews.length === 0 ? (
+          {reviews.length === 0 ? (
             <div style={{ padding: 20, background: "#FDF6EC", borderRadius: 14, fontFamily: "var(--gb-font-sans)", fontSize: 14, color: "rgba(44,24,16,0.65)" }}>
               No reviews yet — be the first.
             </div>

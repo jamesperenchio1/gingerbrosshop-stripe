@@ -6,16 +6,24 @@ export default function StoryPage() {
   return (
     <InfoPage
       eyebrow="Our story"
-      title="One guy. One stubborn recipe."
-      intro="Gingerbros started in a small Bangkok kitchen in 2024 after one too many disappointing supermarket ginger beers. What began as a stubborn personal project — pressing fresh Thai ginger, fermenting it for two weeks, getting it just right — has grown into a tiny brewery that now ships across Thailand."
+      title="Two brothers, one ginger habit."
+      intro="Gingerbros is a small Bangkok brewery making ginger drinks the way we wanted to drink them — real ginger, no sugar, no flavor lab. We started because we couldn't find anything in Thai supermarkets that was both honest about ingredients and actually fun to drink. So we made our own."
       sections={[
         {
-          h: "Why we started",
-          body: "Most ginger beer in Thai supermarkets is high-fructose syrup with ginger flavoring. We wanted the real thing — naturally fermented, fresh-pressed, with actual heat. So we made it ourselves.",
+          h: "What we make",
+          body: "Three things, on purpose:\n\n• A naturally fermented ginger beer (14 days, real fizz, real heat).\n• A lighter ginger ale, also fermented, with lime.\n• A 60ml ginger shot blended with coconut water and taurine — for mornings, workouts, and the 3pm slump.\n\nAll three are sweetened with erythritol, so there's zero added sugar in any of them.",
+        },
+        {
+          h: "How we brew it",
+          body: "We use the ginger-bug method. Fresh ginger goes into a wild starter culture for a few days until it's actively fermenting. We brew a strong ginger tea, blend it with the bug, and let the mix ferment until it's where we want it. Then we pasteurize, sweeten with erythritol, hit it with fresh lime, keg, and bottle. Two weeks start to finish.",
         },
         {
           h: "Where we are now",
-          body: "Three core brews (Beer, Ale, Shot), bottled in glass, fermented in oak-hooped vessels in Bangkok, and shipped Thailand-wide within 48 hours of bottling. Small batches, real ingredients, no shortcuts.",
+          body: "Tiny operation in Bangkok. Three core SKUs. Glass bottles, not plastic. We ship Thailand-wide via Kerry Express within 48 hours of bottling.",
+        },
+        {
+          h: "What we won't do",
+          body: "Add sugar. Use flavoring extracts. Force-carbonate from a CO₂ tank. Ship plastic. Make claims we can't back up.",
         },
       ]}
       cta={{ href: "/", label: "Shop the range" }}

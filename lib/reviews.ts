@@ -48,3 +48,14 @@ export function summarize(reviews: Review[]): ReviewSummary {
   const buckets = counts.map(c => Math.round((c / reviews.length) * 100)) as [number,number,number,number,number];
   return { count: reviews.length, average: total / reviews.length, buckets };
 }
+
+const ALL_IDS: FlavorId[] = ["beer", "shot", "ale"];
+
+export async function getAllSummaries(): Promise<Record<FlavorId, ReviewSummary>> {
+  const entries = await Promise.all(ALL_IDS.map(async id => [id, summarize(await listReviews(id))] as const));
+  return Object.fromEntries(entries) as Record<FlavorId, ReviewSummary>;
+}
+
+export async function getSummary(id: FlavorId): Promise<ReviewSummary> {
+  return summarize(await listReviews(id));
+}

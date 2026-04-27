@@ -2,10 +2,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Bottle, BottleImage, Icon, ICONS, Stars } from "./shared";
-import type { Product } from "@/lib/products";
+import type { Product, FlavorId } from "@/lib/products";
+import type { ReviewSummary } from "@/lib/reviews";
 
-function ProductCard({ product, variant = "Single", showSavings = false, stock }: {
-  product: Product; variant?: "Single" | "6-Pack"; showSavings?: boolean; stock?: number;
+function ProductCard({ product, variant = "Single", showSavings = false, stock, summary }: {
+  product: Product; variant?: "Single" | "6-Pack"; showSavings?: boolean; stock?: number; summary?: ReviewSummary;
 }) {
   const price = variant === "6-Pack" ? product.sixpack : product.single;
   const origPrice = variant === "6-Pack" ? product.single * 6 : null;
@@ -85,11 +86,11 @@ function ProductCard({ product, variant = "Single", showSavings = false, stock }
 
       <div style={{ padding: "20px 22px 22px" }}>
         <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8, minHeight: 18 }}>
-          {product.reviews > 0 ? (
+          {summary && summary.count > 0 ? (
             <>
-              <Stars value={product.rating} size={12}/>
+              <Stars value={Math.round(summary.average)} size={12}/>
               <span style={{ fontSize: 11, fontFamily: "var(--gb-font-sans)", color: "rgba(44,24,16,0.55)" }}>
-                {product.reviews}
+                {summary.average.toFixed(1)} · {summary.count} {summary.count === 1 ? "review" : "reviews"}
               </span>
             </>
           ) : (
@@ -130,7 +131,7 @@ function ProductCard({ product, variant = "Single", showSavings = false, stock }
   );
 }
 
-export function ShopSection({ products, stock }: { products: Product[]; stock?: Record<string, number> }) {
+export function ShopSection({ products, stock, summaries }: { products: Product[]; stock?: Record<string, number>; summaries?: Record<FlavorId, ReviewSummary> }) {
   const [size, setSize] = useState<"Single" | "6-Pack">("Single");
   const [filter, setFilter] = useState("all");
   const filtered = filter === "all" ? products : products.filter(p => p.filterTags?.includes(filter));
@@ -169,10 +170,10 @@ export function ShopSection({ products, stock }: { products: Product[]; stock?: 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 28 }}>
           {[
             { id: "all", label: "All brews" },
-            { id: "fiery", label: "🔥 Fiery" },
-            { id: "mild", label: "Mild & easy" },
-            { id: "mixer", label: "For cocktails" },
-            { id: "shot", label: "Morning shot" },
+            { id: "carbonated", label: "🫧 Carbonated" },
+            { id: "wellness", label: "💪 Wellness" },
+            { id: "mixer", label: "🍸 Mixer" },
+            { id: "everyday", label: "🥤 Everyday" },
           ].map(f => (
             <button key={f.id} onClick={() => setFilter(f.id)} style={{
               padding: "9px 16px", border: filter === f.id ? "1px solid #2C1810" : "1px solid rgba(44,24,16,0.12)",
@@ -188,7 +189,7 @@ export function ShopSection({ products, stock }: { products: Product[]; stock?: 
 
         <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 22 }}>
           {filtered.map(p => (
-            <ProductCard key={p.id} product={p} variant={size} showSavings={size === "6-Pack"} stock={stock?.[p.id]}/>
+            <ProductCard key={p.id} product={p} variant={size} showSavings={size === "6-Pack"} stock={stock?.[p.id]} summary={summaries?.[p.id]}/>
           ))}
         </div>
       </div>
@@ -259,15 +260,31 @@ function StatBar({ label, value }: Stat) {
   );
 }
 
-export function TasteGuide({ products }: { products: Product[] }) {
+export function TasteGuide({ products, summaries: _summaries }: { products: Product[]; summaries?: Record<FlavorId, ReviewSummary> }) {
   return (
     <section id="taste-guide" style={{ padding: "96px 0", background: "#fff", scrollMarginTop: 80 }}>
       <div className="gb-pad-40" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-        <div style={{ textAlign: "center", marginBottom: 40 }}>
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
           <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>Taste guide</p>
-          <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 52, fontWeight: 700, color: "#2C1810", margin: 0, letterSpacing: "-0.02em" }}>
+          <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 52, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", letterSpacing: "-0.02em" }}>
             Pick your <span style={{ fontStyle: "italic", color: "#C8893C" }}>moment.</span>
           </h2>
+          <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 15, color: "rgba(44,24,16,0.65)", margin: "0 auto", maxWidth: 540, lineHeight: 1.5 }}>
+            One question: what are you reaching for it for? Tap the closest answer.
+          </p>
+        </div>
+
+        {/* Decision strip — three quick prompts that anchor on each card */}
+        <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 24 }}>
+          {[
+            { label: "Mixing a cocktail", anchor: "#guide-beer" },
+            { label: "Drinking with dinner", anchor: "#guide-ale" },
+            { label: "Need a wake-up", anchor: "#guide-shot" },
+          ].map(p => (
+            <a key={p.label} href={p.anchor} style={{ display: "block", padding: "14px 16px", background: "#FDF6EC", borderRadius: 12, fontFamily: "var(--gb-font-sans)", fontSize: 14, fontWeight: 600, color: "#2C1810", textDecoration: "none", border: "1px solid rgba(44,24,16,0.06)", textAlign: "center" }}>
+              {p.label} →
+            </a>
+          ))}
         </div>
 
         <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
@@ -276,8 +293,9 @@ export function TasteGuide({ products }: { products: Product[] }) {
             return (
               <Link
                 key={p.id}
+                id={`guide-${p.id}`}
                 href={`/shop/${p.id}`}
-                style={{ background: "#FDF6EC", border: "1px solid rgba(44,24,16,0.06)", borderRadius: 18, padding: 22, fontFamily: "var(--gb-font-sans)", display: "flex", flexDirection: "column", gap: 14, transition: "transform 200ms, box-shadow 200ms" }}
+                style={{ background: "#FDF6EC", border: "1px solid rgba(44,24,16,0.06)", borderRadius: 18, padding: 22, fontFamily: "var(--gb-font-sans)", display: "flex", flexDirection: "column", gap: 14, transition: "transform 200ms, box-shadow 200ms", scrollMarginTop: 100 }}
                 onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 32px rgba(44,24,16,0.08)"; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
               >

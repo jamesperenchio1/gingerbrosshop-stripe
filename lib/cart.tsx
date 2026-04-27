@@ -51,6 +51,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const add: CartCtx["add"] = (line, opts) => {
     setItems(prev => {
+      // Bundles are always unique: every custom 6-pack mix is its own line item.
+      if (line.id === "bundle") {
+        const uid = `bundle|${(line.bundlePicks ?? []).join(",")}|${Date.now().toString(36)}`;
+        return [...prev, { ...line, uid }];
+      }
       const uid = `${line.id}|${line.variant}|${line.sub ? "sub" : "one"}`;
       const found = prev.find(i => i.uid === uid);
       if (found) return prev.map(i => i === found ? { ...i, qty: i.qty + line.qty } : i);

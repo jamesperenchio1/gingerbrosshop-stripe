@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { BottleImage, Icon, ICONS } from "./shared";
+import { BottleImage, Icon, ICONS, MixBottles } from "./shared";
 import { useCart } from "@/lib/cart";
 import { getProduct, PRODUCTS, type FlavorId } from "@/lib/products";
 
@@ -74,10 +74,13 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
             <div style={{ flex:1, overflowY:"auto", padding:"0 24px" }}>
               {items.map(i => {
                 const heroSrc = PRODUCTS.find(p => p.id === (i.flavor as FlavorId))?.heroImage;
+                const isBundle = i.id === "bundle";
                 return (
                 <div key={i.uid} style={{ display:"grid", gridTemplateColumns:"80px 1fr auto", gap:14, padding:"18px 0", borderBottom:"1px solid rgba(44,24,16,0.06)" }}>
                   <div style={{ width:80, height:96, background:"linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", padding: 6 }}>
-                    <BottleImage flavor={i.flavor} size={84} src={heroSrc}/>
+                    {isBundle
+                      ? <MixBottles flavors={i.bundlePicks} size={56}/>
+                      : <BottleImage flavor={i.flavor} size={84} src={heroSrc}/>}
                   </div>
                   <div>
                     <div style={{ fontFamily:"var(--gb-font-display)", fontWeight:600, fontSize:15, color:"#2C1810" }}>{i.title}</div>

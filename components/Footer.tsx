@@ -37,29 +37,20 @@ export function StoryStrip() {
                 Day 9 · active ferment
               </div>
             </div>
-            <div style={{ position: "absolute", bottom: -30, right: -30, width: 240, background: "#fff", padding: 20, borderRadius: 16, boxShadow: "0 16px 40px rgba(44,24,16,0.14)" }}>
-              <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#C8893C", fontWeight: 700, textTransform: "uppercase" }}>Provenance</div>
-              <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810", marginTop: 6, lineHeight: 1.2 }}>
-                Ginger from <span style={{ fontStyle: "italic", color: "#C8893C" }}>Chiang Rai</span>
-              </div>
-              <div style={{ fontSize: 12, color: "rgba(44,24,16,0.65)", marginTop: 8, fontFamily: "var(--gb-font-sans)", lineHeight: 1.5 }}>
-                Highland-grown. Harvested within 72h of bottling.
-              </div>
-            </div>
           </div>
           <div>
             <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 14px" }}>Our Craft</p>
             <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 52, fontWeight: 700, color: "#2C1810", margin: "0 0 20px", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
-              One guy. One stubborn recipe.
+              Two brothers. <span style={{ fontStyle: "italic", color: "#C8893C" }}>One ginger habit.</span>
             </h2>
             <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.7)", lineHeight: 1.65, margin: "0 0 32px" }}>
-              Started in a small Bangkok kitchen in 2024 after one too many bad supermarket ginger beers. Now a proper little brewery — fresh Thai ginger, a 14-day ferment, and no shortcuts.
+              We started Gingerbros in Bangkok because the ginger drinks we wanted didn&apos;t exist here — real ginger, no sugar, no flavor lab. So we made our own. Three bottles, one obsessive recipe.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
               {[
-                { n: "14", u: "day ferment" },
-                { n: "0", u: "added flavor" },
-                { n: "100%", u: "Thai ginger" },
+                { n: "0g", u: "added sugar" },
+                { n: "14", u: "day ferment (beer + ale)" },
+                { n: "100%", u: "real ginger" },
               ].map(s => (
                 <div key={s.u} style={{ borderTop: "1px solid rgba(44,24,16,0.12)", paddingTop: 14 }}>
                   <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 36, fontWeight: 700, color: "#2C1810", lineHeight: 1 }}>{s.n}</div>

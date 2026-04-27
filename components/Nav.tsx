@@ -71,9 +71,6 @@ export function Nav({ onOpenCart, onOpenSearch, onOpenAccount }: {
           </Link>
 
           <div style={{ display: "flex", gap: 22, justifyContent: "flex-end", alignItems: "center" }}>
-            <span style={{ ...navBtn }} className="gb-hide-mobile">
-              <Icon d={ICONS.pin} size={16} stroke={2}/> TH · THB
-            </span>
             <button onClick={onOpenSearch} style={{ ...navBtn, padding: 0 }} aria-label="Search">
               <Icon d={ICONS.search} size={18}/>
             </button>

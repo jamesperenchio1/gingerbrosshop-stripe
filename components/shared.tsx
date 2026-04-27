@@ -67,6 +67,26 @@ export function BottleImage({ flavor = "beer", size = 160, src }: { flavor?: "be
   return <Bottle flavor={flavor} size={size}/>;
 }
 
+/** Mix-bundle icon — three little bottles fanned out, used for custom 6-packs. */
+export function MixBottles({ flavors, size = 80 }: { flavors?: ("beer" | "shot" | "ale")[]; size?: number }) {
+  const fallback: ("beer" | "shot" | "ale")[] = ["beer", "ale", "shot"];
+  const display: ("beer" | "shot" | "ale")[] = (flavors && flavors.length > 0 ? flavors : fallback).slice(0, 3);
+  const w = size * 1.6;
+  return (
+    <div style={{ position: "relative", width: w, height: size, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      {display.map((f, i) => {
+        const offset = (i - (display.length - 1) / 2) * (size * 0.32);
+        const rot = (i - (display.length - 1) / 2) * 6;
+        return (
+          <div key={i} style={{ position: "absolute", transform: `translateX(${offset}px) rotate(${rot}deg)`, zIndex: i === Math.floor(display.length / 2) ? 2 : 1 }}>
+            <Bottle flavor={f} size={size}/>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function Bottle({ flavor = "beer", size = 160 }: { flavor?: "beer" | "shot" | "ale"; size?: number }) {
   const palettes: Record<string, { body: string; cap: string; label: string; accent: string; name: string }> = {
     shot:  { body: "#8B3A1A", cap: "#2C1810", label: "#FDF6EC", accent: "#C8893C", name: "SHOT" },

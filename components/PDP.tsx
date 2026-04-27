@@ -3,10 +3,34 @@ import Link from "next/link";
 import { useState } from "react";
 import { Bottle, BottleImage, Icon, ICONS } from "./shared";
 import { PdpRatingHeader, ReviewsBlock } from "./Reviews";
+import type { Review, ReviewSummary } from "@/lib/reviews";
+
+function brewCopy(id: Product["id"]): string {
+  if (id === "shot") {
+    return "We cold-press fresh ginger root within 24 hours of arriving at the kitchen. The juice gets blended with coconut water (for natural electrolytes) and taurine, hit with a little lime, then bottled cold. No fermentation, no sugar, no shortcuts.";
+  }
+  // beer + ale share a ferment
+  return "Ginger-bug method. Fresh ginger goes into a wild starter culture for a few days until it's actively fermenting on its own. We brew a strong ginger tea, blend it with the bug, and let the mix ferment until it tastes like it should — about two weeks. Then we pasteurize, sweeten with erythritol, hit it with fresh lime, keg, and bottle.";
+}
+
+function pairCopy(id: Product["id"]): string {
+  if (id === "beer") return "Build a Bangkok Mule with dark rum or whisky and a squeeze of lime — that's the move. Otherwise serve cold over ice; cuts through rich, fatty street food (moo krata, khao soi). Best within a few days of opening for full fizz.";
+  if (id === "ale") return "Long glass, ice spear, splash of whisky or rum, twist of lemon — easiest highball you'll make. On its own with dinner, especially anything fried. Splash into sparkling wine for a low-effort spritz.";
+  return "Drink cold, neat, like a wellness shot. First thing in the morning before coffee. 30 minutes before a workout. When you feel a sniffle. Chase with warm water and lemon if the heat is too much for you.";
+}
+
+function shippingCopy(): string {
+  return "Bangkok next-day available · Thailand-wide via Kerry Express in 3–5 business days · free over ฿500. We ship within 48 hours of bottling. Bottle arrives broken? Photo to gingerbros.brew@gmail.com within 48 hours and we replace it free. We don't accept open-bottle returns — it's a fermented product, we can't safely resell it.";
+}
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/products";
 
-export function ProductDetail({ product, stock }: { product: Product; stock?: number }) {
+export function ProductDetail({ product, stock, summary, initialReviews }: {
+  product: Product;
+  stock?: number;
+  summary: ReviewSummary;
+  initialReviews: Review[];
+}) {
   const [variant, setVariant] = useState<"Single" | "6-Pack">("Single");
   const [qty, setQty] = useState(1);
   const [sub, setSub] = useState(false);
@@ -84,7 +108,7 @@ export function ProductDetail({ product, stock }: { product: Product; stock?: nu
 
                     <div style={{ position: "absolute", top: 20, left: 20, display: "flex", flexDirection: "column", gap: 8, zIndex: 4 }}>
                       <span style={{ background: "#2C1810", color: "#FDF6EC", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 9999 }}>{product.tag}</span>
-                      <span style={{ background: "#fff", color: "#4A7C3F", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 9999 }}>No added flavor</span>
+                      <span style={{ background: "#fff", color: "#4A7C3F", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", padding: "6px 12px", borderRadius: 9999 }}>0g sugar</span>
                     </div>
 
                     {total > 1 && (
@@ -123,7 +147,7 @@ export function ProductDetail({ product, stock }: { product: Product; stock?: nu
           </div>
 
           <div style={{ paddingTop: 8 }}>
-            <PdpRatingHeader productId={product.id}/>
+            <PdpRatingHeader summary={summary}/>
             <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", fontSize: 11, margin: "0 0 8px" }}>
               {product.flavor === "shot" ? "Concentrated Kick · 60ml" : product.flavor === "beer" ? "Naturally Fermented · 330ml" : "Crisp & Carbonated · 330ml"}
             </p>
@@ -199,7 +223,7 @@ export function ProductDetail({ product, stock }: { product: Product; stock?: nu
                 { icon: ICONS.truck, title: "Ships in 48h", body: "Free over ฿500 · Bangkok next-day" },
                 { icon: ICONS.shield, title: "Bottle guarantee", body: "Broken on arrival? Free replacement." },
                 { icon: ICONS.box, title: lowStock ? "Low stock" : "In stock", body: lowStock ? "Almost out — order soon" : "Restocked weekly · ships within 48h" },
-                { icon: ICONS.leaf, title: "Real ingredients", body: "No flavoring, no preservatives" },
+                { icon: ICONS.leaf, title: "0g added sugar", body: "Sweetened with erythritol" },
               ].map(b => (
                 <div key={b.title} style={{ padding: "10px 12px", background: "#fff", borderRadius: 10, border: "1px solid rgba(44,24,16,0.06)", display: "flex", gap: 10, alignItems: "flex-start", fontFamily: "var(--gb-font-sans)" }}>
                   <span style={{ color: "#C8893C", marginTop: 2 }}><Icon d={b.icon} size={15} stroke={2}/></span>
@@ -215,9 +239,9 @@ export function ProductDetail({ product, stock }: { product: Product; stock?: nu
               {[
                 { k: "story", h: "The story", body: product.about },
                 { k: "ingredients", h: "Ingredients & nutrition", body: product.ingredients },
-                { k: "brew", h: "How we brew it", body: "Fresh ginger is pressed within 24 hours of delivery. The juice ferments for 14 days in oak-hooped vessels with our heritage yeast, then we bottle at atmospheric pressure for a lively, not-too-aggressive fizz." },
-                { k: "pair", h: "Pairings & serving", body: "Serve cold over ice with a twist of lime. Cuts through fatty street food (moo krata, khao soi) and works as a stand-in for tonic with dark rum or bourbon." },
-                { k: "shipping", h: "Shipping & returns", body: "We ship Bangkok next-day, Thailand-wide in 3–5 business days. Shattered on arrival? Snap a photo, we replace it free within 48h." },
+                { k: "brew", h: "How we make it", body: brewCopy(product.id) },
+                { k: "pair", h: "Pairings & serving", body: pairCopy(product.id) },
+                { k: "shipping", h: "Shipping & breakage", body: shippingCopy() },
               ].map(t => (
                 <div key={t.k} style={{ borderBottom: "1px solid rgba(44,24,16,0.1)" }}>
                   <button onClick={() => setOpenTab(openTab === t.k ? "" : t.k)} style={{ width: "100%", padding: "18px 0", background: "none", border: 0, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "var(--gb-font-display)", fontSize: 18, fontWeight: 600, color: "#2C1810" }}>
@@ -235,7 +259,7 @@ export function ProductDetail({ product, stock }: { product: Product; stock?: nu
           </div>
         </div>
 
-        <ReviewsBlock productId={product.id}/>
+        <ReviewsBlock productId={product.id} initialReviews={initialReviews}/>
       </div>
     </div>
   );

@@ -71,8 +71,8 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
 
             <div style={{ display: "flex", gap: 28, marginTop: 44, flexWrap: "wrap" }}>
               <div>
-                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>14-day</div>
-                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>natural ferment</div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>0g</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>added sugar</div>
               </div>
               <div style={{ width: 1, background: "rgba(44,24,16,0.12)" }}/>
               <div>
@@ -81,8 +81,8 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
               </div>
               <div style={{ width: 1, background: "rgba(44,24,16,0.12)" }}/>
               <div>
-                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>0g</div>
-                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>added sugar</div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>Glass</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>not plastic</div>
               </div>
             </div>
           </div>
@@ -107,9 +107,9 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
               boxShadow: "0 12px 28px rgba(44,24,16,0.12)",
               fontFamily: "var(--gb-font-sans)",
             }}>
-              <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#C8893C", fontWeight: 700, textTransform: "uppercase", marginBottom: 8 }}>Brewed in Bangkok</div>
+              <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#C8893C", fontWeight: 700, textTransform: "uppercase", marginBottom: 8 }}>Made in Bangkok</div>
               <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 15, fontWeight: 500, color: "#2C1810", lineHeight: 1.45 }}>
-                Real ginger, 14-day ferment, glass bottles. Nothing from a flavor lab.
+                Real ginger, real ingredients, zero sugar. Nothing from a flavor lab.
               </div>
             </div>
 
@@ -135,10 +135,10 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
             {Array.from({ length: 4 }).map((_, k) => (
               <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: 28, fontFamily: "var(--gb-font-display)", fontStyle: "italic", fontSize: 18, color: "rgba(44,24,16,0.55)", marginRight: 28 }}>
                 Fresh Thai ginger <span style={{ color: "#C8893C" }}>✦</span>
-                14-day natural ferment <span style={{ color: "#C8893C" }}>✦</span>
-                No flavoring agents <span style={{ color: "#C8893C" }}>✦</span>
+                Zero added sugar <span style={{ color: "#C8893C" }}>✦</span>
+                Sweetened with erythritol <span style={{ color: "#C8893C" }}>✦</span>
                 Glass, not plastic <span style={{ color: "#C8893C" }}>✦</span>
-                Brewed in Bangkok <span style={{ color: "#C8893C" }}>✦</span>
+                Made in Bangkok <span style={{ color: "#C8893C" }}>✦</span>
               </span>
             ))}
           </div>

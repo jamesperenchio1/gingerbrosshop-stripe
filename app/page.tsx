@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PRODUCTS } from "@/lib/products";
 import { getAllStock } from "@/lib/inventory";
+import { getAllSummaries } from "@/lib/reviews";
 import { Chrome } from "@/components/Chrome";
 import { Hero } from "@/components/Hero";
 import { ShopSection, TasteGuide } from "@/components/Shop";
@@ -11,12 +12,12 @@ import { Icon, ICONS } from "@/components/shared";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const stock = await getAllStock();
+  const [stock, summaries] = await Promise.all([getAllStock(), getAllSummaries()]);
   return (
     <Chrome>
       <Hero variant="maker"/>
-      <ShopSection products={PRODUCTS} stock={stock}/>
-      <TasteGuide products={PRODUCTS}/>
+      <ShopSection products={PRODUCTS} stock={stock} summaries={summaries}/>
+      <TasteGuide products={PRODUCTS} summaries={summaries}/>
       <BundleBuilder products={PRODUCTS}/>
       <StoryStrip/>
       <SubscriptionBlock/>
