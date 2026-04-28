@@ -6,15 +6,18 @@ import { useCart } from "@/lib/cart";
 import { PRODUCTS, SUB_BOTTLE_PRICE, type FlavorId } from "@/lib/products";
 
 const BOX_SIZE = 6;
+const MAX_BOXES = 4;
 
 export function SubscribeClient() {
   const router = useRouter();
   const { add, clear } = useCart();
   const [picks, setPicks] = useState<Record<FlavorId, number>>({ beer: 2, ale: 2, shot: 2 });
+  const [boxes, setBoxes] = useState(1);
 
   const total = picks.beer + picks.ale + picks.shot;
   const remaining = BOX_SIZE - total;
-  const monthly = picks.beer * SUB_BOTTLE_PRICE.beer + picks.ale * SUB_BOTTLE_PRICE.ale + picks.shot * SUB_BOTTLE_PRICE.shot;
+  const perBoxPrice = picks.beer * SUB_BOTTLE_PRICE.beer + picks.ale * SUB_BOTTLE_PRICE.ale + picks.shot * SUB_BOTTLE_PRICE.shot;
+  const monthly = perBoxPrice * boxes;
 
   const inc = (id: FlavorId) => {
     if (total >= BOX_SIZE) return;
@@ -41,7 +44,7 @@ export function SubscribeClient() {
         variant: "Single",
         priceId: product.prices.subBottle,
         price: SUB_BOTTLE_PRICE[id],
-        qty,
+        qty: qty * boxes,
         sub: true,
       }, { openDrawer: false });
     }
@@ -117,13 +120,14 @@ export function SubscribeClient() {
           <div style={{ borderTop: "1px solid rgba(44,24,16,0.08)", paddingTop: 28 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 22, flexWrap: "wrap", gap: 16 }}>
               <div>
-                <div style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: "rgba(44,24,16,0.55)", fontWeight: 700, marginBottom: 4 }}>Your monthly box</div>
+                <div style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: "rgba(44,24,16,0.55)", fontWeight: 700, marginBottom: 4 }}>Your monthly delivery</div>
                 <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810" }}>
                   {total === 0 ? "Start picking bottles" : (
                     [
-                      picks.beer ? `${picks.beer}× Beer` : null,
-                      picks.ale ? `${picks.ale}× Ale` : null,
-                      picks.shot ? `${picks.shot}× Shot` : null,
+                      `${boxes}× box`,
+                      picks.beer ? `${picks.beer * boxes}× Beer` : null,
+                      picks.ale ? `${picks.ale * boxes}× Ale` : null,
+                      picks.shot ? `${picks.shot * boxes}× Shot` : null,
                     ].filter(Boolean).join(" · ")
                   )}
                 </div>
@@ -131,6 +135,34 @@ export function SubscribeClient() {
               <div style={{ textAlign: "right" }}>
                 <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 36, fontWeight: 700, color: "#C8893C", lineHeight: 1 }}>฿{monthly}</div>
                 <div style={{ fontSize: 12, color: "rgba(44,24,16,0.55)" }}>per month, shipped</div>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, padding: "16px 18px", background: "#FDF6EC", borderRadius: 14, marginBottom: 22, flexWrap: "wrap" }}>
+              <div>
+                <div style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: "rgba(44,24,16,0.55)", fontWeight: 700, marginBottom: 4 }}>Step 2 · Boxes per month</div>
+                <div style={{ fontSize: 13, color: "rgba(44,24,16,0.6)" }}>
+                  {boxes === 1 ? "1 box (6 bottles) every month" : `${boxes} boxes (${BOX_SIZE * boxes} bottles) every month`}
+                </div>
+              </div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                <button
+                  onClick={() => setBoxes(b => Math.max(1, b - 1))}
+                  disabled={boxes <= 1}
+                  aria-label="One fewer box"
+                  style={{ width: 38, height: 38, borderRadius: 9999, border: 0, background: boxes <= 1 ? "rgba(44,24,16,0.05)" : "#fff", color: "#2C1810", cursor: boxes <= 1 ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: boxes <= 1 ? "none" : "0 1px 4px rgba(44,24,16,0.08)" }}
+                >
+                  <Icon d={ICONS.minus} size={16} stroke={2.4}/>
+                </button>
+                <div style={{ minWidth: 32, textAlign: "center", fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810" }}>{boxes}</div>
+                <button
+                  onClick={() => setBoxes(b => Math.min(MAX_BOXES, b + 1))}
+                  disabled={boxes >= MAX_BOXES}
+                  aria-label="One more box"
+                  style={{ width: 38, height: 38, borderRadius: 9999, border: 0, background: boxes >= MAX_BOXES ? "rgba(44,24,16,0.05)" : "#C8893C", color: boxes >= MAX_BOXES ? "rgba(44,24,16,0.3)" : "#fff", cursor: boxes >= MAX_BOXES ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                >
+                  <Icon d={ICONS.plus} size={16} stroke={2.4}/>
+                </button>
               </div>
             </div>
 

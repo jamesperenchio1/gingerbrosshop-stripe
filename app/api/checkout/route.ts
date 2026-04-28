@@ -121,8 +121,19 @@ export async function POST(req: Request) {
     line_items: lineItems,
     allow_promotion_codes: true,
     metadata: { orderId, source: "gingerbrosshop", isSubscription: isSubscription ? "1" : "0" },
-    payment_method_types: isSubscription ? ["card"] : ["card", "promptpay"],
   };
+
+  if (isSubscription) {
+    // Subscription mode requires reusable payment methods. PromptPay/GrabPay/Alipay
+    // can't recur, so card is the only option Stripe Checkout accepts here.
+    sessionParams.payment_method_types = ["card"];
+  } else {
+    // Let Stripe surface every method enabled in Dashboard → Settings → Payment methods
+    // (card, PromptPay, GrabPay, Alipay, WeChat Pay, Link, Apple/Google Pay…).
+    // The SDK type is behind the API here; cast to bypass.
+    (sessionParams as unknown as Record<string, unknown>).automatic_payment_methods = { enabled: true };
+    sessionParams.customer_creation = "always";
+  }
 
   if (body.embedded) {
     // Embedded Checkout — Stripe-hosted form rendered inline on our site.

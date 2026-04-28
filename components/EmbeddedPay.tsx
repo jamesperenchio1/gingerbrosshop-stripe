@@ -34,8 +34,9 @@ export function EmbeddedPay() {
     snapshotTaken.current = true;
   }, [hydrated, items]);
 
+  const isSub = useMemo(() => snapshot.some(i => i.sub), [snapshot]);
   const snapshotSubtotal = useMemo(() => snapshot.reduce((a, i) => a + i.price * i.qty, 0), [snapshot]);
-  const snapshotShipping = snapshotSubtotal === 0 ? 0 : snapshotSubtotal >= 500 ? 0 : 60;
+  const snapshotShipping = isSub ? 0 : snapshotSubtotal === 0 ? 0 : snapshotSubtotal >= 500 ? 0 : 60;
 
   useEffect(() => {
     if (requested.current) return;
@@ -43,22 +44,31 @@ export function EmbeddedPay() {
     requested.current = true;
     if (snapshot.length === 0) { setLoading(false); return; }
 
+    const payload = JSON.stringify({
+      items: snapshot.map(i => ({
+        id: i.id, flavor: i.flavor, title: i.title, variant: i.variant,
+        priceId: i.priceId, bundlePicks: i.bundlePicks, price: i.price, qty: i.qty, sub: !!i.sub,
+      })),
+      customer: { email: "" },
+      shipping: { method: "std" },
+      method: "stripe",
+      embedded: true,
+    });
+
+    const callCheckout = () => fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload,
+    });
+
     void (async () => {
       try {
-        const res = await fetch("/api/checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            items: snapshot.map(i => ({
-              id: i.id, flavor: i.flavor, title: i.title, variant: i.variant,
-              priceId: i.priceId, bundlePicks: i.bundlePicks, price: i.price, qty: i.qty, sub: !!i.sub,
-            })),
-            customer: { email: "" },
-            shipping: { method: "std" },
-            method: "stripe",
-            embedded: true,
-          }),
-        });
+        let res = await callCheckout();
+        // Retry once on cold-start failures (5xx / network hiccup) before surfacing an error.
+        if (!res.ok && res.status >= 500) {
+          await new Promise(r => setTimeout(r, 800));
+          res = await callCheckout();
+        }
         const data: { clientSecret?: string; error?: string } = await res.json();
         if (!res.ok || !data.clientSecret) {
           setErr(data.error || "Couldn't start checkout. Please try again.");
@@ -134,12 +144,21 @@ export function EmbeddedPay() {
               </EmbeddedCheckoutProvider>
             </div>
           )}
-          {!loading && !err && (!clientSecret || !stripePromise) && (
+          {!loading && !err && !stripePromise && (
             <div style={{ padding: 28, background: "#fff", borderRadius: 16, fontFamily: "var(--gb-font-sans)" }}>
-              <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#8B3A1A" }}>Stripe is unavailable</div>
-              <p style={{ color: "rgba(44,24,16,0.7)", marginTop: 8 }}>
-                Refresh the page or send us a screenshot at <a href="/contact" style={{ color: "#C8893C", textDecoration: "underline" }}>support</a> and we&apos;ll help.
+              <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#8B3A1A" }}>Payments aren&apos;t configured</div>
+              <p style={{ color: "rgba(44,24,16,0.7)", marginTop: 8, lineHeight: 1.6 }}>
+                The Stripe publishable key is missing on this deployment. Reach out at <a href="/contact" style={{ color: "#C8893C", textDecoration: "underline" }}>support</a> — we&apos;ll get this back online.
               </p>
+            </div>
+          )}
+          {!loading && !err && stripePromise && !clientSecret && (
+            <div style={{ padding: 28, background: "#fff", borderRadius: 16, fontFamily: "var(--gb-font-sans)" }}>
+              <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#8B3A1A" }}>Couldn&apos;t start checkout</div>
+              <p style={{ color: "rgba(44,24,16,0.7)", marginTop: 8, lineHeight: 1.6 }}>
+                Refresh the page, or contact <a href="/contact" style={{ color: "#C8893C", textDecoration: "underline" }}>support</a> if it keeps happening.
+              </p>
+              <button onClick={() => router.refresh()} className="gb-btn gb-btn--primary" style={{ fontSize: 13, padding: "10px 18px", marginTop: 14 }}>Try again</button>
             </div>
           )}
         </div>
@@ -162,7 +181,7 @@ export function EmbeddedPay() {
                     <div style={{ fontFamily: "var(--gb-font-sans)" }}>
                       <div style={{ fontSize: 13, fontWeight: 600, color: "#2C1810", fontFamily: "var(--gb-font-display)" }}>{i.title}</div>
                       <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.12em" }}>
-                        {isBundle ? formatBundlePicks(i.bundlePicks) : i.variant}{i.sub ? " · Subscription" : ""}
+                        {i.sub ? "Monthly subscription" : isBundle ? formatBundlePicks(i.bundlePicks) : i.variant}
                       </div>
                     </div>
                     <div style={{ fontFamily: "var(--gb-font-sans)", fontWeight: 700, color: "#C8893C", fontSize: 13 }}>฿{i.price * i.qty}</div>
@@ -179,11 +198,11 @@ export function EmbeddedPay() {
                 <span>Shipping</span><span>{snapshotShipping === 0 ? <span style={{ color: "#4A7C3F", fontWeight: 700 }}>Free</span> : `฿${snapshotShipping}`}</span>
               </div>
               <div style={{ fontSize: 11, color: "rgba(44,24,16,0.5)", marginBottom: 6 }}>
-                Final shipping picked on the form. Free over ฿500.
+                {isSub ? "Free shipping every month, forever." : "Final shipping picked on the form. Free over ฿500."}
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(44,24,16,0.08)" }}>
-                <span style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>Estimated total</span>
-                <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 24, fontWeight: 700, color: "#C8893C" }}>฿{snapshotSubtotal + snapshotShipping}</span>
+                <span style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>{isSub ? "Monthly total" : "Estimated total"}</span>
+                <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 24, fontWeight: 700, color: "#C8893C" }}>฿{snapshotSubtotal + snapshotShipping}{isSub ? "/mo" : ""}</span>
               </div>
             </div>
 
