@@ -163,7 +163,7 @@ export function SubscriptionBlock() {
                 </div>
               ))}
             </div>
-            <a href="/shop/beer" className="gb-btn gb-btn--primary" style={{ background: "#C8893C", fontSize: 15 }}>
+            <a href="/subscribe" className="gb-btn gb-btn--primary" style={{ background: "#C8893C", fontSize: 15 }}>
               Start a subscription <Icon d={ICONS.arrow} size={16}/>
             </a>
           </div>

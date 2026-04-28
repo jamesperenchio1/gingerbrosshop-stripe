@@ -17,6 +17,10 @@ export type CartLine = {
 
 type CartCtx = {
   items: CartLine[];
+  /** False until the localStorage cart has been read on the client. Useful for pages that
+   *  need to render a cart-empty fallback only AFTER hydration (so a hard reload of
+   *  /checkout/pay doesn't flash "Your cart is empty" before the cart loads). */
+  hydrated: boolean;
   add: (line: Omit<CartLine, "uid">, opts?: { openDrawer?: boolean }) => void;
   remove: (uid: string) => void;
   changeQty: (uid: string, delta: number) => void;
@@ -74,7 +78,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const count = items.reduce((a, i) => a + i.qty, 0);
   const subtotal = items.reduce((a, i) => a + i.price * i.qty, 0);
 
-  return <Ctx.Provider value={{ items, add, remove, changeQty, clear, count, subtotal, drawerOpen, openDrawer, closeDrawer }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ items, hydrated, add, remove, changeQty, clear, count, subtotal, drawerOpen, openDrawer, closeDrawer }}>{children}</Ctx.Provider>;
 }
 
 export function useCart(): CartCtx {

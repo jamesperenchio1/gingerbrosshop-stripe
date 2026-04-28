@@ -122,7 +122,7 @@ export function Footer() {
               { label: "Ginger Ale",       href: "/shop/ale" },
               { label: "Ginger Shot",      href: "/shop/shot" },
               { label: "Build a 6-pack",   href: "/#bundle" },
-              { label: "Subscriptions",    href: "/shop/beer" },
+              { label: "Subscriptions",    href: "/subscribe" },
             ] },
             { h: "Learn", items: [
               { label: "Our story",        href: "/story" },
@@ -133,6 +133,7 @@ export function Footer() {
             { h: "Help", items: [
               { label: "Shipping info",   href: "/shipping" },
               { label: "Track my order",  href: "/tracking" },
+              { label: "Manage subscription", href: "/account" },
               { label: "Returns",          href: "/returns" },
               { label: "FAQ",              href: "/faq" },
               { label: "Contact us",      href: "/contact" },

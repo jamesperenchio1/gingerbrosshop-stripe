@@ -4,6 +4,15 @@ import { kv } from "@vercel/kv";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+type StoredAddress = {
+  line1?: string | null;
+  line2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  postal_code?: string | null;
+  country?: string | null;
+};
+
 type StoredOrder = {
   orderId: string;
   status?: string;
@@ -12,6 +21,9 @@ type StoredOrder = {
   method?: "stripe" | "cod";
   isSubscription?: boolean;
   items?: { flavor?: string; title?: string; variant?: string; qty?: number }[];
+  shippingAddress?: StoredAddress | null;
+  shippingName?: string | null;
+  shippingPhone?: string | null;
 };
 
 const HAS_KV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
@@ -19,7 +31,10 @@ const HAS_KV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const secret = url.searchParams.get("secret");
-  if (!process.env.ADMIN_SECRET || secret !== process.env.ADMIN_SECRET) {
+  if (!process.env.ADMIN_SECRET) {
+    return NextResponse.json({ error: "ADMIN_SECRET not set on the server. Add it in Vercel → Project → Settings → Environment Variables." }, { status: 500 });
+  }
+  if (secret !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
   if (!HAS_KV) return NextResponse.json({ error: "KV not provisioned" }, { status: 500 });

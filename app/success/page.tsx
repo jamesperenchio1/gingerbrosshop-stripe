@@ -139,9 +139,10 @@ export default async function SuccessPage({ searchParams }: { searchParams: Prom
             <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810", marginBottom: 16 }}>What happens next</div>
             <div style={{ display: "grid", gap: 14 }}>
               {[
-                { icon: ICONS.flame,  title: "Bottling",  body: "Your bottles get packed within 24 hours of payment." },
-                { icon: ICONS.truck,  title: "Shipping",  body: "Kerry Express picks up the same day or next morning. Bangkok next-day · Thailand-wide 3–5 business days." },
-                { icon: ICONS.box,    title: "Delivery",  body: isSubscription ? "First box arrives within a few days. Then every 30 days — manage anytime via the link in your subscription email." : "We'll email you when it ships, with a live link to your order page." },
+                { icon: ICONS.flame,  title: "Bottling",   body: "We bottle by hand in small batches. Your order is in the queue." },
+                { icon: ICONS.box,    title: "Packing",    body: "Once your bottles are sealed and labelled, we pack them with cushion for the road." },
+                { icon: ICONS.truck,  title: "Shipping",   body: "We hand off to Kerry Express. We'll add a tracking link to your order page when it leaves us." },
+                { icon: ICONS.heart,  title: isSubscription ? "Recurring" : "Delivery", body: isSubscription ? "First box arrives within a few days. Then every 30 days — manage anytime from the link in your subscription email or at /account." : "Watch your order page for live status. We'll email you when it ships." },
               ].map((s, i) => (
                 <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
                   <span style={{ width: 36, height: 36, borderRadius: "50%", background: "#FDF6EC", color: "#C8893C", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>

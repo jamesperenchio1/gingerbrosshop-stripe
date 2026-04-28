@@ -10,7 +10,6 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
   const shipping = subtotal === 0 ? 0 : subtotal >= 500 ? 0 : 60;
   const freeShipProgress = Math.min(100, (subtotal / 500) * 100);
 
-  const goCOD = () => { onClose(); router.push("/checkout"); };
   const goPay = () => { onClose(); router.push("/checkout/pay"); };
   const addCrossSell = () => {
     const shot = getProduct("shot");
@@ -133,14 +132,11 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                 <span>Total</span><span>฿{subtotal + shipping}</span>
               </div>
               <button onClick={goPay} className="gb-btn gb-btn--primary" style={{ width:"100%", justifyContent:"center", fontSize: 15 }}>
-                Pay online · ฿{subtotal + shipping} <Icon d={ICONS.arrow} size={16}/>
-              </button>
-              <button onClick={goCOD} style={{ width: "100%", padding: "10px 14px", marginTop: 10, background: "transparent", border: "1px solid rgba(44,24,16,0.15)", borderRadius: 9999, fontFamily: "var(--gb-font-sans)", fontSize: 13, fontWeight: 600, color: "#2C1810", cursor: "pointer" }}>
-                Pay on delivery instead
+                Checkout · ฿{subtotal + shipping} <Icon d={ICONS.arrow} size={16}/>
               </button>
               <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 12, fontFamily: "var(--gb-font-sans)", fontSize: 11, color: "rgba(44,24,16,0.5)" }}>
                 <Icon d={ICONS.shield} size={12} stroke={2}/>
-                Secure · Card / PromptPay / Apple Pay / Google Pay
+                Card · PromptPay · Apple Pay · Google Pay
               </div>
             </div>
           </>

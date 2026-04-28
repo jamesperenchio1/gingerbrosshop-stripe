@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test:http": "node __tests__/user-sim.mjs",
+    "test:browser": "node __tests__/browser-sim.mjs",
+    "test": "npm run test:http && npm run test:browser"
   },
   "dependencies": {
     "@react-email/components": "^1.0.12",
@@ -23,6 +26,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "playwright": "^1.59.1",
     "typescript": "^5"
   }
 }

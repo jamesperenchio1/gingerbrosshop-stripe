@@ -3,7 +3,6 @@ import type Stripe from "stripe";
 import { stripe, siteUrl } from "@/lib/stripe";
 import { kv } from "@vercel/kv";
 import { z } from "zod";
-import { sendOrderEmails } from "@/lib/resend";
 import { formatBundlePicks, getProduct } from "@/lib/products";
 import type { FlavorId } from "@/lib/products";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
@@ -14,7 +13,6 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const PHONE_RE = /^[0-9+\-\s()]{8,20}$/;
-const TH_POSTAL_RE = /^\d{5}$/;
 const MAX_TOTAL_QTY = 60;
 
 const Item = z.object({
@@ -36,25 +34,16 @@ const Body = z.object({
     first: z.string().max(60).optional(),
     last: z.string().max(60).optional(),
     phone: z.string().regex(PHONE_RE, "Invalid phone").optional().or(z.literal("")),
-  }),
+  }).optional().default({}),
   shipping: z.object({
-    addr1: z.string().max(200).optional(),
-    city: z.string().max(80).optional(),
-    zip: z.string().regex(TH_POSTAL_RE, "Invalid postal code").optional().or(z.literal("")),
     method: z.enum(["std", "next"]).default("std"),
-  }),
-  method: z.enum(["stripe", "cod"]).default("stripe"),
+  }).optional().default({ method: "std" }),
+  method: z.literal("stripe").default("stripe"),
   embedded: z.boolean().optional(),
 }).superRefine((data, ctx) => {
   const totalQty = data.items.reduce((a, i) => a + i.qty, 0);
   if (totalQty > MAX_TOTAL_QTY) {
     ctx.addIssue({ code: "custom", message: `Cart exceeds ${MAX_TOTAL_QTY} items total`, path: ["items"] });
-  }
-  if (data.method === "cod") {
-    if (!data.customer.email) ctx.addIssue({ code: "custom", message: "Email required for COD", path: ["customer", "email"] });
-    if (!data.customer.phone) ctx.addIssue({ code: "custom", message: "Phone required for COD", path: ["customer", "phone"] });
-    if (!data.shipping.addr1) ctx.addIssue({ code: "custom", message: "Address required for COD", path: ["shipping", "addr1"] });
-    if (!data.shipping.zip) ctx.addIssue({ code: "custom", message: "Postal code required for COD", path: ["shipping", "zip"] });
   }
 });
 
@@ -102,42 +91,8 @@ export async function POST(req: Request) {
   const orderId = newOrderId();
   const isSubscription = items.some(i => i.sub);
   const subtotal = items.reduce((a, i) => a + i.price * i.qty, 0);
-  const shippingCost = body.method === "cod"
-    ? (subtotal >= 500 ? 0 : 60)
-    : (body.shipping.method === "next" ? 120 : (subtotal >= 500 ? 0 : 60));
 
   const HAS_KV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
-
-  // ---- COD path: skip Stripe Checkout, just record + email ----
-  if (body.method === "cod") {
-    if (!body.customer.email) {
-      return NextResponse.json({ error: "Email is required for COD orders" }, { status: 400 });
-    }
-    const total = subtotal + shippingCost;
-    const trackUrl = `${siteUrl()}/tracking/${orderId}`;
-    if (HAS_KV) {
-      await kv.set(`gb:order:${orderId}`, {
-        orderId,
-        status: "received",
-        email: body.customer.email,
-        method: "cod",
-        items: items.map(i => ({ priceId: i.priceId, flavor: i.flavor, title: i.title, variant: i.variant, qty: i.qty })),
-      });
-    }
-    try {
-      await sendOrderEmails({
-        orderId,
-        email: body.customer.email,
-        total, shipping: shippingCost, subtotal,
-        items: items.map(i => ({ title: i.title, variant: i.variant, qty: i.qty, price: i.price })),
-        trackUrl,
-        isCOD: true,
-      });
-    } catch (e) {
-      console.error("[cod email]", e);
-    }
-    return NextResponse.json({ orderId, url: trackUrl });
-  }
 
   // ---- Stripe Checkout path ----
   type CreateParams = NonNullable<Parameters<typeof stripe.checkout.sessions.create>[0]>;
@@ -176,7 +131,7 @@ export async function POST(req: Request) {
   } else {
     // Hosted (redirect) Checkout — fallback path.
     sessionParams.success_url = `${siteUrl()}/success?session_id={CHECKOUT_SESSION_ID}`;
-    sessionParams.cancel_url = `${siteUrl()}/checkout`;
+    sessionParams.cancel_url = `${siteUrl()}/`;
   }
   if (body.customer.email) {
     sessionParams.customer_email = body.customer.email;

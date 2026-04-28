@@ -50,9 +50,8 @@ export default async function TrackingByIdPage({ params }: { params: Promise<{ o
     <Chrome>
       <OrderTracking
         orderId={orderId}
-        status={status ?? "received"}
+        status={stored ? (status ?? "received") : undefined}
         items={items}
-        eta={stored ? undefined : "We don't have this order on file"}
         customerEmail={stored?.email}
       />
       <Footer/>
