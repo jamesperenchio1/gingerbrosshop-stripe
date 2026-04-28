@@ -31,7 +31,10 @@ const HAS_KV = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const secret = url.searchParams.get("secret");
-  if (!process.env.ADMIN_SECRET || secret !== process.env.ADMIN_SECRET) {
+  if (!process.env.ADMIN_SECRET) {
+    return NextResponse.json({ error: "ADMIN_SECRET not set on the server. Add it in Vercel → Project → Settings → Environment Variables." }, { status: 500 });
+  }
+  if (secret !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
   if (!HAS_KV) return NextResponse.json({ error: "KV not provisioned" }, { status: 500 });

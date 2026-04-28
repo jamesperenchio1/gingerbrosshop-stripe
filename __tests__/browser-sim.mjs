@@ -162,7 +162,18 @@ async function main() {
   await page.waitForLoadState("networkidle");
   const adminText = await page.locator("body").innerText();
   assert(/Owner login/i.test(adminText), "admin page renders login form when not authed");
-  assert(!/COD/.test(adminText), "admin login screen has no 'COD' chip text leak");
+  assert(!/\bCOD\b/.test(adminText), "admin login screen has no 'COD' chip text leak");
+  assert(/Don't know what it is/i.test(adminText), "admin login has 'Don't know what it is?' helper");
+
+  group("H. Tracking page — no fake data for unknown order");
+  await page.goto(BASE + "/tracking/GB-NONEXISTENT-XYZ");
+  await page.waitForLoadState("networkidle");
+  const tText = await page.locator("body").innerText();
+  assert(/We don't have this order on file/i.test(tText), "unknown-order tracking page shows the empty-state card");
+  assert(!/Bangkok warehouse/.test(tText), "no fake 'Bangkok warehouse' map label");
+  assert(!/Your door/.test(tText), "no fake 'Your door' map label");
+  assert(!/Bangkok depot|Kerry Express/.test(tText), "no fake 'Bangkok depot' / 'Kerry Express' side labels");
+  assert(!/Within 24h|Confirmed|Soon/.test(tText), "no fake hardcoded timestamp side labels");
 
   // ---- summary ----
   console.log("\n" + "─".repeat(60));

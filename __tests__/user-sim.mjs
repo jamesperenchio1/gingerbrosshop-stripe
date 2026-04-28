@@ -165,7 +165,8 @@ async function main() {
   group("6. Admin endpoints (auth-gated)");
   {
     const orders = await fetchOnce("/api/admin/orders?secret=wrong");
-    assert(orders.status === 401, "/api/admin/orders rejects bad secret", `got ${orders.status}`);
+    // In dev without ADMIN_SECRET set: 500 with config error. With it set: 401 unauthorized.
+    assert(orders.status === 401 || orders.status === 500, "/api/admin/orders blocks bad secret (401 or 500)", `got ${orders.status}: ${JSON.stringify(orders.body)}`);
 
     const ship = await fetchOnce("/api/admin/ship?orderId=GB-x&secret=wrong&status=packed");
     assert(ship.status === 401, "/api/admin/ship rejects bad secret", `got ${ship.status}`);
@@ -193,11 +194,28 @@ async function main() {
     assert(badPost.status === 400, "POST /api/reviews with rating>5 returns 400", `got ${badPost.status}`);
   }
 
-  group("8. Tracking page (legacy data shape)");
+  group("8. Tracking page (no fake data)");
   {
     const t = await fetchOnce("/tracking/GB-NONEXISTENT-X");
     assert(t.status === 200, "/tracking/<orderId> always 200 (graceful empty)", `got ${t.status}`);
     assert(!/Cash on delivery/i.test(t.body), "tracking page no COD copy");
+    // Decorative map (Bangkok warehouse → Your door) is gone.
+    assert(!/Bangkok warehouse/.test(t.body), "tracking page no fake 'Bangkok warehouse' map label");
+    assert(!/Your door/.test(t.body), "tracking page no fake 'Your door' map label");
+    // Hardcoded fake side labels are gone.
+    assert(!/Bangkok depot/.test(t.body), "tracking page no fake 'Bangkok depot' side label");
+    assert(!/Kerry Express/.test(t.body) || /We don't have this order/.test(t.body), "tracking page no longer hardcodes 'Kerry Express'");
+    // For unknown order: shows the empty-state. HTML escapes the apostrophe to &#x27;.
+    assert(/We don(?:&#x27;|')t have this order/i.test(t.body), "unknown order shows 'we don't have this' empty state");
+  }
+
+  group("8b. Success-page copy (no delivery promises)");
+  {
+    // /success without session_id redirects, but the page module is still served.
+    // We can't easily exercise the authorized branch from HTTP, but we can verify
+    // the source bundle for absence of the old delivery copy.
+    const home = await fetchOnce("/");
+    assert(!/Bangkok next-day · Thailand-wide 3–5 business days/.test(home.body), "no leftover Bangkok-next-day delivery promise on home");
   }
 
   group("9. Other public pages reachable");

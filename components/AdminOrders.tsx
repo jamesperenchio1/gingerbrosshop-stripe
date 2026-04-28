@@ -90,9 +90,15 @@ export function AdminOrders() {
           <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 28, fontWeight: 700, color: "#2C1810", marginBottom: 6 }}>
             Owner login
           </div>
-          <p style={{ fontSize: 13, color: "rgba(44,24,16,0.6)", margin: "0 0 16px" }}>
-            Paste the ADMIN_SECRET from your Vercel env. We&apos;ll keep it in this tab&apos;s sessionStorage.
+          <p style={{ fontSize: 13, color: "rgba(44,24,16,0.6)", margin: "0 0 14px", lineHeight: 1.55 }}>
+            Paste the value of the <code style={{ background: "rgba(44,24,16,0.06)", padding: "1px 6px", borderRadius: 4 }}>ADMIN_SECRET</code> environment variable. We&apos;ll cache it in this tab&apos;s session storage so you don&apos;t have to paste it on every refresh.
           </p>
+          <details style={{ marginBottom: 14, fontSize: 12, color: "rgba(44,24,16,0.65)" }}>
+            <summary style={{ cursor: "pointer", color: "#C8893C", fontWeight: 700 }}>Don&apos;t know what it is?</summary>
+            <div style={{ paddingTop: 8, lineHeight: 1.55 }}>
+              Open your project in <a href="https://vercel.com/dashboard" target="_blank" rel="noreferrer" style={{ color: "#C8893C", fontWeight: 700, textDecoration: "underline" }}>Vercel</a>, go to <strong>Settings → Environment Variables</strong>, and look for <code style={{ background: "rgba(44,24,16,0.06)", padding: "1px 5px", borderRadius: 3 }}>ADMIN_SECRET</code>. If it doesn&apos;t exist yet, click <strong>Add New</strong>, set the name to <code style={{ background: "rgba(44,24,16,0.06)", padding: "1px 5px", borderRadius: 3 }}>ADMIN_SECRET</code>, paste a long random string as the value, save, and redeploy. Use that same string here.
+            </div>
+          </details>
           <input
             type="password"
             value={secret}
