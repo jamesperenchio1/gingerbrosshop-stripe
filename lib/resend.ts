@@ -185,6 +185,35 @@ function ownerHtml(d: OrderEmailData): string {
   return shell(inner, preheader);
 }
 
+export async function sendPortalMagicLink({ email, url }: { email: string; url: string }) {
+  if (!resend) {
+    console.warn("[resend] RESEND_API_KEY not set — skipping portal magic-link send");
+    return;
+  }
+  const inner = `
+    ${brandMark()}
+    <h1 style="margin:18px 0 6px;font-family:${SERIF};font-weight:700;font-size:30px;line-height:1.15;color:${INK};letter-spacing:-0.01em;">
+      Manage your <span style="color:${GOLD};font-style:italic;">subscription.</span>
+    </h1>
+    <p style="margin:0 0 24px;font-size:14px;color:${MUTED};line-height:1.55;">
+      Click below to open your customer portal. You can change card, update address, swap flavors, change quantity, pause, or cancel — all in one place. The link works once and expires in 15 minutes.
+    </p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0 24px;">
+      <tr><td align="center">${buttonHtml(url, "Open customer portal")}</td></tr>
+    </table>
+    <p style="margin:0;font-size:12px;color:${MUTED};line-height:1.55;">
+      If you didn&rsquo;t request this, you can safely ignore this email — the link won&rsquo;t do anything without you clicking it.
+    </p>
+  `;
+  const html = shell(inner, "Open your Gingerbros customer portal");
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    subject: "Your Gingerbros customer portal link",
+    html,
+  });
+}
+
 function customerText(d: OrderEmailData): string {
   const lines: string[] = [];
   lines.push(`Gingerbros — Order #${d.orderId}${d.isCOD ? " (COD)" : ""}`);
