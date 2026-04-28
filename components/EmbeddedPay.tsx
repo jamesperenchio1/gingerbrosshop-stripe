@@ -5,8 +5,9 @@ import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { Icon, ICONS, BottleImage, MixBottles } from "./shared";
-import { useCart } from "@/lib/cart";
+import { useCart, type CartLine } from "@/lib/cart";
 import { formatBundlePicks, PRODUCTS, type FlavorId } from "@/lib/products";
+import { getCheckoutFaqs } from "@/lib/checkout-faqs";
 
 const stripePromise = (() => {
   const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -15,21 +16,30 @@ const stripePromise = (() => {
 })();
 
 export function EmbeddedPay() {
-  const { items, subtotal, clear } = useCart();
+  const { items, hydrated, clear } = useCart();
   const router = useRouter();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const requested = useRef(false);
 
-  // Snapshot the cart at mount so a subsequent /success cart-clear doesn't
-  // wipe the order summary while Stripe is still rendering.
-  const snapshot = useMemo(() => items.map(i => ({ ...i })), []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Snapshot the cart once it's hydrated from localStorage. Capturing too early
+  // (before hydration) made hard-reloads of /checkout/pay flash "Your cart is empty".
+  const [snapshot, setSnapshot] = useState<CartLine[]>([]);
+  const snapshotTaken = useRef(false);
+  useEffect(() => {
+    if (snapshotTaken.current) return;
+    if (!hydrated) return;
+    setSnapshot(items.map(i => ({ ...i })));
+    snapshotTaken.current = true;
+  }, [hydrated, items]);
+
   const snapshotSubtotal = useMemo(() => snapshot.reduce((a, i) => a + i.price * i.qty, 0), [snapshot]);
   const snapshotShipping = snapshotSubtotal === 0 ? 0 : snapshotSubtotal >= 500 ? 0 : 60;
 
   useEffect(() => {
     if (requested.current) return;
+    if (!snapshotTaken.current) return;
     requested.current = true;
     if (snapshot.length === 0) { setLoading(false); return; }
 
@@ -69,6 +79,16 @@ export function EmbeddedPay() {
     clear();
   };
 
+  // Don't render the empty fallback until the cart is hydrated AND we've taken
+  // a snapshot. Without this gate, a hard reload flashes "Your cart is empty"
+  // for one paint before localStorage rehydrates.
+  if (!hydrated || !snapshotTaken.current) {
+    return (
+      <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 40, fontFamily: "var(--gb-font-sans)" }}>
+        <CheckoutSkeleton/>
+      </div>
+    );
+  }
   if (snapshot.length === 0) {
     return (
       <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 40, fontFamily: "var(--gb-font-sans)" }}>
@@ -91,9 +111,7 @@ export function EmbeddedPay() {
         <Link href="/" style={{ fontFamily: "var(--gb-font-display)", fontWeight: 700, fontSize: 22, color: "#2C1810", textDecoration: "none" }}>
           Ginger<span style={{ color: "#C8893C" }}>bros</span>
         </Link>
-        <div style={{ display: "flex", gap: 6, alignItems: "center", fontFamily: "var(--gb-font-sans)", fontSize: 12, color: "rgba(44,24,16,0.6)" }}>
-          <Icon d={ICONS.shield} size={14} stroke={2}/> Secure
-        </div>
+        <CheckoutSteps/>
       </div>
 
       <div className="gb-grid-2 gb-pad-40" style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 24px", display: "grid", gridTemplateColumns: "minmax(0, 1.3fr) minmax(0, 1fr)", gap: 32 }}>
@@ -120,7 +138,7 @@ export function EmbeddedPay() {
             <div style={{ padding: 28, background: "#fff", borderRadius: 16, fontFamily: "var(--gb-font-sans)" }}>
               <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#8B3A1A" }}>Stripe is unavailable</div>
               <p style={{ color: "rgba(44,24,16,0.7)", marginTop: 8 }}>
-                The Stripe publishable key isn&apos;t configured for this deployment. Pay-on-delivery still works — head back to the cart and pick that.
+                Refresh the page or send us a screenshot at <a href="/contact" style={{ color: "#C8893C", textDecoration: "underline" }}>support</a> and we&apos;ll help.
               </p>
             </div>
           )}
@@ -168,15 +186,50 @@ export function EmbeddedPay() {
                 <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 24, fontWeight: 700, color: "#C8893C" }}>฿{snapshotSubtotal + snapshotShipping}</span>
               </div>
             </div>
-          </div>
 
-          <div style={{ marginTop: 14, padding: "14px 18px", background: "#fff", borderRadius: 14, fontFamily: "var(--gb-font-sans)", fontSize: 12, color: "rgba(44,24,16,0.65)", display: "grid", gap: 8 }}>
-            <div style={{ display: "flex", gap: 10, alignItems: "center" }}><span style={{ color: "#4A7C3F" }}><Icon d={ICONS.shield} size={14} stroke={2}/></span> Powered by Stripe · 256-bit TLS</div>
-            <div style={{ display: "flex", gap: 10, alignItems: "center" }}><span style={{ color: "#C8893C" }}><Icon d={ICONS.truck} size={14} stroke={2}/></span> Bangkok next-day · Thailand-wide 3–5 days</div>
-            <div style={{ display: "flex", gap: 10, alignItems: "center" }}><span style={{ color: "#8B3A1A" }}><Icon d={ICONS.flame} size={14} stroke={2}/></span> Broken bottle? We replace it free.</div>
+            <div style={{ marginTop: 18, paddingTop: 16, borderTop: "1px solid rgba(44,24,16,0.08)", display: "grid", gap: 10 }}>
+              {getCheckoutFaqs(snapshot, snapshotSubtotal).map((f, i) => {
+                const accent = i === 0 ? "#4A7C3F" : i === 1 ? "#C8893C" : "#8B3A1A";
+                const inner = (
+                  <span style={{ display: "flex", gap: 10, alignItems: "center", fontFamily: "var(--gb-font-sans)", fontSize: 12, color: "rgba(44,24,16,0.7)", lineHeight: 1.4 }}>
+                    <span style={{ color: accent, display: "inline-flex", flexShrink: 0 }}><Icon d={ICONS[f.icon]} size={14} stroke={2}/></span>
+                    <span>{f.text}{f.href ? " →" : ""}</span>
+                  </span>
+                );
+                return f.href
+                  ? <Link key={i} href={f.href} style={{ textDecoration: "none" }}>{inner}</Link>
+                  : <div key={i}>{inner}</div>;
+              })}
+            </div>
           </div>
         </aside>
       </div>
+    </div>
+  );
+}
+
+function CheckoutSteps() {
+  const steps = [
+    { label: "Cart", state: "done" as const },
+    { label: "Pay", state: "active" as const },
+    { label: "Done", state: "todo" as const },
+  ];
+  return (
+    <div data-testid="checkout-steps" className="gb-hide-mobile" style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--gb-font-sans)", fontSize: 12 }}>
+      {steps.map((s, i) => {
+        const dotBg = s.state === "active" ? "#C8893C" : s.state === "done" ? "#2C1810" : "rgba(44,24,16,0.18)";
+        const labelColor = s.state === "active" ? "#2C1810" : s.state === "done" ? "rgba(44,24,16,0.6)" : "rgba(44,24,16,0.4)";
+        const labelWeight = s.state === "active" ? 700 : 500;
+        return (
+          <div key={s.label} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+            <span aria-hidden style={{ width: 18, height: 18, borderRadius: "50%", background: dotBg, color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700 }}>
+              {s.state === "done" ? "✓" : i + 1}
+            </span>
+            <span style={{ color: labelColor, fontWeight: labelWeight }}>{s.label}</span>
+            {i < steps.length - 1 && <span aria-hidden style={{ width: 18, height: 1, background: "rgba(44,24,16,0.18)" }}/>}
+          </div>
+        );
+      })}
     </div>
   );
 }

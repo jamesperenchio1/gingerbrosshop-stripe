@@ -46,12 +46,64 @@ export async function POST(req: Request) {
       const orderId = sub.metadata?.orderId as string | undefined;
       if (orderId) {
         const existing = (await kv.get(`gb:order:${orderId}`)) as Record<string, unknown> | null;
-        await kv.set(`gb:order:${orderId}`, { ...(existing ?? {}), subscriptionId: sub.id, status: existing?.status ?? "received" });
+        await kv.set(`gb:order:${orderId}`, { ...(existing ?? {}), subscriptionId: sub.id, subscriptionStatus: sub.status, status: existing?.status ?? "received" });
       }
     }
+  } else if (event.type === "customer.subscription.deleted") {
+    const sub = event.data.object as Stripe.Subscription;
+    if (HAS_KV) {
+      const orderId = sub.metadata?.orderId as string | undefined;
+      if (orderId) {
+        const existing = (await kv.get(`gb:order:${orderId}`)) as Record<string, unknown> | null;
+        await kv.set(`gb:order:${orderId}`, { ...(existing ?? {}), subscriptionId: sub.id, subscriptionStatus: "canceled", canceledAt: Date.now() });
+      }
+    }
+  } else if (event.type === "invoice.payment_succeeded") {
+    const invoice = event.data.object as Stripe.Invoice;
+    await handleRenewal(invoice);
   }
 
   return NextResponse.json({ ok: true });
+}
+
+async function handleRenewal(invoice: Stripe.Invoice) {
+  // Skip the first invoice — checkout.session.completed already handles it.
+  if (invoice.billing_reason !== "subscription_cycle") return;
+
+  const subRef = invoice.parent?.subscription_details?.subscription;
+  const subId = typeof subRef === "string" ? subRef : subRef?.id;
+  if (!subId) return;
+
+  let sub: Stripe.Subscription;
+  try { sub = await stripe.subscriptions.retrieve(subId); }
+  catch (e) { console.error("[renewal] sub retrieve", e); return; }
+
+  const orderId = sub.metadata?.orderId as string | undefined;
+
+  // Decrement inventory based on invoice line items.
+  for (const line of invoice.lines.data) {
+    const priceRef = line.pricing?.price_details?.price;
+    const priceId = typeof priceRef === "string" ? priceRef : priceRef?.id;
+    if (!priceId) continue;
+    const meta = PRICE_TO_PRODUCT[priceId];
+    if (!meta) continue;
+    const units = (meta.variant === "Single" || meta.variant === "Sub Bottle") ? 1 : 6;
+    const qty = line.quantity ?? 1;
+    try {
+      await decrementStock(meta.id as FlavorId, units * qty);
+    } catch (e) { console.error("[renewal stock]", e); }
+  }
+
+  if (HAS_KV && orderId) {
+    const existing = (await kv.get(`gb:order:${orderId}`)) as Record<string, unknown> | null;
+    const renewals = Array.isArray(existing?.renewals) ? (existing!.renewals as unknown[]) : [];
+    renewals.push({
+      invoiceId: invoice.id,
+      total: (invoice.amount_paid ?? 0) / 100,
+      paidAt: invoice.status_transitions?.paid_at ?? Math.floor(Date.now() / 1000),
+    });
+    await kv.set(`gb:order:${orderId}`, { ...(existing ?? {}), renewals, subscriptionStatus: sub.status });
+  }
 }
 
 async function handleCompleted(session: Stripe.Checkout.Session) {
@@ -80,7 +132,7 @@ async function handleCompleted(session: Stripe.Checkout.Session) {
     if (!item.priceId) continue;
     const meta = PRICE_TO_PRODUCT[item.priceId];
     if (!meta) continue;
-    const units = meta.variant === "Single" ? 1 : 6;
+    const units = (meta.variant === "Single" || meta.variant === "Sub Bottle") ? 1 : 6;
     try {
       await decrementStock(meta.id as FlavorId, units * item.qty);
     } catch (e) { console.error("[stock]", e); }
@@ -103,6 +155,14 @@ async function handleCompleted(session: Stripe.Checkout.Session) {
 
   const trackUrl = `${siteUrl()}/tracking/${orderId}`;
 
+  // Pull shipping/recipient details so the admin "Book Grab" flow has something to show.
+  // Prefer collected_information.shipping_details; fall back to customer_details.
+  const collectedShipping = session.collected_information?.shipping_details ?? null;
+  const customerDetails = session.customer_details ?? null;
+  const shippingAddress = collectedShipping?.address ?? customerDetails?.address ?? null;
+  const shippingName = collectedShipping?.name ?? customerDetails?.name ?? null;
+  const shippingPhone = customerDetails?.phone ?? null;
+
   if (HAS_KV) {
     const existing = (await kv.get(`gb:order:${orderId}`)) as Record<string, unknown> | null;
     await kv.set(`gb:order:${orderId}`, {
@@ -115,6 +175,9 @@ async function handleCompleted(session: Stripe.Checkout.Session) {
       items: items.map(i => ({ priceId: i.priceId, flavor: i.flavor, title: i.title, variant: i.variant, qty: i.qty })),
       isSubscription,
       portalUrl,
+      shippingAddress,
+      shippingName,
+      shippingPhone,
     });
   }
 

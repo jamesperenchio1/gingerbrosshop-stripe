@@ -19,7 +19,6 @@ export type OrderEmailData = {
   trackUrl: string;
   portalUrl?: string;
   isSubscription?: boolean;
-  isCOD?: boolean;
 };
 
 const baseStyles = `
@@ -50,21 +49,17 @@ function customerHtml(d: OrderEmailData): string {
          <a class="btn" href="${d.portalUrl}">Open customer portal</a>
        </div>`
     : "";
-  const codNote = d.isCOD
-    ? `<p class="muted" style="margin-top: 20px;"><strong style="color:#8B3A1A">Cash on delivery:</strong> please have <strong>฿${d.total}</strong> ready when our driver arrives.</p>`
-    : "";
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${baseStyles}</style></head><body>
     <div class="wrap">
       <div class="card">
         <div class="brand">Ginger<span class="accent">bros</span></div>
         <h1>Thank you. <span style="color:#C8893C; font-style:italic;">It's on the way.</span></h1>
-        <p class="muted">Order <strong>#${escapeHtml(d.orderId)}</strong>${d.isCOD ? " (COD)" : ""}. Bottling, packing, and shipping take 24–48 hours.</p>
+        <p class="muted">Order <strong>#${escapeHtml(d.orderId)}</strong>. Bottling, packing, and shipping take 24–48 hours.</p>
         <div style="margin: 24px 0;">${itemRows}
           <div class="row"><span>Subtotal</span><span>฿${d.subtotal}</span></div>
-          <div class="row"><span>${d.isCOD ? "COD fee" : "Shipping"}</span><span>${d.shipping === 0 ? "Free" : `฿${d.shipping}`}</span></div>
+          <div class="row"><span>Shipping</span><span>${d.shipping === 0 ? "Free" : `฿${d.shipping}`}</span></div>
           <div class="row"><span class="total">Total</span><span class="total">฿${d.total}</span></div>
         </div>
-        ${codNote}
         <div style="text-align:center; margin: 24px 0 8px;">
           <a class="btn" href="${d.trackUrl}">Track your order</a>
         </div>
@@ -77,13 +72,11 @@ function customerHtml(d: OrderEmailData): string {
 
 function ownerHtml(d: OrderEmailData): string {
   const itemRows = d.items.map(i => `<div class="row"><span>${escapeHtml(i.title)} · ${escapeHtml(i.variant)} × ${i.qty}</span><span>฿${i.price * i.qty}</span></div>`).join("");
-  const flag = d.isCOD ? `<p style="background:#fee; color:#8B3A1A; padding:10px; border-radius:8px; font-weight:700;">DRIVER COLLECTS ฿${d.total}</p>` : "";
   return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${baseStyles}</style></head><body>
     <div class="wrap">
       <div class="card">
         <div class="brand">Ginger<span class="accent">bros</span></div>
         <h1>New order · #${escapeHtml(d.orderId)}</h1>
-        ${flag}
         <p class="muted">Buyer: ${escapeHtml(d.email)}${d.isSubscription ? " · subscription" : ""}</p>
         <div style="margin: 16px 0;">${itemRows}
           <div class="row"><span class="total">Total</span><span class="total">฿${d.total}</span></div>
@@ -96,6 +89,32 @@ function ownerHtml(d: OrderEmailData): string {
 
 function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]!));
+}
+
+export async function sendPortalMagicLink({ email, url }: { email: string; url: string }) {
+  if (!resend) {
+    console.warn("[resend] RESEND_API_KEY not set — skipping portal magic-link send");
+    return;
+  }
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${baseStyles}</style></head><body>
+    <div class="wrap"><div class="card">
+      <div class="brand">Ginger<span class="accent">bros</span></div>
+      <h1>Manage your <span style="color:#C8893C; font-style:italic;">subscription.</span></h1>
+      <p class="muted">Click below to open your customer portal. You can change card, update address, swap flavors, change quantity, pause, or cancel — all in one place. The link works once and expires in 15 minutes.</p>
+      <div style="text-align:center; margin: 28px 0;">
+        <a class="btn" href="${url}">Open customer portal</a>
+      </div>
+      <p class="muted" style="font-size:12px">If you didn&rsquo;t request this, you can safely ignore this email — the link won&rsquo;t do anything without you clicking it.</p>
+    </div>
+    <div class="footer">Made in Bangkok · ginger@gingerbrosshop.com</div></div>
+  </body></html>`;
+  await resend.emails.send({
+    from: FROM,
+    to: email,
+    replyTo: REPLY_TO,
+    subject: "Your Gingerbros customer portal link",
+    html,
+  });
 }
 
 export async function sendOrderEmails(data: OrderEmailData) {
@@ -117,7 +136,7 @@ export async function sendOrderEmails(data: OrderEmailData) {
     from: FROM,
     to: OWNER,
     replyTo: data.email,
-    subject: `[GB] New order #${data.orderId}${data.isCOD ? " (COD)" : ""} — ฿${data.total}`,
+    subject: `[GB] New order #${data.orderId} — ฿${data.total}`,
     html: ownerHtml(data),
   });
 }

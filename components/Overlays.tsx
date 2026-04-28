@@ -57,16 +57,27 @@ export function AccountOverlay({ open, onClose }: { open: boolean; onClose: () =
           <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810" }}>Your account</div>
           <button onClick={onClose} style={{ background: "none", border: 0, cursor: "pointer" }}><Icon d={ICONS.close} size={18}/></button>
         </div>
-        <div style={{ padding: 16, background: "#FDF6EC", borderRadius: 12, marginBottom: 14 }}>
-          <div style={{ fontSize: 13, color: "rgba(44,24,16,0.7)", marginBottom: 8 }}>
-            Guest checkout for now. Track your order using the link in your confirmation email.
+        <div style={{ padding: 16, background: "#FDF6EC", borderRadius: 12, marginBottom: 12 }}>
+          <div style={{ fontSize: 13, color: "#2C1810", marginBottom: 10, fontWeight: 600 }}>
+            Have a subscription?
           </div>
-          <Link href="/tracking" onClick={onClose} style={{ width: "100%", padding: "10px 14px", background: "#2C1810", color: "#FDF6EC", border: 0, borderRadius: 9999, fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", display: "flex", justifyContent: "center", alignItems: "center", gap: 8 }}>
+          <div style={{ fontSize: 12, color: "rgba(44,24,16,0.65)", marginBottom: 12, lineHeight: 1.5 }}>
+            Get a secure link to your customer portal — pause, swap flavors, update card, or cancel.
+          </div>
+          <Link href="/account" onClick={onClose} style={{ width: "100%", padding: "10px 14px", background: "#C8893C", color: "#fff", border: 0, borderRadius: 9999, fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", display: "flex", justifyContent: "center", alignItems: "center", gap: 8, textDecoration: "none" }}>
+            Manage subscription <Icon d={ICONS.arrow} size={14}/>
+          </Link>
+        </div>
+        <div style={{ padding: 16, background: "#FDF6EC", borderRadius: 12, marginBottom: 12 }}>
+          <div style={{ fontSize: 13, color: "rgba(44,24,16,0.65)", marginBottom: 10, lineHeight: 1.5 }}>
+            One-time order? Track it with the link in your confirmation email or here:
+          </div>
+          <Link href="/tracking" onClick={onClose} style={{ width: "100%", padding: "10px 14px", background: "#2C1810", color: "#FDF6EC", border: 0, borderRadius: 9999, fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "inherit", display: "flex", justifyContent: "center", alignItems: "center", gap: 8, textDecoration: "none" }}>
             Track an order <Icon d={ICONS.arrow} size={14}/>
           </Link>
         </div>
-        <div style={{ fontSize: 12, color: "rgba(44,24,16,0.55)", lineHeight: 1.5 }}>
-          Subscribers can manage their plan from the &ldquo;Manage subscription&rdquo; link in any subscription email — that opens our Stripe customer portal.
+        <div style={{ fontSize: 12, color: "rgba(44,24,16,0.55)", lineHeight: 1.5, textAlign: "center" }}>
+          No accounts, no passwords. We just email you a one-time link.
         </div>
       </div>
     </>

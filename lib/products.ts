@@ -37,6 +37,8 @@ export type Product = {
     single: string;
     sixpack: string;
     sub: string;
+    /** Per-bottle recurring monthly price. Used by mix-pack subscriptions: a sub line of qty=N pulls N bottles of this flavor each month. */
+    subBottle: string;
   };
   stripeProductId: string;
   /** Primary, transparent-background image used on cards / PDP hero. */
@@ -67,9 +69,10 @@ export const PRODUCTS: Product[] = [
     cardTone: { bg: "#F5E6D3", bgHover: "#EDD9C0" },
     stripeProductId: "prod_UPLRWgaSJebePn",
     prices: {
-      single:  "price_1TQWl04xTvnGlHCDwPbXEEto",
-      sixpack: "price_1TQWl04xTvnGlHCDDlql93Ha",
-      sub:     "price_1TQWl44xTvnGlHCD7XsubBUU",
+      single:    "price_1TQWl04xTvnGlHCDwPbXEEto",
+      sixpack:   "price_1TQWl04xTvnGlHCDDlql93Ha",
+      sub:       "price_1TQWl44xTvnGlHCD7XsubBUU",
+      subBottle: "price_1TQuIi4xTvnGlHCDiL4q07Dg",
     },
     heroImage: "/products/ginger-beer-bg.png",
     gallery: [
@@ -100,9 +103,10 @@ export const PRODUCTS: Product[] = [
     cardTone: { bg: "#E5EBDC", bgHover: "#D7DFC9" },
     stripeProductId: "prod_UPLRTYuEae3E0D",
     prices: {
-      single:  "price_1TQWl14xTvnGlHCD127g2bEq",
-      sixpack: "price_1TQWl14xTvnGlHCDMwBlPHRp",
-      sub:     "price_1TQWl44xTvnGlHCDsMhf7ama",
+      single:    "price_1TQWl14xTvnGlHCD127g2bEq",
+      sixpack:   "price_1TQWl14xTvnGlHCDMwBlPHRp",
+      sub:       "price_1TQWl44xTvnGlHCDsMhf7ama",
+      subBottle: "price_1TQuIy4xTvnGlHCDaDhrf1Bs",
     },
     heroImage: "/products/ginger-shot-bg.png",
     gallery: [
@@ -136,19 +140,28 @@ export const PRODUCTS: Product[] = [
     cardTone: { bg: "#FAEBC9", bgHover: "#F2DDB0" },
     stripeProductId: "prod_UPLRxZTxSV1wSb",
     prices: {
-      single:  "price_1TQWl24xTvnGlHCD81fnXsF4",
-      sixpack: "price_1TQWl24xTvnGlHCDKOe9r89R",
-      sub:     "price_1TQWl44xTvnGlHCDvUZaTOZq",
+      single:    "price_1TQWl24xTvnGlHCD81fnXsF4",
+      sixpack:   "price_1TQWl24xTvnGlHCDKOe9r89R",
+      sub:       "price_1TQWl44xTvnGlHCDvUZaTOZq",
+      subBottle: "price_1TQuIq4xTvnGlHCDxHwwSRdy",
     },
   },
 ];
 
-export const PRICE_TO_PRODUCT: Record<string, { id: FlavorId; variant: "Single" | "6-Pack" | "Subscription" }> = (() => {
-  const out: Record<string, { id: FlavorId; variant: "Single" | "6-Pack" | "Subscription" }> = {};
+/** Per-bottle subscription unit price (display, baht). Mirrors the recurring Price unit_amount in Stripe. */
+export const SUB_BOTTLE_PRICE: Record<FlavorId, number> = {
+  beer: 60,
+  ale: 52,
+  shot: 67,
+};
+
+export const PRICE_TO_PRODUCT: Record<string, { id: FlavorId; variant: "Single" | "6-Pack" | "Subscription" | "Sub Bottle" }> = (() => {
+  const out: Record<string, { id: FlavorId; variant: "Single" | "6-Pack" | "Subscription" | "Sub Bottle" }> = {};
   for (const p of PRODUCTS) {
-    out[p.prices.single]  = { id: p.id, variant: "Single" };
-    out[p.prices.sixpack] = { id: p.id, variant: "6-Pack" };
-    out[p.prices.sub]     = { id: p.id, variant: "Subscription" };
+    out[p.prices.single]     = { id: p.id, variant: "Single" };
+    out[p.prices.sixpack]    = { id: p.id, variant: "6-Pack" };
+    out[p.prices.sub]        = { id: p.id, variant: "Subscription" };
+    out[p.prices.subBottle]  = { id: p.id, variant: "Sub Bottle" };
   }
   return out;
 })();
