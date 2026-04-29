@@ -41,10 +41,10 @@ export function StoryStrip() {
           <div>
             <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 14px" }}>Our Craft</p>
             <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 52, fontWeight: 700, color: "#2C1810", margin: "0 0 20px", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
-              Started for a clean morning, <span style={{ fontStyle: "italic", color: "#C8893C" }}>not a brand.</span>
+              Started in a bedroom, <span style={{ fontStyle: "italic", color: "#C8893C" }}>not a boardroom.</span>
             </h2>
             <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.7)", lineHeight: 1.65, margin: "0 0 32px" }}>
-              I cut sugar from my mornings and wanted a sharp, clean ginger drink to start the day with. Nothing on the shelf in Bangkok actually fit — every ginger beer was loaded with sugar, every shot was overpriced concentrate. So I started making my own, a few liters at a time. Three drinks now, all 0g residual sugar.
+              It started in Australia, brewing ginger in my own room because I love carbonated drinks and never liked the sugar. The first batches were half-experiment, half-trying-to-catch-a-buzz. The recipe got better, the goal shifted from buzz to balance, and here we are. Three drinks now, all 0g residual sugar.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
               {[

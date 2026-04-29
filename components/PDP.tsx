@@ -10,7 +10,7 @@ function brewCopy(id: Product["id"]): string {
     return "Fresh ginger gets cold-pressed within a day of arriving at the kitchen. The juice goes into the bottle with coconut water (for natural electrolytes) and a measured dose of taurine. No fermentation, no sugar, no flavor extracts — three ingredients on the label is the whole list.";
   }
   if (id === "ale") {
-    return "We cook fresh ginger with lime down into a concentrated syrup, sweeten with erythritol, then blend it with cold soda water and bottle. No fermentation, no flavor extracts — just real ginger syrup and bubbles. Lighter heat than the beer, brighter on the lime, easy to drink alone or stretched with rum.";
+    return "We cook fresh ginger with lime down into a concentrated syrup, sweeten with erythritol, blend with filtered water, then force-carbonate and bottle. No fermentation, no flavor extracts — just real ginger syrup and proper bubbles. Lighter heat than the beer, brighter on the lime, easy to drink alone or stretched with rum.";
   }
   return "Ginger-bug method. We start a wild fermentation culture from fresh ginger, then blend it into a strong ginger tea with sugar. The yeast eats the sugar and produces a small amount of CO₂ + a lot of flavor. When fermentation is done we pasteurize to lock the flavor in, sweeten back up with erythritol (which yeast can't metabolize), finish with fresh lime, and force-carbonate before bottling. Result: 0g residual sugar in the bottle, real ginger flavor, full carbonation.";
 }

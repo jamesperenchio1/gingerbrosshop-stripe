@@ -7,7 +7,7 @@ export const metadata = { title: "How it's made · Gingerbros" };
 
 type Step = { day: string; title: string; body: string; icon: typeof ICONS.flame };
 
-// This timeline is the Beer process only. Ale is syrup + soda water, Shot is cold-pressed.
+// This timeline is the Beer process only. Ale is syrup, force-carbonated; Shot is cold-pressed.
 const STEPS: Step[] = [
   {
     day: "Step 1",
@@ -64,8 +64,8 @@ const OTHER_DRINKS = [
   {
     name: "Ginger Ale",
     href: "/shop/ale",
-    summary: "Cooked ginger syrup blended with cold soda water. No fermentation — just real ginger syrup and bubbles. Lighter heat, brighter on the lime.",
-    steps: ["Cook fresh ginger + lime into a syrup", "Sweeten with erythritol", "Blend with soda water", "Bottle in glass"],
+    summary: "Cooked ginger syrup, blended with filtered water and force-carbonated. No fermentation — just real ginger syrup and proper bubbles. Lighter heat, brighter on the lime.",
+    steps: ["Cook fresh ginger + lime into a syrup", "Sweeten with erythritol", "Blend with filtered water and force-carbonate", "Bottle in glass"],
   },
   {
     name: "Ginger Shot",
@@ -85,7 +85,7 @@ export default function ProcessPage() {
             Three drinks, <span style={{ fontStyle: "italic", color: "#C8893C" }}>three honest methods.</span>
           </h1>
           <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.72)", margin: "0 0 32px", lineHeight: 1.6 }}>
-            The <strong>Beer</strong> is a wild ginger-bug ferment, 10–14 days, taste-tested every couple of days. The <Link href="/shop/ale" style={{ color: "#C8893C", textDecoration: "underline", fontWeight: 700 }}>Ale</Link> is cooked ginger syrup blended with cold soda water — no fermentation, just real syrup and bubbles. The <Link href="/shop/shot" style={{ color: "#C8893C", textDecoration: "underline", fontWeight: 700 }}>Shot</Link> is cold-pressed ginger with coconut water and taurine. Same fresh ginger, three honest ways to drink it. The full timeline below is the Beer.
+            The <strong>Beer</strong> is a wild ginger-bug ferment, 10–14 days, taste-tested every couple of days. The <Link href="/shop/ale" style={{ color: "#C8893C", textDecoration: "underline", fontWeight: 700 }}>Ale</Link> is cooked ginger syrup, force-carbonated — no fermentation, just real syrup and proper bubbles. The <Link href="/shop/shot" style={{ color: "#C8893C", textDecoration: "underline", fontWeight: 700 }}>Shot</Link> is cold-pressed ginger with coconut water and taurine. Same fresh ginger, three honest ways to drink it. The full timeline below is the Beer.
           </p>
 
           {/* Timeline */}

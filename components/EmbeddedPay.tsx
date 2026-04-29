@@ -16,7 +16,7 @@ const stripePromise = (() => {
 })();
 
 export function EmbeddedPay() {
-  const { items, hydrated, clear } = useCart();
+  const { items, hydrated, clear, add } = useCart();
   const router = useRouter();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -187,6 +187,22 @@ export function EmbeddedPay() {
               </div>
             </div>
 
+            <CrossSells
+              snapshot={snapshot}
+              onAdd={(flavor) => {
+                const p = PRODUCTS.find(x => x.id === flavor);
+                if (!p) return;
+                add({
+                  id: p.id, flavor: p.flavor, title: p.title,
+                  variant: "Single", priceId: p.prices.single,
+                  price: p.single, qty: 1,
+                }, { openDrawer: false });
+                // The Stripe session was created with the old snapshot — reload
+                // so a fresh snapshot + session pick up the new line item.
+                window.location.reload();
+              }}
+            />
+
             <div style={{ marginTop: 18, paddingTop: 16, borderTop: "1px solid rgba(44,24,16,0.08)", display: "grid", gap: 10 }}>
               {getCheckoutFaqs(snapshot, snapshotSubtotal).map((f, i) => {
                 const accent = i === 0 ? "#4A7C3F" : i === 1 ? "#C8893C" : "#8B3A1A";
@@ -203,6 +219,36 @@ export function EmbeddedPay() {
             </div>
           </div>
         </aside>
+      </div>
+    </div>
+  );
+}
+
+function CrossSells({ snapshot, onAdd }: { snapshot: CartLine[]; onAdd: (flavor: FlavorId) => void }) {
+  const inCart = new Set(snapshot.map(i => i.flavor));
+  const suggestions = PRODUCTS.filter(p => !inCart.has(p.id));
+  if (suggestions.length === 0) return null;
+  const blurb: Record<FlavorId, string> = {
+    beer: "The flagship. Wakes up any cocktail.",
+    ale: "Easy-drinking, lime-forward, dinner-friendly.",
+    shot: "60ml morning kick. Coconut water + taurine.",
+  };
+  return (
+    <div style={{ marginTop: 18, paddingTop: 16, borderTop: "1px solid rgba(44,24,16,0.08)" }}>
+      <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#C8893C", fontWeight: 700, marginBottom: 12, fontFamily: "var(--gb-font-sans)" }}>Throw one in</div>
+      <div style={{ display: "grid", gap: 10 }}>
+        {suggestions.map(p => (
+          <button key={p.id} onClick={() => onAdd(p.id)} style={{ display: "grid", gridTemplateColumns: "44px 1fr auto", gap: 10, alignItems: "center", padding: 10, background: "#FDF6EC", border: "1px solid rgba(44,24,16,0.06)", borderRadius: 12, cursor: "pointer", textAlign: "left", fontFamily: "var(--gb-font-sans)" }}>
+            <div style={{ width: 44, height: 56, background: "linear-gradient(145deg,#F5E6D3,#fff)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", padding: 3 }}>
+              <BottleImage flavor={p.flavor} size={50} src={p.heroImage}/>
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#2C1810", fontFamily: "var(--gb-font-display)" }}>{p.title}</div>
+              <div style={{ fontSize: 11, color: "rgba(44,24,16,0.6)", marginTop: 2, lineHeight: 1.35 }}>{blurb[p.id]}</div>
+            </div>
+            <span style={{ padding: "8px 12px", background: "#2C1810", color: "#FDF6EC", borderRadius: 9999, fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" }}>+ ฿{p.single}</span>
+          </button>
+        ))}
       </div>
     </div>
   );

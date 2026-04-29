@@ -126,7 +126,7 @@ export async function POST(req: Request) {
 
   if (body.embedded) {
     // Embedded Checkout — Stripe-hosted form rendered inline on our site.
-    sessionParams.ui_mode = "embedded_page";
+    sessionParams.ui_mode = "embedded";
     sessionParams.return_url = `${siteUrl()}/success?session_id={CHECKOUT_SESSION_ID}`;
   } else {
     // Hosted (redirect) Checkout — fallback path.

@@ -115,7 +115,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                       <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 2 }}>The morning ritual</div>
                     </div>
                     <button onClick={addCrossSell} style={{ padding: "8px 14px", background: "#2C1810", color: "#FDF6EC", border: 0, borderRadius: 9999, fontSize: 12, fontWeight: 600, fontFamily: "var(--gb-font-sans)", cursor: "pointer" }}>
-                      + ฿89
+                      + ฿{getProduct("shot").single}
                     </button>
                   </div>
                 </div>
