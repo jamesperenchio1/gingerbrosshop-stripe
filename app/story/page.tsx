@@ -6,8 +6,8 @@ export default function StoryPage() {
   return (
     <InfoPage
       eyebrow="Our story"
-      title="Started for a clean morning, not a brand."
-      intro="Gingerbros began as a personal project. Cutting sugar from my morning routine and wanting a sharp, clean ginger drink to start the day with. Nothing on the shelf in Bangkok actually fit — every ginger beer was 30+ grams of sugar, every shot was overpriced concentrate. So I started making my own."
+      title="Started in a bedroom, not a boardroom."
+      intro="It started in Australia. I love a properly carbonated drink and I never liked the sugar — and I figured ginger beer was something I could just make in my own room. The first batches were half-experiment, half-trying-to-catch-a-buzz off the natural ferment. One thing led to another, the recipe got better, the goal shifted from buzz to balance, and here we are. Real ginger, properly fermented, fully carbonated, zero residual sugar in the bottle."
       sections={[
         {
           h: "What we make, and why three things",
@@ -19,7 +19,7 @@ export default function StoryPage() {
         },
         {
           h: "How the ale is made",
-          body: "Different drink, simpler build. Cook fresh ginger and lime down into a concentrated syrup, sweeten with erythritol, then blend with cold soda water and bottle. No fermentation — that's the beer. The ale is honest ginger syrup and bubbles, lighter on the heat, brighter on the lime. Goes straight into a glass with ice or stretches a splash of rum.",
+          body: "Different drink, simpler build. Cook fresh ginger and lime down into a concentrated syrup, sweeten with erythritol, blend with filtered water, force-carbonate, and bottle. No fermentation — that's the beer. The ale is honest ginger syrup with proper bubbles, lighter on the heat, brighter on the lime. Goes straight into a glass with ice or stretches a splash of rum.",
         },
         {
           h: "How the shot is made",

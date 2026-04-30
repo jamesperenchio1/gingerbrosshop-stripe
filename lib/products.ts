@@ -1,8 +1,41 @@
 // Single source of truth for product catalog.
-// Stripe Price IDs are populated from the test-mode account (acct_1TC1Ee4xTvnGlHCD).
-// Amounts in THB (฿); display values are whole baht.
+// Stripe account: acct_1TC1Ee4xTvnGlHCD (test mode).
+//
+// STRIPE_PRICES is the only place price data lives.
+// All display values (single, sixpack, subAmount, subBottleAmount) are derived
+// from the satang amounts here — nothing is repeated elsewhere.
 
 export type FlavorId = "beer" | "shot" | "ale";
+
+/** Stripe Price IDs and their satang amounts — colocated so updating one keeps the other in sync. */
+const STRIPE_PRICES: Record<FlavorId, {
+  single:    { id: string; satang: number };
+  sixpack:   { id: string; satang: number };
+  sub:       { id: string; satang: number };
+  subBottle: { id: string; satang: number };
+}> = {
+  beer: {
+    single:    { id: "price_1TRqTZ4xTvnGlHCDZvNPl4wr", satang: 15000 },
+    sixpack:   { id: "price_1TRqTe4xTvnGlHCDqlqD857d", satang: 75000 },
+    sub:       { id: "price_1TRqTo4xTvnGlHCDBSSe5v8v", satang: 67500 },
+    subBottle: { id: "price_1TRqTu4xTvnGlHCDJnyG9Xl6", satang: 11500 },
+  },
+  shot: {
+    single:    { id: "price_1TRqU34xTvnGlHCD5dUFDVSU", satang: 16000 },
+    sixpack:   { id: "price_1TRqU84xTvnGlHCDHhVrWCmR", satang: 80000 },
+    sub:       { id: "price_1TRqUD4xTvnGlHCD7CP0oQVo", satang: 72000 },
+    subBottle: { id: "price_1TRqUI4xTvnGlHCDcWMTQEBY", satang: 12000 },
+  },
+  ale: {
+    single:    { id: "price_1TRqUO4xTvnGlHCDh5iMLfiJ", satang: 14000 },
+    sixpack:   { id: "price_1TRqUT4xTvnGlHCD9hiVnKm8", satang: 70000 },
+    sub:       { id: "price_1TRqUY4xTvnGlHCDbaRkUaps", satang: 63000 },
+    subBottle: { id: "price_1TRqUd4xTvnGlHCDybpna882", satang: 10500 },
+  },
+};
+
+/** Convert Stripe satang to whole-baht display value. */
+function thb(satang: number): number { return satang / 100; }
 
 export type Product = {
   id: FlavorId;
@@ -10,9 +43,16 @@ export type Product = {
   title: string;
   subtitle: string;
   size: string;
+  /** Single-bottle price in baht — derived from STRIPE_PRICES. */
   single: number;
+  /** 6-pack price in baht — derived from STRIPE_PRICES. */
   sixpack: number;
+  /** Alias for single; kept for compat. */
   singlePrice: number;
+  /** Monthly subscription 6-pack price in baht — derived from STRIPE_PRICES. */
+  subAmount: number;
+  /** Per-bottle monthly subscription price in baht — derived from STRIPE_PRICES. */
+  subBottleAmount: number;
   rating: number;
   reviews: number;
   heat: number;
@@ -52,7 +92,11 @@ export const PRODUCTS: Product[] = [
     id: "beer", flavor: "beer", title: "Ginger Beer",
     subtitle: "330ml",
     size: "330ml",
-    single: 79, sixpack: 399, singlePrice: 79,
+    single:          thb(STRIPE_PRICES.beer.single.satang),
+    sixpack:         thb(STRIPE_PRICES.beer.sixpack.satang),
+    singlePrice:     thb(STRIPE_PRICES.beer.single.satang),
+    subAmount:       thb(STRIPE_PRICES.beer.sub.satang),
+    subBottleAmount: thb(STRIPE_PRICES.beer.subBottle.satang),
     rating: 0, reviews: 0, heat: 4,
     tag: "Bestseller",
     filterTags: ["carbonated", "mixer"],
@@ -69,10 +113,10 @@ export const PRODUCTS: Product[] = [
     cardTone: { bg: "#F5E6D3", bgHover: "#EDD9C0" },
     stripeProductId: "prod_UPLRWgaSJebePn",
     prices: {
-      single:    "price_1TQWl04xTvnGlHCDwPbXEEto",
-      sixpack:   "price_1TQWl04xTvnGlHCDDlql93Ha",
-      sub:       "price_1TQWl44xTvnGlHCD7XsubBUU",
-      subBottle: "price_1TQuIi4xTvnGlHCDiL4q07Dg",
+      single:    STRIPE_PRICES.beer.single.id,
+      sixpack:   STRIPE_PRICES.beer.sixpack.id,
+      sub:       STRIPE_PRICES.beer.sub.id,
+      subBottle: STRIPE_PRICES.beer.subBottle.id,
     },
     heroImage: "/products/ginger-beer-bg.png",
     gallery: [
@@ -86,7 +130,11 @@ export const PRODUCTS: Product[] = [
     id: "shot", flavor: "shot", title: "Ginger Shot",
     subtitle: "60ml",
     size: "60ml",
-    single: 89, sixpack: 449, singlePrice: 89,
+    single:          thb(STRIPE_PRICES.shot.single.satang),
+    sixpack:         thb(STRIPE_PRICES.shot.sixpack.satang),
+    singlePrice:     thb(STRIPE_PRICES.shot.single.satang),
+    subAmount:       thb(STRIPE_PRICES.shot.sub.satang),
+    subBottleAmount: thb(STRIPE_PRICES.shot.subBottle.satang),
     rating: 0, reviews: 0, heat: 5,
     tag: "Morning Ritual",
     filterTags: ["wellness"],
@@ -103,10 +151,10 @@ export const PRODUCTS: Product[] = [
     cardTone: { bg: "#E5EBDC", bgHover: "#D7DFC9" },
     stripeProductId: "prod_UPLRTYuEae3E0D",
     prices: {
-      single:    "price_1TQWl14xTvnGlHCD127g2bEq",
-      sixpack:   "price_1TQWl14xTvnGlHCDMwBlPHRp",
-      sub:       "price_1TQWl44xTvnGlHCDsMhf7ama",
-      subBottle: "price_1TQuIy4xTvnGlHCDaDhrf1Bs",
+      single:    STRIPE_PRICES.shot.single.id,
+      sixpack:   STRIPE_PRICES.shot.sixpack.id,
+      sub:       STRIPE_PRICES.shot.sub.id,
+      subBottle: STRIPE_PRICES.shot.subBottle.id,
     },
     heroImage: "/products/ginger-shot-bg.png",
     gallery: [
@@ -123,37 +171,34 @@ export const PRODUCTS: Product[] = [
     id: "ale", flavor: "ale", title: "Ginger Ale",
     subtitle: "330ml",
     size: "330ml",
-    single: 69, sixpack: 349, singlePrice: 69,
+    single:          thb(STRIPE_PRICES.ale.single.satang),
+    sixpack:         thb(STRIPE_PRICES.ale.sixpack.satang),
+    singlePrice:     thb(STRIPE_PRICES.ale.single.satang),
+    subAmount:       thb(STRIPE_PRICES.ale.sub.satang),
+    subBottleAmount: thb(STRIPE_PRICES.ale.subBottle.satang),
     rating: 0, reviews: 0, heat: 2,
     tag: "Staff Pick",
     filterTags: ["carbonated", "mixer", "everyday"],
     blurb: "Crisp, light, lime-forward. The easy-drinking sibling — great with dinner, or a splash of rum.",
-    about: "We cook fresh ginger and lime down into a concentrated syrup, sweeten with erythritol, then blend it with cold soda water to bottle. No fermentation, no shortcuts from a flavor lab — just real ginger syrup and bubbles. Lighter heat than the beer, brighter on the lime, easy to drink alone or with rum.",
-    ingredients: "Fresh ginger, erythritol, filtered water, lime, soda water. No added sugar in the bottle.",
-    process: "Ginger syrup + soda water",
-    ingredientsShort: ["Fresh ginger", "Erythritol", "Lime", "Soda water"],
+    about: "We cook fresh ginger and lime down into a concentrated syrup, sweeten with erythritol, blend with filtered water, then force-carbonate and bottle. No fermentation, no shortcuts from a flavor lab — just real ginger syrup and proper bubbles. Lighter heat than the beer, brighter on the lime, easy to drink alone or with rum.",
+    ingredients: "Fresh ginger, erythritol, filtered water, lime. No added sugar in the bottle.",
+    process: "Ginger syrup, force-carbonated",
+    ingredientsShort: ["Fresh ginger", "Erythritol", "Lime", "Water"],
     abv: "0%",
     serve: "Over ice with lime",
     pairsWith: "Gin, rum, lime",
-    carbonation: "Soda water",
+    carbonation: "Force-carbonated",
     sugarLabel: "0g residual",
     cardTone: { bg: "#FAEBC9", bgHover: "#F2DDB0" },
     stripeProductId: "prod_UPLRxZTxSV1wSb",
     prices: {
-      single:    "price_1TQWl24xTvnGlHCD81fnXsF4",
-      sixpack:   "price_1TQWl24xTvnGlHCDKOe9r89R",
-      sub:       "price_1TQWl44xTvnGlHCDvUZaTOZq",
-      subBottle: "price_1TQuIq4xTvnGlHCDxHwwSRdy",
+      single:    STRIPE_PRICES.ale.single.id,
+      sixpack:   STRIPE_PRICES.ale.sixpack.id,
+      sub:       STRIPE_PRICES.ale.sub.id,
+      subBottle: STRIPE_PRICES.ale.subBottle.id,
     },
   },
 ];
-
-/** Per-bottle subscription unit price (display, baht). Mirrors the recurring Price unit_amount in Stripe. */
-export const SUB_BOTTLE_PRICE: Record<FlavorId, number> = {
-  beer: 60,
-  ale: 52,
-  shot: 67,
-};
 
 export const PRICE_TO_PRODUCT: Record<string, { id: FlavorId; variant: "Single" | "6-Pack" | "Subscription" | "Sub Bottle" }> = (() => {
   const out: Record<string, { id: FlavorId; variant: "Single" | "6-Pack" | "Subscription" | "Sub Bottle" }> = {};
@@ -174,7 +219,7 @@ export function getProduct(id: FlavorId): Product {
 
 const SHORT: Record<FlavorId, string> = { beer: "Beer", shot: "Shot", ale: "Ale" };
 
-/** Format ["beer","beer","ale","ale","ale","shot"] -> "2x Beer * 3x Ale * 1x Shot". */
+/** Format ["beer","beer","ale","ale","ale","shot"] -> "2x Beer · 3x Ale · 1x Shot". */
 export function formatBundlePicks(picks: FlavorId[] | undefined, sep = " · "): string {
   if (!picks || picks.length === 0) return "Custom 6-Pack";
   const counts = picks.reduce((acc, f) => {
