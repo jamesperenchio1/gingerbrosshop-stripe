@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Bottle, BottleImage, Icon, ICONS } from "./shared";
 import { useCart } from "@/lib/cart";
-import type { Product } from "@/lib/products";
+import { getProduct, type Product } from "@/lib/products";
 
 export function BundleBuilder({ products }: { products: Product[] }) {
   const [picks, setPicks] = useState<Product[]>([]);
@@ -179,8 +179,8 @@ export function SubscriptionBlock() {
                 <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 28, fontWeight: 700 }}>Monthly 6-pack</div>
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 12, color: "rgba(253,246,236,0.5)", textDecoration: "line-through" }}>฿399</div>
-                <div style={{ fontFamily: "var(--gb-font-sans)", fontSize: 32, fontWeight: 700, color: "#C8893C", lineHeight: 1 }}>฿359</div>
+                <div style={{ fontSize: 12, color: "rgba(253,246,236,0.5)", textDecoration: "line-through" }}>฿{getProduct("beer").sixpack}</div>
+                <div style={{ fontFamily: "var(--gb-font-sans)", fontSize: 32, fontWeight: 700, color: "#C8893C", lineHeight: 1 }}>฿{getProduct("beer").subAmount}</div>
                 <div style={{ fontSize: 11, color: "rgba(253,246,236,0.55)", marginTop: 2 }}>/month</div>
               </div>
             </div>

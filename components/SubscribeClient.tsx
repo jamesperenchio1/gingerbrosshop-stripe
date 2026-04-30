@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BottleImage, Icon, ICONS } from "./shared";
 import { useCart } from "@/lib/cart";
-import { PRODUCTS, SUB_BOTTLE_PRICE, type FlavorId } from "@/lib/products";
+import { PRODUCTS, type FlavorId } from "@/lib/products";
 
 const BOX_SIZE = 6;
 
@@ -14,7 +14,7 @@ export function SubscribeClient() {
 
   const total = picks.beer + picks.ale + picks.shot;
   const remaining = BOX_SIZE - total;
-  const monthly = picks.beer * SUB_BOTTLE_PRICE.beer + picks.ale * SUB_BOTTLE_PRICE.ale + picks.shot * SUB_BOTTLE_PRICE.shot;
+  const monthly = PRODUCTS.reduce((sum, p) => sum + picks[p.id] * p.subBottleAmount, 0);
 
   const inc = (id: FlavorId) => {
     if (total >= BOX_SIZE) return;
@@ -40,7 +40,7 @@ export function SubscribeClient() {
         title: product.title,
         variant: "Single",
         priceId: product.prices.subBottle,
-        price: SUB_BOTTLE_PRICE[id],
+        price: product.subBottleAmount,
         qty,
         sub: true,
       }, { openDrawer: false });
@@ -85,7 +85,7 @@ export function SubscribeClient() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 19, fontWeight: 700, color: "#2C1810" }}>{p.title}</div>
                       <div style={{ fontSize: 12, color: "rgba(44,24,16,0.6)", marginTop: 2 }}>{p.size}</div>
-                      <div style={{ fontSize: 13, color: "#C8893C", fontWeight: 700, marginTop: 4 }}>฿{SUB_BOTTLE_PRICE[p.id]}/bottle</div>
+                      <div style={{ fontSize: 13, color: "#C8893C", fontWeight: 700, marginTop: 4 }}>฿{p.subBottleAmount}/bottle</div>
                     </div>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: "space-between" }}>
