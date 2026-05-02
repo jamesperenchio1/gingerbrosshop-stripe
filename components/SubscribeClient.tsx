@@ -10,9 +10,9 @@ const BOX_SIZE = 6;
 export function SubscribeClient() {
   const router = useRouter();
   const { add, clear } = useCart();
-  const [picks, setPicks] = useState<Record<FlavorId, number>>({ beer: 2, ale: 2, shot: 2 });
+  const [picks, setPicks] = useState<Record<FlavorId, number>>({ beer: 6 });
 
-  const total = picks.beer + picks.ale + picks.shot;
+  const total = picks.beer;
   const remaining = BOX_SIZE - total;
   const monthly = PRODUCTS.reduce((sum, p) => sum + picks[p.id] * p.subBottleAmount, 0);
 
@@ -29,7 +29,7 @@ export function SubscribeClient() {
     clear();
     // One cart line per flavor with non-zero qty. Each line uses the per-bottle recurring price;
     // /api/checkout sends them as separate sub line items so customers can later adjust qty per flavor.
-    const order: FlavorId[] = ["beer", "ale", "shot"];
+    const order: FlavorId[] = ["beer"];
     for (const id of order) {
       const qty = picks[id];
       if (qty <= 0) continue;
@@ -59,7 +59,7 @@ export function SubscribeClient() {
             Build your monthly <span style={{ fontStyle: "italic", color: "#C8893C" }}>crate.</span>
           </h1>
           <p style={{ fontSize: 17, color: "rgba(44,24,16,0.7)", maxWidth: 580, margin: "0 auto", lineHeight: 1.55 }}>
-            Pick any 6 bottles across all 3 flavors. Free shipping every month, 10% off forever, change the mix or cancel anytime from your portal.
+            6 bottles of Ginger Beer, every month. Free shipping always, 10% off forever, pause or cancel anytime from your portal.
           </p>
         </div>
 
@@ -119,13 +119,7 @@ export function SubscribeClient() {
               <div>
                 <div style={{ fontSize: 11, letterSpacing: "0.24em", textTransform: "uppercase", color: "rgba(44,24,16,0.55)", fontWeight: 700, marginBottom: 4 }}>Your monthly box</div>
                 <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810" }}>
-                  {total === 0 ? "Start picking bottles" : (
-                    [
-                      picks.beer ? `${picks.beer}× Beer` : null,
-                      picks.ale ? `${picks.ale}× Ale` : null,
-                      picks.shot ? `${picks.shot}× Shot` : null,
-                    ].filter(Boolean).join(" · ")
-                  )}
+                  {total === 0 ? "Start picking bottles" : `${picks.beer}× Beer`}
                 </div>
               </div>
               <div style={{ textAlign: "right" }}>

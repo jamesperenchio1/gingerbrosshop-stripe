@@ -6,7 +6,7 @@ import type { FlavorId } from "@/lib/products";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const FLAVOR_IDS = ["beer", "shot", "ale"] as const;
+const FLAVOR_IDS = ["beer"] as const;
 
 const PostBody = z.object({
   productId: z.enum(FLAVOR_IDS),

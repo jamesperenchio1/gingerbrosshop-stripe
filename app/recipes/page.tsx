@@ -7,7 +7,7 @@ export const metadata = { title: "Recipes · Gingerbros" };
 
 type Recipe = {
   id: string;
-  flavor: "beer" | "ale" | "shot";
+  flavor: "beer";
   title: string;
   tagline: string;
   difficulty: "Easy" | "Medium" | "Hard";
@@ -43,115 +43,52 @@ const RECIPES: Recipe[] = [
     pairWith: "Spicy noodle soup. Salty late-night street food.",
   },
   {
-    id: "rum-highball",
-    flavor: "ale",
-    title: "Highball, the easy way",
+    id: "ginger-highball",
+    flavor: "beer",
+    title: "Ginger Highball",
     tagline: "Two ingredients. Friday night, sorted.",
     difficulty: "Easy",
     time: "1 min",
     servings: 1,
     ingredients: [
       "45ml dark rum or whisky",
-      "1 Gingerbros Ginger Ale (chilled)",
+      "1 Gingerbros Ginger Beer (chilled)",
       "Long glass · long ice spear",
-      "Lemon twist",
+      "Lime twist",
     ],
     steps: [
       "Drop the ice spear in a long glass.",
       "Pour the rum down the side of the glass.",
-      "Top gently with ginger ale, twist the lemon peel over the surface, drop it in.",
+      "Top gently with ginger beer, twist a lime peel over the surface, drop it in.",
     ],
     pairWith: "Anything fried — gai tod, tempura, or a bowl of crisps.",
   },
   {
-    id: "shrub-spritz",
-    flavor: "ale",
-    title: "Berry shrub spritz",
-    tagline: "Zero-proof. Bright, fruity, a bit grown-up.",
-    difficulty: "Easy",
-    time: "3 min",
-    servings: 1,
-    ingredients: [
-      "30ml fruit shrub (raspberry, hibiscus, or strawberry vinegar)",
-      "1 Gingerbros Ginger Ale",
-      "Squeeze of lime",
-      "Crushed ice · soda water (optional, to lengthen)",
-    ],
-    steps: [
-      "Fill a wine glass with crushed ice.",
-      "Add the shrub and lime juice; stir.",
-      "Top with ginger ale. Splash soda if you want it lighter.",
-    ],
-    pairWith: "Brunch. Hot afternoons. Sunday-doing-nothing.",
-  },
-  {
-    id: "morning-kick",
-    flavor: "shot",
-    title: "Morning kick",
-    tagline: "The simplest serve. Open, drink, go.",
-    difficulty: "Easy",
-    time: "10 sec",
-    servings: 1,
-    ingredients: [
-      "1 Gingerbros Ginger Shot — straight from the fridge",
-      "(Optional) glass of warm water with lemon to chase",
-    ],
-    steps: [
-      "Shake the bottle gently — the ginger settles.",
-      "Drink it neat. Cold from the fridge hits best.",
-      "If the heat is too much first time, follow with a small glass of warm water and lemon.",
-    ],
-    pairWith: "Pre-workout. Pre-coffee. Pre-meeting.",
-  },
-  {
-    id: "shot-elevated",
-    flavor: "shot",
-    title: "Shot, elevated",
-    tagline: "When you want it to taste like more than just medicine.",
+    id: "dark-stormy",
+    flavor: "beer",
+    title: "Dark & Stormy",
+    tagline: "Dark rum, ginger, lime. Classic for a reason.",
     difficulty: "Easy",
     time: "2 min",
     servings: 1,
     ingredients: [
-      "1 Gingerbros Ginger Shot",
-      "120ml fresh orange juice",
-      "1 small banana, frozen",
-      "1 tsp chia seeds (optional)",
-      "Handful of ice",
+      "60ml dark rum",
+      "1 Gingerbros Ginger Beer (chilled)",
+      "1 lime wedge",
+      "Ice cubes",
     ],
     steps: [
-      "Add everything to a blender.",
-      "Blend until smooth — about 20 seconds.",
-      "Pour into a tall glass and drink within an hour for best texture.",
+      "Fill a glass with ice.",
+      "Pour the ginger beer first.",
+      "Float the dark rum on top by pouring over the back of a spoon.",
+      "Squeeze in the lime and garnish.",
     ],
-    pairWith: "Post-workout. A real breakfast.",
-  },
-  {
-    id: "hot-toddy",
-    flavor: "shot",
-    title: "Cold-fighting toddy",
-    tagline: "When you feel a sniffle coming on.",
-    difficulty: "Easy",
-    time: "3 min",
-    servings: 1,
-    ingredients: [
-      "1 Gingerbros Ginger Shot",
-      "200ml hot water (just below boiling)",
-      "1 tsp honey",
-      "Squeeze of fresh lemon",
-      "(Optional) 30ml whisky",
-    ],
-    steps: [
-      "Stir the honey into the hot water until it dissolves.",
-      "Add the ginger shot, lemon juice, and whisky (if using).",
-      "Drink slowly. Pull a blanket over yourself.",
-    ],
+    pairWith: "Grilled meats. Char-grilled everything.",
   },
 ];
 
 const FLAVOR_NAMES: Record<Recipe["flavor"], string> = {
   beer: "Ginger Beer",
-  ale: "Ginger Ale",
-  shot: "Ginger Shot",
 };
 
 export default function RecipesPage() {
@@ -161,23 +98,11 @@ export default function RecipesPage() {
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
           <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", fontSize: 11, margin: "0 0 12px" }}>Recipes</p>
           <h1 style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", letterSpacing: "-0.02em", lineHeight: 1.05 }}>
-            Six ways to drink it.
+            Three ways to drink it.
           </h1>
           <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.72)", margin: "0 0 36px", lineHeight: 1.6, maxWidth: 640 }}>
-            Ginger beer for the cocktails you make Friday night. Ginger ale for the afternoon highball. Ginger shot for the morning. Here&apos;s six recipes to get the most out of each.
+            Ginger beer holds up in cocktails, works as a mixer, and tastes great straight from the bottle. Here are the three best ways to serve it.
           </p>
-
-          {/* Filter tabs (visual only, all recipes show on this single page) */}
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 28 }}>
-            {[
-              { id: "all", label: "All recipes" },
-              { id: "beer", label: "Ginger Beer" },
-              { id: "ale", label: "Ginger Ale" },
-              { id: "shot", label: "Ginger Shot" },
-            ].map(c => (
-              <a key={c.id} href={`#${c.id}`} style={{ padding: "8px 14px", border: "1px solid rgba(44,24,16,0.12)", background: "#fff", color: "rgba(44,24,16,0.75)", borderRadius: 9999, fontSize: 13, fontWeight: 500, fontFamily: "var(--gb-font-sans)", textDecoration: "none" }}>{c.label}</a>
-            ))}
-          </div>
 
           <div style={{ display: "grid", gap: 18 }}>
             {RECIPES.map(r => (

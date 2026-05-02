@@ -5,7 +5,7 @@
 // All display values (single, sixpack, subAmount, subBottleAmount) are derived
 // from the satang amounts here — nothing is repeated elsewhere.
 
-export type FlavorId = "beer" | "shot" | "ale";
+export type FlavorId = "beer";
 
 /** Stripe Price IDs and their satang amounts — colocated so updating one keeps the other in sync. */
 const STRIPE_PRICES: Record<FlavorId, {
@@ -19,18 +19,6 @@ const STRIPE_PRICES: Record<FlavorId, {
     sixpack:   { id: "price_1TRqTe4xTvnGlHCDqlqD857d", satang: 75000 },
     sub:       { id: "price_1TRqTo4xTvnGlHCDBSSe5v8v", satang: 67500 },
     subBottle: { id: "price_1TRqTu4xTvnGlHCDJnyG9Xl6", satang: 11500 },
-  },
-  shot: {
-    single:    { id: "price_1TRqU34xTvnGlHCD5dUFDVSU", satang: 16000 },
-    sixpack:   { id: "price_1TRqU84xTvnGlHCDHhVrWCmR", satang: 80000 },
-    sub:       { id: "price_1TRqUD4xTvnGlHCD7CP0oQVo", satang: 72000 },
-    subBottle: { id: "price_1TRqUI4xTvnGlHCDcWMTQEBY", satang: 12000 },
-  },
-  ale: {
-    single:    { id: "price_1TRqUO4xTvnGlHCDh5iMLfiJ", satang: 14000 },
-    sixpack:   { id: "price_1TRqUT4xTvnGlHCD9hiVnKm8", satang: 70000 },
-    sub:       { id: "price_1TRqUY4xTvnGlHCDbaRkUaps", satang: 63000 },
-    subBottle: { id: "price_1TRqUd4xTvnGlHCDybpna882", satang: 10500 },
   },
 };
 
@@ -126,78 +114,6 @@ export const PRODUCTS: Product[] = [
       "/products/ginger-beer-3.jpg",
     ],
   },
-  {
-    id: "shot", flavor: "shot", title: "Ginger Shot",
-    subtitle: "60ml",
-    size: "60ml",
-    single:          thb(STRIPE_PRICES.shot.single.satang),
-    sixpack:         thb(STRIPE_PRICES.shot.sixpack.satang),
-    singlePrice:     thb(STRIPE_PRICES.shot.single.satang),
-    subAmount:       thb(STRIPE_PRICES.shot.sub.satang),
-    subBottleAmount: thb(STRIPE_PRICES.shot.subBottle.satang),
-    rating: 0, reviews: 0, heat: 5,
-    tag: "Morning Ritual",
-    filterTags: ["wellness"],
-    blurb: "Cold-pressed ginger blended with coconut water and taurine. A clean morning kick in 60ml. No sugar.",
-    about: "We cold-press fresh ginger, then blend it with coconut water for natural electrolytes and a measured dose of taurine for the wake-up. No sugar, no flavor extracts — just three real ingredients. The result is a sharp, hydrating hit that wakes you up without the crash.",
-    ingredients: "Fresh ginger, coconut water, taurine. No added sugar.",
-    process: "Cold-pressed",
-    ingredientsShort: ["Fresh ginger", "Coconut water", "Taurine"],
-    abv: "0%",
-    serve: "Mornings, neat",
-    pairsWith: "Coffee, post-workout",
-    carbonation: "Still",
-    sugarLabel: "None",
-    cardTone: { bg: "#E5EBDC", bgHover: "#D7DFC9" },
-    stripeProductId: "prod_UPLRTYuEae3E0D",
-    prices: {
-      single:    STRIPE_PRICES.shot.single.id,
-      sixpack:   STRIPE_PRICES.shot.sixpack.id,
-      sub:       STRIPE_PRICES.shot.sub.id,
-      subBottle: STRIPE_PRICES.shot.subBottle.id,
-    },
-    heroImage: "/products/ginger-shot-bg.png",
-    gallery: [
-      "/products/ginger-shot-bg.png",
-      "/products/ginger-shot-1.jpg",
-      "/products/ginger-shot-2.jpg",
-      "/products/ginger-shot-3.jpg",
-      "/products/ginger-shot-4.jpg",
-      "/products/ginger-shot-5.jpg",
-      "/products/ginger-shot-6.jpg",
-    ],
-  },
-  {
-    id: "ale", flavor: "ale", title: "Ginger Ale",
-    subtitle: "330ml",
-    size: "330ml",
-    single:          thb(STRIPE_PRICES.ale.single.satang),
-    sixpack:         thb(STRIPE_PRICES.ale.sixpack.satang),
-    singlePrice:     thb(STRIPE_PRICES.ale.single.satang),
-    subAmount:       thb(STRIPE_PRICES.ale.sub.satang),
-    subBottleAmount: thb(STRIPE_PRICES.ale.subBottle.satang),
-    rating: 0, reviews: 0, heat: 2,
-    tag: "Staff Pick",
-    filterTags: ["carbonated", "mixer", "everyday"],
-    blurb: "Crisp, light, lime-forward. The easy-drinking sibling — great with dinner, or a splash of rum.",
-    about: "We cook fresh ginger and lime down into a concentrated syrup, sweeten with erythritol, blend with filtered water, then force-carbonate and bottle. No fermentation, no shortcuts from a flavor lab — just real ginger syrup and proper bubbles. Lighter heat than the beer, brighter on the lime, easy to drink alone or with rum.",
-    ingredients: "Fresh ginger, erythritol, filtered water, lime. No added sugar in the bottle.",
-    process: "Ginger syrup, force-carbonated",
-    ingredientsShort: ["Fresh ginger", "Erythritol", "Lime", "Water"],
-    abv: "0%",
-    serve: "Over ice with lime",
-    pairsWith: "Gin, rum, lime",
-    carbonation: "Force-carbonated",
-    sugarLabel: "0g residual",
-    cardTone: { bg: "#FAEBC9", bgHover: "#F2DDB0" },
-    stripeProductId: "prod_UPLRxZTxSV1wSb",
-    prices: {
-      single:    STRIPE_PRICES.ale.single.id,
-      sixpack:   STRIPE_PRICES.ale.sixpack.id,
-      sub:       STRIPE_PRICES.ale.sub.id,
-      subBottle: STRIPE_PRICES.ale.subBottle.id,
-    },
-  },
 ];
 
 export const PRICE_TO_PRODUCT: Record<string, { id: FlavorId; variant: "Single" | "6-Pack" | "Subscription" | "Sub Bottle" }> = (() => {
@@ -217,16 +133,16 @@ export function getProduct(id: FlavorId): Product {
   return p;
 }
 
-const SHORT: Record<FlavorId, string> = { beer: "Beer", shot: "Shot", ale: "Ale" };
+const SHORT: Record<FlavorId, string> = { beer: "Beer" };
 
-/** Format ["beer","beer","ale","ale","ale","shot"] -> "2x Beer · 3x Ale · 1x Shot". */
+/** Format ["beer","beer","beer","beer","beer","beer"] -> "6× Beer". */
 export function formatBundlePicks(picks: FlavorId[] | undefined, sep = " · "): string {
   if (!picks || picks.length === 0) return "Custom 6-Pack";
   const counts = picks.reduce((acc, f) => {
     acc[f] = (acc[f] ?? 0) + 1;
     return acc;
   }, {} as Record<FlavorId, number>);
-  const order: FlavorId[] = ["beer", "ale", "shot"];
+  const order: FlavorId[] = ["beer"];
   return order
     .filter(f => (counts[f] ?? 0) > 0)
     .map(f => `${counts[f]}× ${SHORT[f]}`)

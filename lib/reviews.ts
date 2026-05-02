@@ -49,7 +49,7 @@ export function summarize(reviews: Review[]): ReviewSummary {
   return { count: reviews.length, average: total / reviews.length, buckets };
 }
 
-const ALL_IDS: FlavorId[] = ["beer", "shot", "ale"];
+const ALL_IDS: FlavorId[] = ["beer"];
 
 export async function getAllSummaries(): Promise<Record<FlavorId, ReviewSummary>> {
   const entries = await Promise.all(ALL_IDS.map(async id => [id, summarize(await listReviews(id))] as const));

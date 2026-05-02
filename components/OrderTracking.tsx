@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Bottle, Icon, ICONS } from "./shared";
 
 export type TrackingStep = { label: string; time: string; done: boolean; active?: boolean; icon: typeof ICONS.check };
-export type TrackingItem = { flavor: "beer" | "shot" | "ale"; name: string };
+export type TrackingItem = { flavor: "beer"; name: string };
 
 export function OrderTracking({ orderId, status, items, customerEmail }: {
   orderId?: string;

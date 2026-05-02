@@ -17,11 +17,11 @@ const MAX_TOTAL_QTY = 60;
 
 const Item = z.object({
   id: z.string(),
-  flavor: z.enum(["beer", "shot", "ale", "unpast"]),
+  flavor: z.enum(["beer"]),
   title: z.string().max(120),
   variant: z.string().max(40),
   priceId: z.string().optional(),
-  bundlePicks: z.array(z.enum(["beer", "shot", "ale"])).optional(),
+  bundlePicks: z.array(z.enum(["beer"])).optional(),
   price: z.number(),
   qty: z.number().int().min(1).max(50),
   sub: z.boolean().optional(),

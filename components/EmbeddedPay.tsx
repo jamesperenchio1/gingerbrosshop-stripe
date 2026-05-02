@@ -230,8 +230,6 @@ function CrossSells({ snapshot, onAdd }: { snapshot: CartLine[]; onAdd: (flavor:
   if (suggestions.length === 0) return null;
   const blurb: Record<FlavorId, string> = {
     beer: "The flagship. Wakes up any cocktail.",
-    ale: "Easy-drinking, lime-forward, dinner-friendly.",
-    shot: "60ml morning kick. Coconut water + taurine.",
   };
   return (
     <div style={{ marginTop: 18, paddingTop: 16, borderTop: "1px solid rgba(44,24,16,0.08)" }}>
