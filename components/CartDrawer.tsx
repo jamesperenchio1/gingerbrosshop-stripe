@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { BottleImage, Icon, ICONS, MixBottles } from "./shared";
 import { useCart } from "@/lib/cart";
-import { formatBundlePicks, getProduct, PRODUCTS, type FlavorId } from "@/lib/products";
+import { formatBundlePicks, PRODUCTS, type FlavorId } from "@/lib/products";
 
 export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { items, remove, changeQty, subtotal, add } = useCart();
@@ -11,18 +11,6 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
   const freeShipProgress = Math.min(100, (subtotal / 500) * 100);
 
   const goPay = () => { onClose(); router.push("/checkout/pay"); };
-  const addCrossSell = () => {
-    const shot = getProduct("shot");
-    add({
-      id: shot.id,
-      flavor: shot.flavor,
-      title: shot.title,
-      variant: "Single",
-      priceId: shot.prices.single,
-      price: shot.single,
-      qty: 1,
-    });
-  };
 
   return (
     <>
@@ -54,7 +42,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
             </div>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontFamily:"var(--gb-font-display)", fontSize: 22, fontWeight: 600, color:"#2C1810" }}>Your cart is empty</div>
-              <p style={{ fontFamily:"var(--gb-font-sans)", color:"rgba(44,24,16,0.6)", margin:"8px 0 0", fontSize: 14 }}>Let&apos;s fix that. The ale is very popular.</p>
+              <p style={{ fontFamily:"var(--gb-font-sans)", color:"rgba(44,24,16,0.6)", margin:"8px 0 0", fontSize: 14 }}>Let&apos;s fix that. The ginger beer is very popular.</p>
             </div>
             <button onClick={onClose} className="gb-btn gb-btn--primary">Shop the range</button>
           </div>
@@ -102,24 +90,6 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                 );
               })}
 
-              {/* Cross-sell shot */}
-              {!items.find(i => i.id === "shot" && i.variant === "Single" && !i.sub) && (
-                <div style={{ margin: "20px 0", padding: 16, background: "#fff", borderRadius: 14 }}>
-                  <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#C8893C", fontWeight: 700, marginBottom: 12, fontFamily: "var(--gb-font-sans)" }}>Often added with this</div>
-                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    <div style={{ width: 52, height: 64, background: "linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", padding: 4 }}>
-                      <BottleImage flavor="shot" size={56} src={getProduct("shot").heroImage}/>
-                    </div>
-                    <div style={{ flex: 1, fontFamily: "var(--gb-font-sans)" }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#2C1810" }}>Ginger Shot · Single</div>
-                      <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 2 }}>The morning ritual</div>
-                    </div>
-                    <button onClick={addCrossSell} style={{ padding: "8px 14px", background: "#2C1810", color: "#FDF6EC", border: 0, borderRadius: 9999, fontSize: 12, fontWeight: 600, fontFamily: "var(--gb-font-sans)", cursor: "pointer" }}>
-                      + ฿89
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
             <div style={{ borderTop:"1px solid rgba(44,24,16,0.08)", padding:"20px 24px", background:"#fff" }}>
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, color:"rgba(44,24,16,0.7)", marginBottom:6, fontFamily: "var(--gb-font-sans)" }}>

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Bottle, BottleImage, Icon, ICONS } from "./shared";
+import { BottleImage, Icon, ICONS } from "./shared";
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/products";
 
@@ -186,8 +186,8 @@ export function SubscriptionBlock() {
             </div>
             <div style={{ display: "flex", gap: 8, marginBottom: 22 }}>
               <BottleImage flavor="beer" size={90} src="/products/ginger-beer-bg.png"/>
-              <Bottle flavor="ale" size={90}/>
-              <BottleImage flavor="shot" size={90} src="/products/ginger-shot-bg.png"/>
+              <BottleImage flavor="beer" size={90} src="/products/ginger-beer-bg.png"/>
+              <BottleImage flavor="beer" size={90} src="/products/ginger-beer-bg.png"/>
             </div>
             <div style={{ borderTop: "1px solid rgba(253,246,236,0.1)", paddingTop: 16, fontSize: 13, color: "rgba(253,246,236,0.7)", fontFamily: "var(--gb-font-sans)", lineHeight: 1.6 }}>
               Your first box ships within 2 days. Then every 30 days — or whenever you tell us to.

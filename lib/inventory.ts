@@ -4,8 +4,6 @@ import type { FlavorId } from "./products";
 // Default starting stock counts. Sourced from the mockup's "Low stock" / "28 bottles left" hints.
 const SEED: Record<FlavorId, number> = {
   beer: 480,
-  shot: 600,
-  ale: 360,
 };
 
 const LOW_STOCK_THRESHOLD = 36;
@@ -24,7 +22,7 @@ export async function getStock(id: FlavorId): Promise<number> {
 }
 
 export async function getAllStock(): Promise<Record<FlavorId, number>> {
-  const ids: FlavorId[] = ["beer", "shot", "ale"];
+  const ids: FlavorId[] = ["beer"];
   const entries = await Promise.all(ids.map(async id => [id, await getStock(id)] as const));
   return Object.fromEntries(entries) as Record<FlavorId, number>;
 }

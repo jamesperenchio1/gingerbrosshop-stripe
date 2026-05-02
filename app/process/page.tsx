@@ -7,7 +7,7 @@ export const metadata = { title: "How it's made · Gingerbros" };
 
 type Step = { day: string; title: string; body: string; icon: typeof ICONS.flame };
 
-// This timeline is the Beer process only. Ale is syrup + soda water, Shot is cold-pressed.
+
 const STEPS: Step[] = [
   {
     day: "Step 1",
@@ -60,20 +60,6 @@ const DIFFERENCES = [
   { row: "Plastic bottles",                           vs: "Glass, every time" },
 ];
 
-const OTHER_DRINKS = [
-  {
-    name: "Ginger Ale",
-    href: "/shop/ale",
-    summary: "Cooked ginger syrup blended with cold soda water. No fermentation — just real ginger syrup and bubbles. Lighter heat, brighter on the lime.",
-    steps: ["Cook fresh ginger + lime into a syrup", "Sweeten with erythritol", "Blend with soda water", "Bottle in glass"],
-  },
-  {
-    name: "Ginger Shot",
-    href: "/shop/shot",
-    summary: "Cold-pressed fresh ginger blended with coconut water for electrolytes and a measured dose of taurine. Three ingredients, no sugar, no fermentation.",
-    steps: ["Cold-press fresh ginger", "Blend with coconut water + taurine", "Bottle in glass"],
-  },
-];
 
 export default function ProcessPage() {
   return (
@@ -82,10 +68,10 @@ export default function ProcessPage() {
         <div style={{ maxWidth: 880, margin: "0 auto" }}>
           <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", fontSize: 11, margin: "0 0 12px" }}>How it&apos;s made</p>
           <h1 style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", letterSpacing: "-0.02em", lineHeight: 1.05 }}>
-            Three drinks, <span style={{ fontStyle: "italic", color: "#C8893C" }}>three honest methods.</span>
+            One drink, <span style={{ fontStyle: "italic", color: "#C8893C" }}>one honest method.</span>
           </h1>
           <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.72)", margin: "0 0 32px", lineHeight: 1.6 }}>
-            The <strong>Beer</strong> is a wild ginger-bug ferment, 10–14 days, taste-tested every couple of days. The <Link href="/shop/ale" style={{ color: "#C8893C", textDecoration: "underline", fontWeight: 700 }}>Ale</Link> is cooked ginger syrup blended with cold soda water — no fermentation, just real syrup and bubbles. The <Link href="/shop/shot" style={{ color: "#C8893C", textDecoration: "underline", fontWeight: 700 }}>Shot</Link> is cold-pressed ginger with coconut water and taurine. Same fresh ginger, three honest ways to drink it. The full timeline below is the Beer.
+            Wild ginger-bug ferment, 10–14 days, taste-tested every couple of days. Not on a timer — done means the sugar is gone and the flavor is right.
           </p>
 
           {/* Timeline */}
@@ -105,24 +91,6 @@ export default function ProcessPage() {
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Other drinks */}
-          <div style={{ background: "#fff", borderRadius: 16, padding: 32, marginBottom: 32 }}>
-            <h2 style={{ fontFamily: "var(--gb-font-display)", fontSize: 26, fontWeight: 700, color: "#2C1810", margin: "0 0 6px" }}>The other two</h2>
-            <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 14, color: "rgba(44,24,16,0.65)", margin: "0 0 22px" }}>Neither one is fermented. Same fresh ginger, simpler builds.</p>
-            <div className="gb-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              {OTHER_DRINKS.map(d => (
-                <div key={d.name} style={{ padding: 20, background: "#FDF6EC", borderRadius: 12, fontFamily: "var(--gb-font-sans)" }}>
-                  <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810", marginBottom: 8 }}>{d.name}</div>
-                  <p style={{ fontSize: 14, color: "rgba(44,24,16,0.7)", lineHeight: 1.55, margin: "0 0 14px" }}>{d.summary}</p>
-                  <ol style={{ margin: "0 0 16px", paddingLeft: 18, fontSize: 13, color: "rgba(44,24,16,0.75)", lineHeight: 1.7 }}>
-                    {d.steps.map(s => <li key={s}>{s}</li>)}
-                  </ol>
-                  <Link href={d.href} style={{ color: "#C8893C", fontSize: 13, fontWeight: 700, textDecoration: "underline" }}>See the {d.name} →</Link>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Comparison */}

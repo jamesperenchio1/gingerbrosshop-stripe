@@ -2,7 +2,7 @@
 import { Bottle, BottleImage, Icon, ICONS, Wave } from "./shared";
 
 const HEADLINES = {
-  craft: { eyebrow: "Thai Craft · Since 2024", line1: "Real ginger,", line2: "made by hand.", sub: "Small-batch Thai ginger beer, ale, and shots. Pressed, mixed, and bottled by hand in Bangkok — nothing from a flavor lab." },
+  craft: { eyebrow: "Thai Craft · Since 2024", line1: "Real ginger,", line2: "made by hand.", sub: "Small-batch Thai ginger beer. Wild-fermented, force-carbonated, 0g residual sugar. Nothing from a flavor lab." },
   maker: { eyebrow: "Handmade in Bangkok", line1: "Ginger with", line2: "a kick you can feel.", sub: "Fresh ginger, real ingredients, no syrupy shortcuts. The kind of drink that makes the supermarket version taste like tap water with sugar." },
   love:  { eyebrow: "Thai Craft Beverages", line1: "Made with", line2: "Ginger & Love.", sub: "Handcrafted ginger beverages from the heart of Thailand. Bold flavors, natural ingredients, zero compromise." },
 };
@@ -89,14 +89,8 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
           <div className="gb-hide-mobile" style={{ position: "relative", height: 560 }}>
             <div style={{ position: "absolute", inset: 0, display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
               <div style={{ position: "absolute", bottom: 40, width: 380, height: 30, background: "radial-gradient(ellipse, rgba(44,24,16,0.25) 0%, transparent 70%)", filter: "blur(6px)" }}/>
-              <div style={{ transform: "translateX(-90px) translateY(-30px) rotate(-6deg)", zIndex: 1 }}>
-                <Bottle flavor="ale" size={380}/>
-              </div>
-              <div style={{ position: "absolute", zIndex: 3, bottom: 40 }}>
+                <div style={{ position: "absolute", zIndex: 3, bottom: 40 }}>
                 <BottleImage flavor="beer" size={460} src="/products/ginger-beer-bg.png"/>
-              </div>
-              <div style={{ transform: "translateX(90px) translateY(-30px) rotate(6deg)", zIndex: 1 }}>
-                <BottleImage flavor="shot" size={380} src="/products/ginger-shot-bg.png"/>
               </div>
             </div>
 

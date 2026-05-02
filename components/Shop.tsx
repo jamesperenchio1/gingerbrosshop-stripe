@@ -108,10 +108,10 @@ export function ShopSection({ products, stock }: { products: Product[]; stock?: 
           <div>
             <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>Our Range</p>
             <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: 0, letterSpacing: "-0.02em" }}>
-              Three drinks. One root.
+              One drink. One root.
             </h2>
             <p style={{ fontFamily: "var(--gb-font-sans)", color: "rgba(44,24,16,0.65)", fontSize: 16, marginTop: 10, maxWidth: 480 }}>
-              A wild-fermented beer, a syrup-and-soda ale, and a cold-pressed shot. Same fresh ginger, three honest ways to drink it.
+              Wild-fermented ginger beer made in Bangkok. Real ginger, zero residual sugar, properly fizzy.
             </p>
           </div>
 
@@ -165,9 +165,7 @@ export function ShopSection({ products, stock }: { products: Product[]; stock?: 
 // Taste guide — clean comparison panel.
 type SpecCol = { id: FlavorId; label: string; bestFor: string };
 const SPEC_COLS: SpecCol[] = [
-  { id: "beer", label: "Daily mixer",   bestFor: "Cocktails, dinner" },
-  { id: "ale",  label: "Easy drinker",  bestFor: "Daily, with food"  },
-  { id: "shot", label: "Wellness shot", bestFor: "First thing in the morning" },
+  { id: "beer", label: "Daily mixer", bestFor: "Cocktails, dinner" },
 ];
 
 // Heat is rendered as the same 5-bar meter the PDP uses, driven off product.heat.
@@ -207,7 +205,7 @@ export function TasteGuide({ products, summaries: _summaries }: { products: Prod
             </h2>
           </div>
           <Link href="#bundle" style={{ fontFamily: "var(--gb-font-sans)", fontSize: 14, fontWeight: 700, color: "#C8893C", textDecoration: "underline" }}>
-            Or build a 6-pack with all three →
+            Or build a 6-pack →
           </Link>
         </div>
 

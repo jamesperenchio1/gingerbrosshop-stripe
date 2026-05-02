@@ -4,7 +4,7 @@ import { kv } from "@vercel/kv";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const FLAVORS = ["beer", "shot", "ale"] as const;
+const FLAVORS = ["beer"] as const;
 
 // POST /api/admin/clear-reviews?secret=...&product=beer
 // product=all clears every flavor.

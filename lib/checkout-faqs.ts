@@ -21,17 +21,13 @@ export function getCheckoutFaqs(items: CartLine[], subtotal: number): CheckoutFa
   }
 
 
-  const hasShot = items.some(i => i.flavor === "shot");
-  const hasFizz = items.some(i => i.flavor === "beer" || i.flavor === "ale");
   const hasBundle = items.some(i => i.id === "bundle");
 
   if (hasSub) {
     faqs.push({ icon: "repeat", text: "Pause, swap, or cancel anytime", href: "/account" });
   } else if (hasBundle) {
     faqs.push({ icon: "gift", text: "Mix-pack ships boxed and padded" });
-  } else if (hasShot) {
-    faqs.push({ icon: "leaf", text: "Cold-pressed · keep refrigerated" });
-  } else if (hasFizz) {
+  } else {
     faqs.push({ icon: "sparkle", text: "0g residual sugar in every bottle" });
   }
 

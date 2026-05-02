@@ -44,7 +44,7 @@ export function StoryStrip() {
               Started for a clean morning, <span style={{ fontStyle: "italic", color: "#C8893C" }}>not a brand.</span>
             </h2>
             <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.7)", lineHeight: 1.65, margin: "0 0 32px" }}>
-              I cut sugar from my mornings and wanted a sharp, clean ginger drink to start the day with. Nothing on the shelf in Bangkok actually fit — every ginger beer was loaded with sugar, every shot was overpriced concentrate. So I started making my own, a few liters at a time. Three drinks now, all 0g residual sugar.
+              I cut sugar from my mornings and wanted a sharp, clean ginger drink. Nothing on the shelf in Bangkok actually fit — every ginger beer was loaded with sugar. So I started making my own, a few liters at a time. Wild-fermented, 0g residual sugar in the bottle.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
               {[
@@ -117,10 +117,7 @@ export function Footer() {
           </div>
           {[
             { h: "Shop", items: [
-              { label: "All drinks",       href: "/#shop" },
               { label: "Ginger Beer",      href: "/shop/beer" },
-              { label: "Ginger Ale",       href: "/shop/ale" },
-              { label: "Ginger Shot",      href: "/shop/shot" },
               { label: "Build a 6-pack",   href: "/#bundle" },
               { label: "Subscriptions",    href: "/subscribe" },
             ] },

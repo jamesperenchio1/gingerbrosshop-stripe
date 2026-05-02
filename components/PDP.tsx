@@ -5,20 +5,12 @@ import { Bottle, BottleImage, Icon, ICONS } from "./shared";
 import { PdpRatingHeader, ReviewsBlock } from "./Reviews";
 import type { Review, ReviewSummary } from "@/lib/reviews";
 
-function brewCopy(id: Product["id"]): string {
-  if (id === "shot") {
-    return "Fresh ginger gets cold-pressed within a day of arriving at the kitchen. The juice goes into the bottle with coconut water (for natural electrolytes) and a measured dose of taurine. No fermentation, no sugar, no flavor extracts — three ingredients on the label is the whole list.";
-  }
-  if (id === "ale") {
-    return "We cook fresh ginger with lime down into a concentrated syrup, sweeten with erythritol, then blend it with cold soda water and bottle. No fermentation, no flavor extracts — just real ginger syrup and bubbles. Lighter heat than the beer, brighter on the lime, easy to drink alone or stretched with rum.";
-  }
+function brewCopy(): string {
   return "Ginger-bug method. We start a wild fermentation culture from fresh ginger, then blend it into a strong ginger tea with sugar. The yeast eats the sugar and produces a small amount of CO₂ + a lot of flavor. When fermentation is done we pasteurize to lock the flavor in, sweeten back up with erythritol (which yeast can't metabolize), finish with fresh lime, and force-carbonate before bottling. Result: 0g residual sugar in the bottle, real ginger flavor, full carbonation.";
 }
 
-function pairCopy(id: Product["id"]): string {
-  if (id === "beer") return "Build a Bangkok Mule with dark rum or whisky and a squeeze of lime — that's the move. Otherwise serve cold over ice; cuts through rich, fatty street food (moo krata, khao soi). Best within a few days of opening for full fizz.";
-  if (id === "ale") return "Long glass, ice spear, splash of whisky or rum, twist of lemon — easiest highball you'll make. On its own with dinner, especially anything fried. Splash into sparkling wine for a low-effort spritz.";
-  return "Drink cold, neat, like a wellness shot. First thing in the morning before coffee. 30 minutes before a workout. When you feel a sniffle. Chase with warm water and lemon if the heat is too much for you.";
+function pairCopy(): string {
+  return "Build a Bangkok Mule with dark rum or whisky and a squeeze of lime — that's the move. Otherwise serve cold over ice; cuts through rich, fatty street food (moo krata, khao soi). Best within a few days of opening for full fizz.";
 }
 
 function shippingCopy(): React.ReactNode {
@@ -157,7 +149,7 @@ export function ProductDetail({ product, stock, summary, initialReviews }: {
           <div style={{ paddingTop: 8 }}>
             <PdpRatingHeader summary={summary}/>
             <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", fontSize: 11, margin: "0 0 8px" }}>
-              {product.flavor === "shot" ? "Concentrated Kick · 60ml" : product.flavor === "beer" ? "Wild-Fermented · 330ml" : "Syrup + Soda · 330ml"}
+              Wild-Fermented · 330ml
             </p>
             <h1 style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
               {product.title}
@@ -247,8 +239,8 @@ export function ProductDetail({ product, stock, summary, initialReviews }: {
               {[
                 { k: "story", h: "The story", body: product.about },
                 { k: "ingredients", h: "Ingredients & nutrition", body: product.ingredients },
-                { k: "brew", h: "How we make it", body: brewCopy(product.id) },
-                { k: "pair", h: "Pairings & serving", body: pairCopy(product.id) },
+                { k: "brew", h: "How we make it", body: brewCopy() },
+                { k: "pair", h: "Pairings & serving", body: pairCopy() },
                 { k: "shipping", h: "Shipping & breakage", body: shippingCopy() },
               ].map(t => (
                 <div key={t.k} style={{ borderBottom: "1px solid rgba(44,24,16,0.1)" }}>
