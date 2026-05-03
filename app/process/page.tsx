@@ -24,7 +24,7 @@ const STEPS: Step[] = [
   {
     day: "Step 3",
     title: "Pitch + ferment",
-    body: "We blend the bug into the tea and let it ferment for 10–14 days, taste-tested every couple of days. Done means the sugar is gone and the ginger character is rounded — not on a calendar. If a batch isn't there yet, it gets more time.",
+    body: "We blend the bug into the tea and let it ferment. Bangkok's heat means it's usually ready in about 4 days — far faster than cooler climates. Done means the ginger character is rounded and the flavor is right, not a number on a calendar.",
     icon: ICONS.flame,
   },
   {
@@ -55,7 +55,7 @@ const STEPS: Step[] = [
 
 const DIFFERENCES = [
   { row: "Ginger flavoring + high-fructose syrup",   vs: "Real ginger root, real ingredients" },
-  { row: "Up to 35g sugar per 330ml bottle",          vs: "0g residual sugar — sweetened with erythritol" },
+  { row: "Up to 35g sugar per 330ml bottle",          vs: "Naturally low residual sugar — sweetened with erythritol" },
   { row: "Made in days from concentrate, on a timer",vs: "Tiny batches, taste-tested before they ship" },
   { row: "Plastic bottles",                           vs: "Glass, every time" },
 ];
@@ -71,7 +71,7 @@ export default function ProcessPage() {
             One drink, <span style={{ fontStyle: "italic", color: "#C8893C" }}>one honest method.</span>
           </h1>
           <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.72)", margin: "0 0 32px", lineHeight: 1.6 }}>
-            A wild ginger-bug ferment, 10–14 days, taste-tested every couple of days. 0g residual sugar in the bottle. Nothing from a flavor lab.
+            A wild ginger-bug ferment, ~4 days in Bangkok&apos;s heat. Naturally low residual sugar, sweetened with erythritol. Nothing from a flavor lab.
           </p>
 
           {/* Timeline */}
@@ -115,7 +115,7 @@ export default function ProcessPage() {
           </div>
 
           <Link href="/" className="gb-btn gb-btn--primary">
-            Shop the range <Icon d={ICONS.arrow} size={16} stroke={2}/>
+            Shop now <Icon d={ICONS.arrow} size={16} stroke={2}/>
           </Link>
         </div>
       </article>

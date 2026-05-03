@@ -18,7 +18,7 @@ export default async function Home() {
       <Hero variant="maker"/>
       <ShopSection products={PRODUCTS} stock={stock} summaries={summaries}/>
       <TasteGuide products={PRODUCTS} summaries={summaries}/>
-      <BundleBuilder products={PRODUCTS}/>
+      <BundleBuilder/>
       <StoryStrip/>
       <SubscriptionBlock/>
       <section style={{ padding: "80px 0", background: "#FDF6EC", textAlign: "center" }}>

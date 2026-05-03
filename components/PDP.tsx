@@ -6,7 +6,7 @@ import { PdpRatingHeader, ReviewsBlock } from "./Reviews";
 import type { Review, ReviewSummary } from "@/lib/reviews";
 
 function brewCopy(_id: Product["id"]): string {
-  return "Ginger-bug method. We start a wild fermentation culture from fresh ginger, then blend it into a strong ginger tea with sugar. The yeast eats the sugar and produces a small amount of CO₂ + a lot of flavor. When fermentation is done we pasteurize to lock the flavor in, sweeten back up with erythritol (which yeast can't metabolize), finish with fresh lime, and force-carbonate before bottling. Result: 0g residual sugar in the bottle, real ginger flavor, full carbonation.";
+  return "Ginger-bug method. We grow a wild fermentation culture from fresh ginger, then blend it into a strong ginger tea with sugar. Bangkok's heat means the bug ferments in about 4 days — much faster than cooler climates. When fermentation is done we pasteurize to lock the flavor in, sweeten back up with erythritol (which yeast can't metabolize), finish with fresh lime, and force-carbonate before bottling. Real ginger flavor, full carbonation, naturally low residual sugar.";
 }
 
 function pairCopy(_id: Product["id"]): string {

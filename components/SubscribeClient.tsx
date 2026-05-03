@@ -53,7 +53,7 @@ export function SubscribeClient() {
       <div className="gb-pad-40" style={{ maxWidth: 1100, margin: "0 auto", padding: "0 40px" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", background: "rgba(200,137,60,0.12)", color: "#C8893C", borderRadius: 9999, fontSize: 11, fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase", marginBottom: 18 }}>
-            <Icon d={ICONS.repeat} size={13} stroke={2}/> Mix any flavors · save 10%
+            <Icon d={ICONS.repeat} size={13} stroke={2}/> Monthly 6-pack · save 10%
           </div>
           <h1 style={{ fontFamily: "var(--gb-font-display)", fontSize: 56, fontWeight: 700, margin: "0 0 14px", lineHeight: 1.05, letterSpacing: "-0.02em", color: "#2C1810" }}>
             Build your monthly <span style={{ fontStyle: "italic", color: "#C8893C" }}>crate.</span>

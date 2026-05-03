@@ -98,20 +98,18 @@ function ProductCard({ product, variant = "Single", showSavings = false, stock }
 
 export function ShopSection({ products, stock }: { products: Product[]; stock?: Record<string, number>; summaries?: Record<FlavorId, ReviewSummary> }) {
   const [size, setSize] = useState<"Single" | "6-Pack">("Single");
-  const [filter, setFilter] = useState("all");
-  const filtered = filter === "all" ? products : products.filter(p => p.filterTags?.includes(filter));
 
   return (
     <section id="shop" style={{ padding: "96px 0 80px", background: "#fff", position: "relative" }}>
       <div className="gb-pad-40" style={{ maxWidth: 1440, margin: "0 auto", padding: "0 40px" }}>
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 36, flexWrap: "wrap", gap: 24 }}>
           <div>
-            <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>Our Range</p>
+            <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>Our Drink</p>
             <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: 0, letterSpacing: "-0.02em" }}>
               One drink. Done right.
             </h2>
             <p style={{ fontFamily: "var(--gb-font-sans)", color: "rgba(44,24,16,0.65)", fontSize: 16, marginTop: 10, maxWidth: 480 }}>
-              Wild-fermented, force-carbonated, zero residual sugar. Real ginger beer, the way it should taste.
+              Wild-fermented in Bangkok&apos;s heat, force-carbonated, naturally low sugar. Real ginger beer, the way it should taste.
             </p>
           </div>
 
@@ -132,28 +130,8 @@ export function ShopSection({ products, stock }: { products: Product[]; stock?: 
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 28 }}>
-          {[
-            { id: "all", label: "All drinks" },
-            { id: "carbonated", label: "Carbonated" },
-            { id: "wellness", label: "Wellness" },
-            { id: "mixer", label: "Mixer" },
-            { id: "everyday", label: "Everyday" },
-          ].map(f => (
-            <button key={f.id} onClick={() => setFilter(f.id)} style={{
-              padding: "9px 16px", border: filter === f.id ? "1px solid #2C1810" : "1px solid rgba(44,24,16,0.12)",
-              background: filter === f.id ? "#2C1810" : "#fff",
-              color: filter === f.id ? "#FDF6EC" : "rgba(44,24,16,0.75)",
-              borderRadius: 9999, fontSize: 13, fontWeight: 500, fontFamily: "var(--gb-font-sans)",
-              cursor: "pointer", transition: "all 200ms",
-            }}>
-              {f.label}
-            </button>
-          ))}
-        </div>
-
         <div className="gb-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 22 }}>
-          {filtered.map(p => (
+          {products.map(p => (
             <ProductCard key={p.id} product={p} variant={size} showSavings={size === "6-Pack"} stock={stock?.[p.id]}/>
           ))}
         </div>
@@ -162,143 +140,167 @@ export function ShopSection({ products, stock }: { products: Product[]; stock?: 
   );
 }
 
-// Taste guide — spec sheet for ginger beer.
-type SpecCol = { id: FlavorId; label: string; bestFor: string };
-const SPEC_COLS: SpecCol[] = [
-  { id: "beer", label: "Daily mixer", bestFor: "Cocktails, dinner, on its own" },
-];
-
-// Heat is rendered as the same 5-bar meter the PDP uses, driven off product.heat.
-function HeatBars({ value }: { value: number }) {
+// Attribute bar — same visual as HeatBars but generic
+function AttrBar({ value, max = 5, color = "#C8893C" }: { value: number; max?: number; color?: string }) {
   return (
     <div style={{ display: "inline-flex", gap: 3, alignItems: "center" }}>
-      {[1,2,3,4,5].map(i => (
-        <span key={i} style={{ width: 14, height: 5, borderRadius: 2, background: i <= value ? "linear-gradient(90deg, #C8893C, #8B3A1A)" : "rgba(44,24,16,0.12)" }}/>
+      {Array.from({ length: max }).map((_, i) => (
+        <span key={i} style={{
+          width: 16, height: 5, borderRadius: 2,
+          background: i < value
+            ? `linear-gradient(90deg, ${color}, ${color}cc)`
+            : "rgba(44,24,16,0.1)",
+        }}/>
       ))}
     </div>
   );
 }
 
-const SPEC_ROWS: { label: string; render: (c: SpecCol, p: Product) => React.ReactNode }[] = [
-  { label: "Size",         render: (_c, p) => p.size },
-  { label: "Process",      render: (_c, p) => p.process },
-  { label: "Ingredients",  render: (_c, p) => p.ingredientsShort.join(", ") },
-  { label: "Sugar",        render: (_c, p) => p.sugarLabel },
-  { label: "Heat",         render: (_c, p) => <HeatBars value={p.heat}/> },
-  { label: "Carbonation",  render: (_c, p) => p.carbonation },
-  { label: "ABV",          render: (_c, p) => p.abv },
-  { label: "Serve",        render: (_c, p) => p.serve },
-  { label: "Pairs with",   render: (_c, p) => p.pairsWith },
-  { label: "Best for",     render: (c, _p) => c.bestFor },
-];
-
 export function TasteGuide({ products, summaries: _summaries }: { products: Product[]; summaries?: Record<FlavorId, ReviewSummary> }) {
-  const byId = Object.fromEntries(products.map(p => [p.id, p])) as Record<FlavorId, Product>;
+  const p = products[0];
+  if (!p) return null;
+
+  const attrs = [
+    { label: "Heat",         value: 4, color: "#C8893C" },
+    { label: "Carbonation",  value: 4, color: "#4A7C3F" },
+    { label: "Sweetness",    value: 2, color: "#C8893C" },
+  ];
+  const pairsWith = ["Bangkok Mule", "Dark & Stormy", "Grilled food"];
+  const tastingNotes = ["Punchy ginger", "Dry finish", "Light sweetness"];
+  const specGrid = [
+    { label: "Size",    value: p.size },
+    { label: "Process", value: "~4 days" },
+    { label: "ABV",     value: p.abv },
+    { label: "Ginger",  value: "Chiang Rai" },
+  ];
+
   return (
     <section id="taste-guide" style={{ padding: "96px 0", background: "#fff", scrollMarginTop: 80 }}>
       <div className="gb-pad-40" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 24, marginBottom: 36 }}>
-          <div>
-            <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>Compare</p>
-            <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: 0, letterSpacing: "-0.02em" }}>
-              The lineup, side by side.
-            </h2>
-          </div>
-          <Link href="#bundle" style={{ fontFamily: "var(--gb-font-sans)", fontSize: 14, fontWeight: 700, color: "#C8893C", textDecoration: "underline" }}>
-            Get a 6-pack and save →
-          </Link>
+        <div style={{ marginBottom: 40 }}>
+          <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>The Details</p>
+          <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: 0, letterSpacing: "-0.02em" }}>
+            What&apos;s in it.
+          </h2>
         </div>
 
-        {/* Desktop: spec-sheet grid */}
-        <div className="gb-show-desktop" style={{ display: "grid", gridTemplateColumns: "180px repeat(3, 1fr)", gap: 0, background: "#FDF6EC", borderRadius: 18, overflow: "hidden", border: "1px solid rgba(44,24,16,0.06)" }}>
-          {/* Header row */}
-          <div style={{ padding: "28px 22px 18px", borderRight: "1px solid rgba(44,24,16,0.06)", display: "flex", alignItems: "flex-end" }}/>
-          {SPEC_COLS.map(c => {
-            const p = byId[c.id];
-            if (!p) return null;
-            return (
-              <div key={c.id} style={{ padding: "28px 22px 18px", textAlign: "center", borderRight: "1px solid rgba(44,24,16,0.06)" }}>
-                <div style={{ height: 160, display: "flex", alignItems: "flex-end", justifyContent: "center", marginBottom: 14 }}>
-                  <BottleImage flavor={p.flavor} size={160} src={p.heroImage}/>
-                </div>
-                <div style={{ fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#C8893C", marginBottom: 6 }}>{c.label}</div>
-                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 24, fontWeight: 700, color: "#2C1810" }}>{p.title}</div>
-              </div>
-            );
-          })}
-
-          {/* Spec rows */}
-          {SPEC_ROWS.map((row, i) => (
-            <React.Fragment key={row.label}>
-              <div style={{ padding: "16px 22px", borderTop: "1px solid rgba(44,24,16,0.08)", borderRight: "1px solid rgba(44,24,16,0.06)", fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(44,24,16,0.55)", display: "flex", alignItems: "center", background: i % 2 === 0 ? "transparent" : "rgba(44,24,16,0.02)" }}>
-                {row.label}
-              </div>
-              {SPEC_COLS.map(c => {
-                const p = byId[c.id];
-                return (
-                  <div key={c.id + row.label} style={{ padding: "16px 22px", borderTop: "1px solid rgba(44,24,16,0.08)", borderRight: "1px solid rgba(44,24,16,0.06)", fontFamily: "var(--gb-font-sans)", fontSize: 14, fontWeight: 600, color: "#2C1810", textAlign: "center", background: i % 2 === 0 ? "transparent" : "rgba(44,24,16,0.02)" }}>
-                    {p ? row.render(c, p) : null}
-                  </div>
-                );
-              })}
-            </React.Fragment>
-          ))}
-
-          {/* Price + CTA row */}
-          <div style={{ padding: "20px 22px 26px", borderTop: "1px solid rgba(44,24,16,0.08)", borderRight: "1px solid rgba(44,24,16,0.06)", fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(44,24,16,0.55)", display: "flex", alignItems: "center" }}>
-            From
+        {/* Desktop: 2-col layout */}
+        <div className="gb-show-desktop" style={{ display: "grid", gridTemplateColumns: "2fr 3fr", gap: 40, alignItems: "start" }}>
+          {/* Left: bottle photo */}
+          <div style={{
+            background: "#F5E6D3", borderRadius: 20, height: 440,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            position: "relative", overflow: "hidden",
+          }}>
+            <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 30%, rgba(200,137,60,0.15) 0%, transparent 65%)" }}/>
+            <BottleImage flavor={p.flavor} size={300} src={p.heroImage}/>
           </div>
-          {SPEC_COLS.map(c => {
-            const p = byId[c.id];
-            if (!p) return null;
-            return (
-              <div key={c.id + "-cta"} style={{ padding: "20px 22px 26px", borderTop: "1px solid rgba(44,24,16,0.08)", borderRight: "1px solid rgba(44,24,16,0.06)", textAlign: "center" }}>
-                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 26, fontWeight: 700, color: "#C8893C", marginBottom: 4 }}>฿{p.single}</div>
-                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginBottom: 14 }}>or ฿{p.sixpack} / 6-pack</div>
-                <Link href={`/shop/${p.id}`} className="gb-btn gb-btn--primary" style={{ width: "100%", justifyContent: "center", fontSize: 13, padding: "12px 18px" }}>
-                  Shop <Icon d={ICONS.arrow} size={14} stroke={2}/>
-                </Link>
+
+          {/* Right: specs */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+            {/* Attribute bars */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {attrs.map(a => (
+                <div key={a.label} style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <div style={{ width: 100, fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(44,24,16,0.5)", fontFamily: "var(--gb-font-sans)", flexShrink: 0 }}>
+                    {a.label}
+                  </div>
+                  <AttrBar value={a.value} color={a.color}/>
+                  <div style={{ fontSize: 12, color: "rgba(44,24,16,0.45)", fontFamily: "var(--gb-font-sans)" }}>{a.value}/5</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ height: 1, background: "rgba(44,24,16,0.08)" }}/>
+
+            {/* Pairs with */}
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(44,24,16,0.5)", fontFamily: "var(--gb-font-sans)", marginBottom: 10 }}>Pairs with</div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {pairsWith.map(tag => (
+                  <span key={tag} style={{ padding: "6px 14px", background: "#FDF6EC", border: "1px solid rgba(44,24,16,0.1)", borderRadius: 9999, fontSize: 13, fontFamily: "var(--gb-font-sans)", color: "#2C1810", fontWeight: 500 }}>{tag}</span>
+                ))}
               </div>
-            );
-          })}
+            </div>
+
+            {/* Tasting notes */}
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(44,24,16,0.5)", fontFamily: "var(--gb-font-sans)", marginBottom: 10 }}>Tasting notes</div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {tastingNotes.map(note => (
+                  <span key={note} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", background: "rgba(200,137,60,0.08)", border: "1px solid rgba(200,137,60,0.2)", borderRadius: 9999, fontSize: 13, fontFamily: "var(--gb-font-sans)", color: "#8B3A1A", fontWeight: 500 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#C8893C", flexShrink: 0, display: "inline-block" }}/>
+                    {note}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ height: 1, background: "rgba(44,24,16,0.08)" }}/>
+
+            {/* Spec mini-grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              {specGrid.map(s => (
+                <div key={s.label} style={{ padding: "12px 16px", background: "#FDF6EC", borderRadius: 12 }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(44,24,16,0.45)", fontFamily: "var(--gb-font-sans)", marginBottom: 4 }}>{s.label}</div>
+                  <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 16, fontWeight: 700, color: "#2C1810" }}>{s.value}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <Link href={`/shop/${p.id}`} className="gb-btn gb-btn--primary" style={{ alignSelf: "flex-start", fontSize: 14, padding: "14px 24px" }}>
+              Shop Ginger Beer <Icon d={ICONS.arrow} size={15} stroke={2}/>
+            </Link>
+          </div>
         </div>
 
-        {/* Mobile: vertical stack of cards, one per product */}
-        <div className="gb-show-mobile" style={{ display: "grid", gap: 14 }}>
-          {SPEC_COLS.map(c => {
-            const p = byId[c.id];
-            if (!p) return null;
-            return (
-              <div key={c.id} style={{ background: "#FDF6EC", borderRadius: 16, padding: 22, fontFamily: "var(--gb-font-sans)", border: "1px solid rgba(44,24,16,0.06)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
-                  <div style={{ width: 72, height: 100, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <BottleImage flavor={p.flavor} size={100} src={p.heroImage}/>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, color: "#C8893C", marginBottom: 4 }}>{c.label}</div>
-                    <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#2C1810" }}>{p.title}</div>
-                  </div>
+        {/* Mobile: single card */}
+        <div className="gb-show-mobile" style={{ display: "grid", gap: 20 }}>
+          {/* Bottle */}
+          <div style={{ background: "#F5E6D3", borderRadius: 16, height: 280, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <BottleImage flavor={p.flavor} size={200} src={p.heroImage}/>
+          </div>
+          {/* Specs */}
+          <div style={{ background: "#FDF6EC", borderRadius: 16, padding: 22, border: "1px solid rgba(44,24,16,0.06)", fontFamily: "var(--gb-font-sans)" }}>
+            {/* Attrs */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
+              {attrs.map(a => (
+                <div key={a.label} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ width: 90, fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(44,24,16,0.5)", flexShrink: 0 }}>{a.label}</span>
+                  <AttrBar value={a.value} color={a.color}/>
                 </div>
-                <div style={{ display: "grid", gap: 6, marginBottom: 16, padding: "12px 14px", background: "#fff", borderRadius: 10 }}>
-                  {SPEC_ROWS.map(row => (
-                    <div key={row.label} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, padding: "4px 0" }}>
-                      <span style={{ fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700, color: "rgba(44,24,16,0.5)" }}>{row.label}</span>
-                      <span style={{ fontWeight: 600, color: "#2C1810" }}>{row.render(c, p)}</span>
-                    </div>
-                  ))}
+              ))}
+            </div>
+            <div style={{ height: 1, background: "rgba(44,24,16,0.08)", marginBottom: 14 }}/>
+            {/* Pairs / notes */}
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(44,24,16,0.45)", marginBottom: 8 }}>Pairs with</div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+              {pairsWith.map(t => <span key={t} style={{ padding: "5px 12px", background: "#fff", border: "1px solid rgba(44,24,16,0.1)", borderRadius: 9999, fontSize: 12, color: "#2C1810" }}>{t}</span>)}
+            </div>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(44,24,16,0.45)", marginBottom: 8 }}>Tasting notes</div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 18 }}>
+              {tastingNotes.map(n => <span key={n} style={{ padding: "5px 12px", background: "rgba(200,137,60,0.08)", border: "1px solid rgba(200,137,60,0.2)", borderRadius: 9999, fontSize: 12, color: "#8B3A1A" }}>{n}</span>)}
+            </div>
+            {/* Spec grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
+              {specGrid.map(s => (
+                <div key={s.label} style={{ padding: "10px 14px", background: "#fff", borderRadius: 10 }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(44,24,16,0.4)", marginBottom: 3 }}>{s.label}</div>
+                  <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 14, fontWeight: 700, color: "#2C1810" }}>{s.value}</div>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#C8893C" }}>฿{p.single}</div>
-                    <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)" }}>or ฿{p.sixpack} / 6-pack</div>
-                  </div>
-                  <Link href={`/shop/${p.id}`} className="gb-btn gb-btn--primary" style={{ fontSize: 13, padding: "10px 18px" }}>
-                    Shop <Icon d={ICONS.arrow} size={14} stroke={2}/>
-                  </Link>
-                </div>
+              ))}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 22, fontWeight: 700, color: "#C8893C" }}>฿{p.single}</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)" }}>or ฿{p.sixpack} / 6-pack</div>
               </div>
-            );
-          })}
+              <Link href={`/shop/${p.id}`} className="gb-btn gb-btn--primary" style={{ fontSize: 13, padding: "10px 18px" }}>
+                Shop <Icon d={ICONS.arrow} size={14} stroke={2}/>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </section>

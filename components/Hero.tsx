@@ -31,7 +31,7 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
             >
               <span style={{ background: "#4A7C3F", color: "#fff", fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", padding: "4px 10px", borderRadius: 9999 }}>NEW</span>
               <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 13, color: "rgba(44,24,16,0.75)" }}>
-                Build-your-own 6-pack — mix any flavors, save 10%
+                Get the 6-pack · save 16%
               </span>
               <Icon d={ICONS.chevRight} size={13} stroke={2}/>
             </a>
@@ -61,7 +61,7 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
 
             <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
               <a href="#shop" className="gb-btn gb-btn--primary" style={{ fontSize: 15, padding: "16px 30px" }}>
-                Shop the range <Icon d={ICONS.arrow} size={16}/>
+                Shop now <Icon d={ICONS.arrow} size={16}/>
               </a>
               <a href="#taste-guide" className="gb-btn gb-btn--ghost" style={{ fontSize: 14 }}>
                 Taste guide <Icon d={ICONS.chevRight} size={14}/>
@@ -70,18 +70,18 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
 
             <div style={{ display: "flex", gap: 28, marginTop: 44, flexWrap: "wrap" }}>
               <div>
-                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>0g</div>
-                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>added sugar</div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>~4 days</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>Thai ferment</div>
               </div>
               <div style={{ width: 1, background: "rgba(44,24,16,0.12)" }}/>
               <div>
-                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>48h</div>
-                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>bottle-to-doorstep</div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>Chiang Rai</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>ginger source</div>
               </div>
               <div style={{ width: 1, background: "rgba(44,24,16,0.12)" }}/>
               <div>
-                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>Glass</div>
-                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>not plastic</div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>&lt;0.5%</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>natural ABV</div>
               </div>
             </div>
           </div>
@@ -102,7 +102,7 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
             }}>
               <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#C8893C", fontWeight: 700, textTransform: "uppercase", marginBottom: 8 }}>Made in Bangkok</div>
               <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 15, fontWeight: 500, color: "#2C1810", lineHeight: 1.45 }}>
-                Real ginger, real ingredients, zero sugar. Nothing from a flavor lab.
+                Wild-fermented in Bangkok&rsquo;s heat. Ginger from Chiang Rai.
               </div>
             </div>
 
@@ -128,9 +128,9 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
             {Array.from({ length: 4 }).map((_, k) => (
               <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: 28, fontFamily: "var(--gb-font-display)", fontStyle: "italic", fontSize: 18, color: "rgba(44,24,16,0.55)", marginRight: 28 }}>
                 Fresh Thai ginger <span style={{ color: "#C8893C" }}>✦</span>
-                Zero added sugar <span style={{ color: "#C8893C" }}>✦</span>
+                Naturally low sugar <span style={{ color: "#C8893C" }}>✦</span>
                 Sweetened with erythritol <span style={{ color: "#C8893C" }}>✦</span>
-                Glass, not plastic <span style={{ color: "#C8893C" }}>✦</span>
+                Ginger from Chiang Rai <span style={{ color: "#C8893C" }}>✦</span>
                 Made in Bangkok <span style={{ color: "#C8893C" }}>✦</span>
               </span>
             ))}

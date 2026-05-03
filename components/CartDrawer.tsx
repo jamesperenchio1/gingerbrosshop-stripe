@@ -44,7 +44,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
               <div style={{ fontFamily:"var(--gb-font-display)", fontSize: 22, fontWeight: 600, color:"#2C1810" }}>Your cart is empty</div>
               <p style={{ fontFamily:"var(--gb-font-sans)", color:"rgba(44,24,16,0.6)", margin:"8px 0 0", fontSize: 14 }}>Let&apos;s fix that. The ginger beer is waiting.</p>
             </div>
-            <button onClick={onClose} className="gb-btn gb-btn--primary">Shop the range</button>
+            <button onClick={onClose} className="gb-btn gb-btn--primary">Shop now</button>
           </div>
         ) : (
           <>

@@ -34,7 +34,7 @@ export function StoryStrip() {
                 <text x="240" y="440" textAnchor="middle" fontFamily="var(--gb-font-sans)" fontSize="11" letterSpacing="3" fill="#FDF6EC" fillOpacity="0.5" fontWeight="700">FERMENTER · TANK 02</text>
               </svg>
               <div style={{ position: "absolute", top: 16, left: 16, padding: "6px 12px", background: "rgba(253,246,236,0.15)", backdropFilter: "blur(8px)", borderRadius: 9999, fontFamily: "var(--gb-font-sans)", fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", color: "#FDF6EC", textTransform: "uppercase" }}>
-                Day 9 · active ferment
+                Day 4 · active ferment
               </div>
             </div>
           </div>
@@ -44,13 +44,13 @@ export function StoryStrip() {
               Started in a bedroom, <span style={{ fontStyle: "italic", color: "#C8893C" }}>not a boardroom.</span>
             </h2>
             <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.7)", lineHeight: 1.65, margin: "0 0 32px" }}>
-              It started in Australia, brewing ginger in my own room because I love carbonated drinks and never liked the sugar. The first batches were half-experiment, half-trying-to-catch-a-buzz. The recipe got better, the goal shifted from buzz to balance, and here we are. One drink, done right, all 0g residual sugar.
+              It started in Australia, brewing ginger in my own room because I love carbonated drinks and never liked the sugar. The first batches were half-experiment, half-trying-to-catch-a-buzz. The recipe got better, the goal shifted from buzz to balance, and here we are. One drink, fermented fast in Bangkok&apos;s heat.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
               {[
-                { n: "0g", u: "residual sugar" },
-                { n: "Tiny", u: "every batch" },
-                { n: "Glass", u: "every bottle" },
+                { n: "~4 days", u: "Thai ferment" },
+                { n: "Chiang Rai", u: "ginger source" },
+                { n: "<0.5%", u: "natural ABV" },
               ].map(s => (
                 <div key={s.u} style={{ borderTop: "1px solid rgba(44,24,16,0.12)", paddingTop: 14 }}>
                   <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 36, fontWeight: 700, color: "#2C1810", lineHeight: 1 }}>{s.n}</div>

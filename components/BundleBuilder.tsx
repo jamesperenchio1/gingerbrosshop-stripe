@@ -1,132 +1,93 @@
 "use client";
-import { useState } from "react";
 import { BottleImage, Icon, ICONS } from "./shared";
 import { useCart } from "@/lib/cart";
-import { getProduct, type Product } from "@/lib/products";
+import { getProduct } from "@/lib/products";
 
-export function BundleBuilder({ products }: { products: Product[] }) {
-  const [picks, setPicks] = useState<Product[]>([]);
-  const max = 6;
+export function BundleBuilder() {
   const { add } = useCart();
+  const p = getProduct("beer");
 
-  const total = picks.reduce((a, p) => a + p.single, 0);
-  const discounted = Math.round(total * 0.9); // 10% off
-  const saved = total - discounted;
-  const progress = (picks.length / max) * 100;
-
-  const addOne = (p: Product) => { if (picks.length < max) setPicks([...picks, p]); };
-  const removeAt = (i: number) => setPicks(picks.filter((_, idx) => idx !== i));
+  const singleTotal = p.single * 6;   // ฿900
+  const saved = singleTotal - p.sixpack; // ฿150
+  const perBottle = Math.round(p.sixpack / 6); // ฿125
 
   const handleAdd = () => {
-    if (picks.length !== max) return;
     add({
-      id: "bundle",
-      flavor: picks[0].flavor,
-      title: "Mix-your-own 6-Pack",
-      variant: "Custom 6-Pack",
-      bundlePicks: picks.map(p => p.flavor),
-      price: discounted,
+      id: "beer",
+      flavor: "beer",
+      title: "Ginger Beer",
+      variant: "6-Pack",
+      priceId: p.prices.sixpack,
+      price: p.sixpack,
       qty: 1,
     });
-    setPicks([]);
   };
 
   return (
     <section id="bundle" style={{ padding: "96px 0", background: "linear-gradient(180deg, #FDF6EC 0%, #F5E6D3 100%)", position: "relative", overflow: "hidden", scrollMarginTop: 80 }}>
-      <div className="gb-pad-40" style={{ maxWidth: 1440, margin: "0 auto", padding: "0 40px" }}>
-        <div className="gb-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 440px", gap: 56, alignItems: "flex-start" }}>
+      <div aria-hidden style={{ position: "absolute", top: -60, right: -60, width: 360, height: 360, background: "radial-gradient(circle at 50% 50%, rgba(200,137,60,0.14) 0%, rgba(200,137,60,0) 70%)", borderRadius: "50%", pointerEvents: "none" }}/>
+      <div className="gb-pad-40" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
+        <div className="gb-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, alignItems: "center" }}>
+
+          {/* Left: copy + CTA */}
           <div>
             <p style={{ color: "#4A7C3F", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>
-              Mix & Match · Save 10%
+              Stock Up · Save 16%
             </p>
             <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 56, fontWeight: 700, color: "#2C1810", margin: "0 0 16px", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
-              Build your <span style={{ fontStyle: "italic", color: "#C8893C" }}>own 6-pack.</span>
+              Six bottles. <span style={{ fontStyle: "italic", color: "#C8893C" }}>Sixteen percent off.</span>
             </h2>
-            <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.7)", margin: "0 0 36px", maxWidth: 520, lineHeight: 1.6 }}>
-              Can&apos;t decide? Pick any six bottles. Any flavors, any ratio. We&apos;ll pack it up and ship it within 48 hours.
+            <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.7)", margin: "0 0 32px", maxWidth: 440, lineHeight: 1.6 }}>
+              Cheaper per bottle, shipped together. No subscription needed.
             </p>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 14 }}>
-              {products.map(p => (
-                <button key={p.id} onClick={() => addOne(p)} disabled={picks.length >= max} style={{
-                  display: "flex", alignItems: "center", gap: 14, padding: "14px 18px",
-                  background: "#fff", border: "1px solid rgba(44,24,16,0.08)", borderRadius: 14,
-                  cursor: picks.length >= max ? "not-allowed" : "pointer", opacity: picks.length >= max ? 0.5 : 1,
-                  textAlign: "left", fontFamily: "var(--gb-font-sans)",
-                }}>
-                  <div style={{ width: 44, height: 56, background: "linear-gradient(145deg,#F5E6D3,#FDF6EC)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, padding: 3 }}>
-                    <BottleImage flavor={p.flavor} size={50} src={p.heroImage}/>
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 15, fontWeight: 600, color: "#2C1810" }}>{p.title}</div>
-                    <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 2 }}>฿{p.single} each</div>
-                  </div>
-                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#2C1810", color: "#FDF6EC", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Icon d={ICONS.plus} size={14} stroke={2.5}/>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div style={{
-            background: "#fff", borderRadius: 20, padding: 24,
-            boxShadow: "0 18px 40px rgba(44,24,16,0.08)", position: "sticky", top: 100,
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 14 }}>
-              <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>Your box</div>
-              <div style={{ fontFamily: "var(--gb-font-sans)", fontSize: 13, color: "rgba(44,24,16,0.6)" }}>
-                {picks.length} of {max}
+            {/* Price breakdown */}
+            <div style={{ marginBottom: 28, padding: "20px 24px", background: "#fff", borderRadius: 16, boxShadow: "0 4px 16px rgba(44,24,16,0.06)", display: "inline-flex", flexDirection: "column", gap: 8, minWidth: 240 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 24, fontFamily: "var(--gb-font-sans)", fontSize: 13, color: "rgba(44,24,16,0.55)" }}>
+                <span>6 × ฿{p.single}</span>
+                <span style={{ textDecoration: "line-through" }}>฿{singleTotal}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 24, fontFamily: "var(--gb-font-sans)", fontSize: 13, color: "#4A7C3F", fontWeight: 700 }}>
+                <span>Bundle discount (16%)</span>
+                <span>−฿{saved}</span>
+              </div>
+              <div style={{ height: 1, background: "rgba(44,24,16,0.08)" }}/>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 24, alignItems: "baseline" }}>
+                <div>
+                  <span style={{ fontFamily: "var(--gb-font-display)", fontSize: 28, fontWeight: 700, color: "#C8893C" }}>฿{p.sixpack}</span>
+                  <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 12, color: "rgba(44,24,16,0.5)", marginLeft: 8 }}>฿{perBottle}/bottle</span>
+                </div>
               </div>
             </div>
 
-            <div style={{ height: 8, background: "#F5E6D3", borderRadius: 9999, overflow: "hidden", marginBottom: 18 }}>
-              <div style={{
-                width: `${progress}%`, height: "100%",
-                background: "linear-gradient(90deg, #C8893C, #4A7C3F)",
-                transition: "width 320ms cubic-bezier(0.5,0,0.5,1)",
-              }}/>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 6, marginBottom: 20 }}>
-              {Array.from({ length: max }).map((_, i) => {
-                const p = picks[i];
-                return (
-                  <div key={i} onClick={() => p && removeAt(i)} style={{
-                    height: 70, borderRadius: 10, border: p ? "none" : "1px dashed rgba(44,24,16,0.2)",
-                    background: p ? "linear-gradient(145deg,#F5E6D3,#FDF6EC)" : "transparent",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    cursor: p ? "pointer" : "default", padding: 4,
-                  }}>
-                    {p && <BottleImage flavor={p.flavor} size={60} src={p.heroImage}/>}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div style={{ borderTop: "1px solid rgba(44,24,16,0.08)", paddingTop: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "rgba(44,24,16,0.65)", fontFamily: "var(--gb-font-sans)", marginBottom: 6 }}>
-                <span>Singles total</span>
-                <span style={{ textDecoration: picks.length ? "line-through" : "none" }}>฿{total}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#4A7C3F", fontFamily: "var(--gb-font-sans)", fontWeight: 600, marginBottom: 14 }}>
-                <span>Bundle discount (10%)</span>
-                <span>− ฿{saved}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 18 }}>
-                <span style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>Total</span>
-                <span style={{ fontFamily: "var(--gb-font-sans)", fontSize: 26, fontWeight: 700, color: "#C8893C" }}>฿{discounted}</span>
-              </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
               <button
-                disabled={picks.length !== max}
                 onClick={handleAdd}
                 className="gb-btn gb-btn--primary"
-                style={{ width: "100%", justifyContent: "center", opacity: picks.length === max ? 1 : 0.45, cursor: picks.length === max ? "pointer" : "not-allowed" }}
+                style={{ fontSize: 15, padding: "16px 28px" }}
               >
-                {picks.length === max ? <>Add to cart <Icon d={ICONS.arrow} size={16}/></> : `Pick ${max - picks.length} more`}
+                Add 6-Pack to Cart <Icon d={ICONS.arrow} size={16}/>
               </button>
             </div>
+            <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 12, color: "rgba(44,24,16,0.5)", marginTop: 12 }}>
+              Or <a href="/subscribe" style={{ color: "#C8893C", fontWeight: 700, textDecoration: "none" }}>subscribe monthly</a> and save 10% every month.
+            </p>
           </div>
+
+          {/* Right: 2×3 bottle grid */}
+          <div style={{ position: "relative" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: 28, background: "#fff", borderRadius: 20, boxShadow: "0 12px 40px rgba(44,24,16,0.08)" }}>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} style={{ background: "#F5E6D3", borderRadius: 12, height: 110, display: "flex", alignItems: "center", justifyContent: "center", padding: 6 }}>
+                  <BottleImage flavor="beer" size={80} src={p.heroImage}/>
+                </div>
+              ))}
+            </div>
+            <div style={{ position: "absolute", top: -10, right: -10, background: "#4A7C3F", color: "#fff", padding: "8px 16px", borderRadius: 9999, fontFamily: "var(--gb-font-sans)", fontSize: 12, fontWeight: 700, boxShadow: "0 4px 12px rgba(74,124,63,0.35)" }}>
+              ฿{p.sixpack} · Save ฿{saved}
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -134,6 +95,7 @@ export function BundleBuilder({ products }: { products: Product[] }) {
 }
 
 export function SubscriptionBlock() {
+  const p = getProduct("beer");
   return (
     <section style={{ padding: "96px 0", background: "#2C1810", color: "#FDF6EC", position: "relative", overflow: "hidden" }}>
       <div aria-hidden style={{ position: "absolute", top: -100, left: -100, width: 400, height: 400, background: "radial-gradient(circle at 50% 50%, rgba(200,137,60,0.15) 0%, rgba(200,137,60,0) 70%)", borderRadius: "50%" }}/>
@@ -149,7 +111,7 @@ export function SubscriptionBlock() {
               Never run out of <span style={{ fontStyle: "italic", color: "#E8B86A" }}>the good stuff.</span>
             </h2>
             <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(253,246,236,0.75)", lineHeight: 1.6, margin: "0 0 32px", maxWidth: 480 }}>
-              Subscribe for a monthly 6-pack. Change flavors, skip a month, or cancel from your account — no phone calls, no nonsense.
+              Subscribe for a monthly 6-pack. Skip a month, adjust, or cancel from your account — no phone calls, no nonsense.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, auto)", gap: 28, marginBottom: 36, justifyContent: "start" }}>
               {[
@@ -179,15 +141,18 @@ export function SubscriptionBlock() {
                 <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 28, fontWeight: 700 }}>Monthly 6-pack</div>
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 12, color: "rgba(253,246,236,0.5)", textDecoration: "line-through" }}>฿{getProduct("beer").sixpack}</div>
-                <div style={{ fontFamily: "var(--gb-font-sans)", fontSize: 32, fontWeight: 700, color: "#C8893C", lineHeight: 1 }}>฿{getProduct("beer").subAmount}</div>
+                <div style={{ fontSize: 12, color: "rgba(253,246,236,0.5)", textDecoration: "line-through" }}>฿{p.sixpack}</div>
+                <div style={{ fontFamily: "var(--gb-font-sans)", fontSize: 32, fontWeight: 700, color: "#C8893C", lineHeight: 1 }}>฿{p.subAmount}</div>
                 <div style={{ fontSize: 11, color: "rgba(253,246,236,0.55)", marginTop: 2 }}>/month</div>
               </div>
             </div>
-            <div style={{ display: "flex", gap: 8, marginBottom: 22, justifyContent: "center" }}>
-              <BottleImage flavor="beer" size={90} src="/products/ginger-beer-bg.png"/>
-              <BottleImage flavor="beer" size={90} src="/products/ginger-beer-bg.png"/>
-              <BottleImage flavor="beer" size={90} src="/products/ginger-beer-bg.png"/>
+            {/* 2×3 grid of 6 bottles */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 22 }}>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 80 }}>
+                  <BottleImage flavor="beer" size={70} src="/products/ginger-beer-bg.png"/>
+                </div>
+              ))}
             </div>
             <div style={{ borderTop: "1px solid rgba(253,246,236,0.1)", paddingTop: 16, fontSize: 13, color: "rgba(253,246,236,0.7)", fontFamily: "var(--gb-font-sans)", lineHeight: 1.6 }}>
               Your first box ships within 2 days. Then every 30 days — or whenever you tell us to.

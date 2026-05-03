@@ -8,7 +8,7 @@ function AnnouncementBar() {
   const messages = [
     { icon: ICONS.truck, text: "Free shipping on orders over ฿500" },
     { icon: ICONS.leaf, text: "Made fresh in Bangkok · Ships within 48h" },
-    { icon: ICONS.gift, text: "Build-your-own 6-pack — mix any flavors, save 10%" },
+    { icon: ICONS.gift, text: "6-pack deal — save 16% on every bottle" },
   ];
   const [i, setI] = useState(0);
   useEffect(() => {
