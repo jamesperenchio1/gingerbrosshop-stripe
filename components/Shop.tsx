@@ -109,7 +109,7 @@ export function ShopSection({ products, stock }: { products: Product[]; stock?: 
               One drink. Done right.
             </h2>
             <p style={{ fontFamily: "var(--gb-font-sans)", color: "rgba(44,24,16,0.65)", fontSize: 16, marginTop: 10, maxWidth: 480 }}>
-              Wild-fermented in Bangkok&apos;s heat, force-carbonated, naturally low sugar. Real ginger beer, the way it should taste.
+              Wild-fermented, force-carbonated, properly spicy. No syrup, no concentrate.
             </p>
           </div>
 
@@ -169,7 +169,7 @@ export function TasteGuide({ products, summaries: _summaries }: { products: Prod
   const tastingNotes = ["Punchy ginger", "Dry finish", "Light sweetness"];
   const specGrid = [
     { label: "Size",    value: p.size },
-    { label: "Process", value: "~4 days" },
+    { label: "Process", value: "Ginger bug" },
     { label: "ABV",     value: p.abv },
     { label: "Ginger",  value: "Chiang Rai" },
   ];
@@ -178,9 +178,9 @@ export function TasteGuide({ products, summaries: _summaries }: { products: Prod
     <section id="taste-guide" style={{ padding: "96px 0", background: "#fff", scrollMarginTop: 80 }}>
       <div className="gb-pad-40" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 40px" }}>
         <div style={{ marginBottom: 40 }}>
-          <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>The Details</p>
+          <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", fontSize: 12, margin: "0 0 12px" }}>The Beer</p>
           <h2 className="gb-h2" style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: 0, letterSpacing: "-0.02em" }}>
-            What&apos;s in it.
+            How it drinks.
           </h2>
         </div>
 

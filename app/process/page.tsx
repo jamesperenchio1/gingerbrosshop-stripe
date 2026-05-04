@@ -18,13 +18,13 @@ const STEPS: Step[] = [
   {
     day: "Step 2",
     title: "Brew the ginger tea",
-    body: "A strong ginger tea with more ginger, more sugar, more water. The sugar here is fuel for the fermentation — it doesn't end up in the bottle, but the yeast needs something to eat.",
+    body: "A strong ginger tea with more ginger, more sugar, more water. The sugar here is fuel for the fermentation — the yeast needs something to eat.",
     icon: ICONS.leaf,
   },
   {
     day: "Step 3",
     title: "Pitch + ferment",
-    body: "We blend the bug into the tea and let it ferment. Bangkok's heat means it's usually ready in about 4 days — far faster than cooler climates. Done means the ginger character is rounded and the flavor is right, not a number on a calendar.",
+    body: "We blend the bug into the tea and let it ferment, taste-tested every couple of days. Done means the sugar is mostly consumed and the ginger character is rounded — not on a calendar. If a batch isn't there yet, it gets more time.",
     icon: ICONS.flame,
   },
   {
@@ -35,14 +35,14 @@ const STEPS: Step[] = [
   },
   {
     day: "Step 5",
-    title: "Sweeten back + finish",
-    body: "Erythritol goes in for sweetness — zero-calorie, and yeast can't metabolize it (which is why we add it after pasteurization, not before). Then fresh lime to brighten it.",
+    title: "Finish + force-carbonate",
+    body: "Fresh lime goes in for brightness. Then we force-carbonate for clean, consistent fizz.",
     icon: ICONS.sparkle,
   },
   {
     day: "Step 6",
-    title: "Force-carbonate + bottle",
-    body: "We force-carbonate for clean, consistent fizz, then bottle in glass. Capped fresh, into the cool room.",
+    title: "Bottle",
+    body: "Bottled in glass. Capped fresh, into the cool room.",
     icon: ICONS.box,
   },
   {
@@ -55,8 +55,8 @@ const STEPS: Step[] = [
 
 const DIFFERENCES = [
   { row: "Ginger flavoring + high-fructose syrup",   vs: "Real ginger root, real ingredients" },
-  { row: "Up to 35g sugar per 330ml bottle",          vs: "Naturally low residual sugar — sweetened with erythritol" },
-  { row: "Made in days from concentrate, on a timer",vs: "Tiny batches, taste-tested before they ship" },
+  { row: "Up to 35g sugar per 330ml bottle",          vs: "Naturally low sugar — wild fermentation, no added sweetener" },
+  { row: "Made in days from concentrate, on a timer",vs: "Small batches, taste-tested before they ship" },
   { row: "Plastic bottles",                           vs: "Glass, every time" },
 ];
 
@@ -71,7 +71,7 @@ export default function ProcessPage() {
             One drink, <span style={{ fontStyle: "italic", color: "#C8893C" }}>one honest method.</span>
           </h1>
           <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.72)", margin: "0 0 32px", lineHeight: 1.6 }}>
-            A wild ginger-bug ferment, ~4 days in Bangkok&apos;s heat. Naturally low residual sugar, sweetened with erythritol. Nothing from a flavor lab.
+            A wild ginger-bug ferment, taste-tested until it&apos;s right. Naturally low sugar. Nothing from a flavor lab.
           </p>
 
           {/* Timeline */}

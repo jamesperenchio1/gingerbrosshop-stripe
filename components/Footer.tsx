@@ -44,11 +44,11 @@ export function StoryStrip() {
               Started in a bedroom, <span style={{ fontStyle: "italic", color: "#C8893C" }}>not a boardroom.</span>
             </h2>
             <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 17, color: "rgba(44,24,16,0.7)", lineHeight: 1.65, margin: "0 0 32px" }}>
-              It started in Australia, brewing ginger in my own room because I love carbonated drinks and never liked the sugar. The first batches were half-experiment, half-trying-to-catch-a-buzz. The recipe got better, the goal shifted from buzz to balance, and here we are. One drink, fermented fast in Bangkok&apos;s heat.
+              It started in Australia, brewing ginger in my own room because I love carbonated drinks and never liked the sugar. The first batches were half-experiment, half-trying-to-catch-a-buzz. The recipe got better, the goal shifted from buzz to balance, and here we are.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
               {[
-                { n: "~4 days", u: "Thai ferment" },
+                { n: "Bangkok", u: "handmade" },
                 { n: "Chiang Rai", u: "ginger source" },
                 { n: "<0.5%", u: "natural ABV" },
               ].map(s => (

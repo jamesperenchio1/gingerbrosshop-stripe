@@ -70,8 +70,8 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
 
             <div style={{ display: "flex", gap: 28, marginTop: 44, flexWrap: "wrap" }}>
               <div>
-                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>~4 days</div>
-                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>Thai ferment</div>
+                <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 20, fontWeight: 700, color: "#2C1810" }}>Bangkok</div>
+                <div style={{ fontSize: 11, color: "rgba(44,24,16,0.55)", marginTop: 4, fontFamily: "var(--gb-font-sans)", letterSpacing: "0.04em" }}>handmade</div>
               </div>
               <div style={{ width: 1, background: "rgba(44,24,16,0.12)" }}/>
               <div>
@@ -102,7 +102,7 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
             }}>
               <div style={{ fontSize: 10, letterSpacing: "0.2em", color: "#C8893C", fontWeight: 700, textTransform: "uppercase", marginBottom: 8 }}>Made in Bangkok</div>
               <div style={{ fontFamily: "var(--gb-font-display)", fontSize: 15, fontWeight: 500, color: "#2C1810", lineHeight: 1.45 }}>
-                Wild-fermented in Bangkok&rsquo;s heat. Ginger from Chiang Rai.
+                Real ginger. Wild-fermented. No shortcuts.
               </div>
             </div>
 
@@ -128,8 +128,8 @@ export function Hero({ variant = "maker" }: { variant?: keyof typeof HEADLINES }
             {Array.from({ length: 4 }).map((_, k) => (
               <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: 28, fontFamily: "var(--gb-font-display)", fontStyle: "italic", fontSize: 18, color: "rgba(44,24,16,0.55)", marginRight: 28 }}>
                 Fresh Thai ginger <span style={{ color: "#C8893C" }}>✦</span>
-                Naturally low sugar <span style={{ color: "#C8893C" }}>✦</span>
-                Sweetened with erythritol <span style={{ color: "#C8893C" }}>✦</span>
+                Wild ginger-bug ferment <span style={{ color: "#C8893C" }}>✦</span>
+                No flavoring agents <span style={{ color: "#C8893C" }}>✦</span>
                 Ginger from Chiang Rai <span style={{ color: "#C8893C" }}>✦</span>
                 Made in Bangkok <span style={{ color: "#C8893C" }}>✦</span>
               </span>

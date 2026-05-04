@@ -6,7 +6,7 @@ import { PdpRatingHeader, ReviewsBlock } from "./Reviews";
 import type { Review, ReviewSummary } from "@/lib/reviews";
 
 function brewCopy(_id: Product["id"]): string {
-  return "Ginger-bug method. We grow a wild fermentation culture from fresh ginger, then blend it into a strong ginger tea with sugar. Bangkok's heat means the bug ferments in about 4 days — much faster than cooler climates. When fermentation is done we pasteurize to lock the flavor in, sweeten back up with erythritol (which yeast can't metabolize), finish with fresh lime, and force-carbonate before bottling. Real ginger flavor, full carbonation, naturally low residual sugar.";
+  return "Ginger-bug method. We grow a wild fermentation culture from fresh ginger, then pitch it into a strong ginger tea with sugar. The yeast eats the sugar, produces CO₂ and flavor. When fermentation is right, we pasteurize to lock it in, add fresh lime, force-carbonate, and bottle. Real ginger flavor, full carbonation, no shortcuts.";
 }
 
 function pairCopy(_id: Product["id"]): string {
@@ -223,7 +223,7 @@ export function ProductDetail({ product, stock, summary, initialReviews }: {
                 { icon: ICONS.truck, title: "Ships in 48h", body: "Free over ฿500 · Bangkok next-day" },
                 { icon: ICONS.shield, title: "Bottle guarantee", body: "Broken on arrival? Free replacement." },
                 { icon: ICONS.box, title: lowStock ? "Low stock" : "In stock", body: lowStock ? "Almost out — order soon" : "Restocked weekly · ships within 48h" },
-                { icon: ICONS.leaf, title: "0g added sugar", body: "Sweetened with erythritol" },
+                { icon: ICONS.leaf, title: "Naturally low sugar", body: "Wild fermentation, no added sweetener" },
               ].map(b => (
                 <div key={b.title} style={{ padding: "10px 12px", background: "#fff", borderRadius: 10, border: "1px solid rgba(44,24,16,0.06)", display: "flex", gap: 10, alignItems: "flex-start", fontFamily: "var(--gb-font-sans)" }}>
                   <span style={{ color: "#C8893C", marginTop: 2 }}><Icon d={b.icon} size={15} stroke={2}/></span>

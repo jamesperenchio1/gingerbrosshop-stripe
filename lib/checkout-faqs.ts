@@ -25,7 +25,7 @@ export function getCheckoutFaqs(items: CartLine[], subtotal: number): CheckoutFa
   } else if (hasBundle) {
     faqs.push({ icon: "gift", text: "Mix-pack ships boxed and padded" });
   } else if (hasBeer) {
-    faqs.push({ icon: "sparkle", text: "Naturally low residual sugar — sweetened with erythritol" });
+    faqs.push({ icon: "sparkle", text: "Naturally low residual sugar — wild fermentation, no added sweetener" });
   }
 
   faqs.push({ icon: "shield", text: "Bottle broke? We replace it free", href: "/contact" });

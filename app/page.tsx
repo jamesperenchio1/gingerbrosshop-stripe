@@ -6,7 +6,7 @@ import { Chrome } from "@/components/Chrome";
 import { Hero } from "@/components/Hero";
 import { ShopSection, TasteGuide } from "@/components/Shop";
 import { BundleBuilder, SubscriptionBlock } from "@/components/BundleBuilder";
-import { StoryStrip, Footer } from "@/components/Footer";
+import { Footer } from "@/components/Footer";
 import { Icon, ICONS } from "@/components/shared";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +19,6 @@ export default async function Home() {
       <ShopSection products={PRODUCTS} stock={stock} summaries={summaries}/>
       <TasteGuide products={PRODUCTS} summaries={summaries}/>
       <BundleBuilder/>
-      <StoryStrip/>
       <SubscriptionBlock/>
       <section style={{ padding: "80px 0", background: "#FDF6EC", textAlign: "center" }}>
         <div className="gb-pad-40" style={{ maxWidth: 720, margin: "0 auto", padding: "0 40px" }}>
