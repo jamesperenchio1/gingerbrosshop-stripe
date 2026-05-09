@@ -88,9 +88,22 @@ a { color: inherit; text-decoration: none; }
   .gb-pad-40 { padding-left: 24px !important; padding-right: 24px !important; }
   .gb-show-mobile { display: grid !important; }
   .gb-show-desktop { display: none !important; }
+  /* PDP mobile */
+  .gb-pdp-gallery { position: static !important; top: auto !important; }
+  .gb-pdp-img-box { height: 360px !important; }
+  .gb-pdp-thumbstrip {
+    display: flex !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .gb-pdp-thumbstrip::-webkit-scrollbar { display: none; }
+  .gb-pdp-thumb { flex-shrink: 0 !important; width: 72px !important; height: 72px !important; }
 }
 @media (max-width: 600px) {
   .gb-grid-4 { grid-template-columns: 1fr !important; }
   .gb-h1 { font-size: 48px !important; line-height: 1.05 !important; }
   .gb-h2 { font-size: 36px !important; }
+  .gb-pdp-img-box { height: 300px !important; }
+  .gb-pdp-h1 { font-size: 34px !important; }
 }
