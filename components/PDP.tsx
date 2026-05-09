@@ -72,7 +72,7 @@ export function ProductDetail({ product, stock, summary, initialReviews }: {
 
       <div className="gb-pad-40" style={{ maxWidth: 1440, margin: "0 auto", padding: "24px 40px 80px" }}>
         <div className="gb-grid-2" style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 64 }}>
-          <div style={{ position: "sticky", top: 120, alignSelf: "start" }}>
+          <div className="gb-pdp-gallery" style={{ position: "sticky", top: 120, alignSelf: "start" }}>
             {(() => {
               const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : [];
               const total = gallery.length;
@@ -92,7 +92,7 @@ export function ProductDetail({ product, stock, summary, initialReviews }: {
 
               return (
                 <>
-                  <div style={{
+                  <div className="gb-pdp-img-box" style={{
                     background: "linear-gradient(155deg, #F5E6D3 0%, #FDF6EC 100%)", borderRadius: 20,
                     height: 600, display: "flex", alignItems: "center", justifyContent: "center",
                     position: "relative", overflow: "hidden",
@@ -127,9 +127,9 @@ export function ProductDetail({ product, stock, summary, initialReviews }: {
                   </div>
 
                   {total > 0 && (
-                    <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(total, 7)},1fr)`, gap: 10, marginTop: 12 }}>
+                    <div className="gb-pdp-thumbstrip" style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(total, 7)},1fr)`, gap: 10, marginTop: 12 }}>
                       {gallery.slice(0, 7).map((thumb, i) => (
-                        <button key={i} onClick={() => setActiveImg(i)} aria-label={`View image ${i + 1}`} style={{
+                        <button key={i} onClick={() => setActiveImg(i)} aria-label={`View image ${i + 1}`} className="gb-pdp-thumb" style={{
                           background: safeIdx === i ? "#fff" : "linear-gradient(145deg,#F5E6D3,#FDF6EC)",
                           borderRadius: 10, height: 80, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden",
                           cursor: "pointer", border: 0, boxShadow: safeIdx === i ? "inset 0 0 0 2px #2C1810" : "none", padding: 6,
@@ -151,7 +151,7 @@ export function ProductDetail({ product, stock, summary, initialReviews }: {
             <p style={{ color: "#C8893C", fontFamily: "var(--gb-font-sans)", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", fontSize: 11, margin: "0 0 8px" }}>
               Wild-Fermented · 330ml
             </p>
-            <h1 style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
+            <h1 className="gb-pdp-h1" style={{ fontFamily: "var(--gb-font-display)", fontSize: 48, fontWeight: 700, color: "#2C1810", margin: "0 0 14px", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
               {product.title}
             </h1>
             <p style={{ fontFamily: "var(--gb-font-sans)", fontSize: 16, color: "rgba(44,24,16,0.72)", lineHeight: 1.65, margin: "0 0 24px" }}>

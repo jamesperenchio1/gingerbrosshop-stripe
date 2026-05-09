@@ -175,6 +175,89 @@ async function main() {
   assert(!/Bangkok depot|Kerry Express/.test(tText), "no fake 'Bangkok depot' / 'Kerry Express' side labels");
   assert(!/Within 24h|Confirmed|Soon/.test(tText), "no fake hardcoded timestamp side labels");
 
+  group("I. PDP mobile layout (gb-pdp-* classes)");
+
+  // ---- mobile 375px ----
+  const mCtx = await browser.newContext({ viewport: { width: 375, height: 812 } });
+  const mPage = await mCtx.newPage();
+  await mPage.goto(BASE + "/shop/beer");
+  await mPage.waitForLoadState("networkidle");
+
+  const mGalleryPos = await mPage.evaluate(() => {
+    const el = document.querySelector(".gb-pdp-gallery");
+    return el ? getComputedStyle(el).position : null;
+  });
+  assert(mGalleryPos === "static", "mobile 375px: gallery position is static (not sticky)", `got ${mGalleryPos}`);
+
+  const mImgHeight = await mPage.evaluate(() => {
+    const el = document.querySelector(".gb-pdp-img-box");
+    return el ? Math.round(el.getBoundingClientRect().height) : null;
+  });
+  assert(mImgHeight !== null && mImgHeight <= 360, `mobile 375px: image box height ≤ 360px`, `got ${mImgHeight}px`);
+
+  const mThumbData = await mPage.evaluate(() => {
+    const el = document.querySelector(".gb-pdp-thumbstrip");
+    if (!el) return null;
+    const s = getComputedStyle(el);
+    return { display: s.display, overflowX: s.overflowX };
+  });
+  if (mThumbData) {
+    assert(mThumbData.display === "flex", "mobile 375px: thumbnail strip is flex", `got display=${mThumbData.display}`);
+    assert(mThumbData.overflowX === "auto" || mThumbData.overflowX === "scroll", "mobile 375px: thumbnail strip scrolls horizontally", `got overflowX=${mThumbData.overflowX}`);
+  } else {
+    ok("mobile 375px: no thumbnail strip rendered (product has no gallery images)");
+  }
+
+  const mH1Size = await mPage.evaluate(() => {
+    const el = document.querySelector(".gb-pdp-h1");
+    return el ? parseFloat(getComputedStyle(el).fontSize) : null;
+  });
+  assert(mH1Size !== null && mH1Size < 48, `mobile 375px: product h1 font-size < 48px`, `got ${mH1Size}px`);
+
+  await mCtx.close();
+
+  // ---- tablet 768px — sticky should still be disabled ----
+  const tCtx = await browser.newContext({ viewport: { width: 768, height: 1024 } });
+  const tPage = await tCtx.newPage();
+  await tPage.goto(BASE + "/shop/beer");
+  await tPage.waitForLoadState("networkidle");
+
+  const tGalleryPos = await tPage.evaluate(() => {
+    const el = document.querySelector(".gb-pdp-gallery");
+    return el ? getComputedStyle(el).position : null;
+  });
+  assert(tGalleryPos === "static", "tablet 768px: gallery position is static (not sticky)", `got ${tGalleryPos}`);
+
+  const tImgHeight = await tPage.evaluate(() => {
+    const el = document.querySelector(".gb-pdp-img-box");
+    return el ? Math.round(el.getBoundingClientRect().height) : null;
+  });
+  assert(tImgHeight !== null && tImgHeight <= 360, `tablet 768px: image box height ≤ 360px`, `got ${tImgHeight}px`);
+
+  await tCtx.close();
+
+  // ---- desktop 1280px — sticky and full height should be restored ----
+  await page.goto(BASE + "/shop/beer");
+  await page.waitForLoadState("networkidle");
+
+  const dGalleryPos = await page.evaluate(() => {
+    const el = document.querySelector(".gb-pdp-gallery");
+    return el ? getComputedStyle(el).position : null;
+  });
+  assert(dGalleryPos === "sticky", "desktop 1280px: gallery is sticky", `got ${dGalleryPos}`);
+
+  const dImgHeight = await page.evaluate(() => {
+    const el = document.querySelector(".gb-pdp-img-box");
+    return el ? Math.round(el.getBoundingClientRect().height) : null;
+  });
+  assert(dImgHeight !== null && dImgHeight >= 580, `desktop 1280px: image box height ≥ 580px`, `got ${dImgHeight}px`);
+
+  const dH1Size = await page.evaluate(() => {
+    const el = document.querySelector(".gb-pdp-h1");
+    return el ? parseFloat(getComputedStyle(el).fontSize) : null;
+  });
+  assert(dH1Size !== null && dH1Size >= 48, `desktop 1280px: product h1 font-size ≥ 48px`, `got ${dH1Size}px`);
+
   // ---- summary ----
   console.log("\n" + "─".repeat(60));
   console.log(`\x1b[1m${passed} passed, ${failed} failed\x1b[0m`);
